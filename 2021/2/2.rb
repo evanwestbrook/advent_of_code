@@ -17,14 +17,15 @@ end
 
 def forward (unit)
   @position[:horizontal] += unit
+  @position[:depth] += unit * @position[:aim]
 end
 
 def down (unit)
-  @position[:depth] += unit
+  @position[:aim] += unit
 end
 
 def up (unit)
-  @position[:depth] -= unit
+  @position[:aim] -= unit
 end
 
 def plot_course
@@ -39,6 +40,6 @@ def plot_course
   end
 end
 
-parse_file('test_input.txt')
+parse_file('input.txt')
 plot_course
 puts "Horizontal position: #{@position[:horizontal]}. Depth: #{@position[:depth]}. Multiply: #{@position[:horizontal] * @position[:depth]}."
