@@ -21,17 +21,15 @@ def update_bit_frequency (byte)
   end
 end
 
-def get_bit_frequency
-  @array.each do |byte|
+def get_bit_frequency(byte_list)
+  byte_list.each do |byte|
     update_bit_frequency (byte)
   end
 end
 
-def get_binary_readings
-  num_readings = @array.length.to_f
-
-  @bit_list.each_with_index do |bit, index|
-    if @bit_list[index].to_f / num_readings >= 0.5
+def get_binary_readings(frequency_list, num_readings)
+  frequency_list.each_with_index do |bit, index|
+    if frequency_list[index].to_f / num_readings >= 0.5
       @gamma_binary += "1"
       @epsilon_binary += "0"
     else
@@ -42,8 +40,8 @@ def get_binary_readings
 end
 
 parse_file('test_input.txt')
-get_bit_frequency
-get_binary_readings
+get_bit_frequency(@array)
+get_binary_readings(@bit_list, @array.length.to_f)
 puts "Gamma binary: #{@gamma_binary}. Gamma decimal: #{@gamma_binary.to_i(2)}."
 puts  "Epsilon binary: #{@epsilon_binary}. Epsilon decimal: #{@epsilon_binary.to_i(2)}"
 puts "Power consumption: #{@gamma_binary.to_i(2) * @epsilon_binary.to_i(2)}"
