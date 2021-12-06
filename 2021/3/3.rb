@@ -1,6 +1,3 @@
-# gamma rate is most common bit
-# epsilon rate is least commit bit. Can just be the reverse of gamma
-
 @bit_list = {}
 @gamma_binary = ""
 @epsilon_binary = ""
@@ -46,6 +43,7 @@ end
 
 parse_file('test_input.txt')
 get_file_stats
-puts @bit_list
 get_binary_readings
-puts "Gamma: #{@gamma_binary}. Epsilon: #{@epsilon_binary}"
+puts "Gamma binary: #{@gamma_binary}. Gamma decimal: #{@gamma_binary.to_i(2)}."
+puts  "Epsilon: #{@epsilon_binary}. Epsilon decimal: #{@epsilon_binary.to_i(2)}"
+puts "Power consumption: #{@gamma_binary.to_i(2) * @epsilon_binary.to_i(2)}"
