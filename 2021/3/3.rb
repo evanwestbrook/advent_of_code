@@ -41,7 +41,7 @@ def get_binary_readings
   end
 end
 
-parse_file('test_input.txt')
+parse_file('input.txt')
 get_file_stats
 get_binary_readings
 puts "Gamma binary: #{@gamma_binary}. Gamma decimal: #{@gamma_binary.to_i(2)}."
