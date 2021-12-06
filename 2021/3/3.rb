@@ -11,7 +11,7 @@ def parse_file(file)
   end
 end
 
-def split_byte (byte)
+def update_bit_frequency (byte)
   byte.gsub("\n","").split('').each_with_index do |bit, index|
     if @bit_list[index]
       @bit_list[index] = @bit_list[index] + bit.to_i
@@ -21,9 +21,9 @@ def split_byte (byte)
   end
 end
 
-def get_file_stats
+def get_bit_frequency
   @array.each do |byte|
-    split_byte (byte)
+    update_bit_frequency (byte)
   end
 end
 
@@ -41,8 +41,8 @@ def get_binary_readings
   end
 end
 
-parse_file('input.txt')
-get_file_stats
+parse_file('test_input.txt')
+get_bit_frequency
 get_binary_readings
 puts "Gamma binary: #{@gamma_binary}. Gamma decimal: #{@gamma_binary.to_i(2)}."
 puts  "Epsilon: #{@epsilon_binary}. Epsilon decimal: #{@epsilon_binary.to_i(2)}"
