@@ -31,13 +31,21 @@ def get_file_stats
 end
 
 def get_binary_readings
+  num_readings = @array.length.to_f
+
   @bit_list.each_with_index do |bit, index|
-    puts "Bit: #{bit}. Index: #{index}"
+    if @bit_list[index].to_f / num_readings >= 0.5
+      @gamma_binary += "1"
+      @epsilon_binary += "0"
+    else
+      @gamma_binary += "0"
+      @epsilon_binary += "1"
+    end
   end
 end
 
 parse_file('test_input.txt')
 get_file_stats
-#puts @bit_list
+puts @bit_list
 get_binary_readings
-#puts @array.length
+puts "Gamma: #{@gamma_binary}. Epsilon: #{@epsilon_binary}"
