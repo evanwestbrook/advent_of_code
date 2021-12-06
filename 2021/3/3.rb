@@ -1,7 +1,3 @@
-@bit_list = {}
-@gamma_binary = ""
-@epsilon_binary = ""
-
 def parse_file(file)
   read_file = File.readlines(file)
   @array = []
@@ -21,25 +17,39 @@ def update_bit_frequency(byte, frequency_hash)
   end
 end
 
-def get_bit_frequency(byte_list, bit_hash)
+def get_bit_frequency(byte_list)
+  bit_hash = {}
   byte_list.each do |byte|
     update_bit_frequency(byte, bit_hash)
   end
+
+  return bit_hash
 end
 
-def get_binary_readings(frequency_list, num_readings)
+def get_binary_readings(frequency_list, num_readings, bit_criteria)
+  result_binary = ""
   frequency_list.each_with_index do |bit, index|
     if frequency_list[index].to_f / num_readings >= 0.5
-      @gamma_binary += "1"
-      @epsilon_binary += "0"
+      if bit_criteria == 1
+        result_binary += "1"
+      else
+        result_binary += "0"
+      end
     else
-      @gamma_binary += "0"
-      @epsilon_binary += "1"
+      if bit_criteria == 1
+        result_binary += "0"
+      else
+        result_binary += "1"
+      end
     end
   end
+
+  return result_binary
 end
 
 def get_acceptable_vals(byte_list, bit_criteria)
+  puts byte_list
+  puts bit_criteria
 
   bit_freq_list = {}
 
@@ -49,8 +59,12 @@ def get_acceptable_vals(byte_list, bit_criteria)
 end
 
 parse_file('test_input.txt')
-get_bit_frequency(@array, @bit_list)
-get_binary_readings(@bit_list, @array.length.to_f)
+@power_bit_frequency = get_bit_frequency(@array)
+@gamma_binary = get_binary_readings(@power_bit_frequency, @array.length.to_f, 1)
+@epsilon_binary = get_binary_readings(@power_bit_frequency, @array.length.to_f, 0)
+
 puts "Gamma binary: #{@gamma_binary}. Gamma decimal: #{@gamma_binary.to_i(2)}."
 puts  "Epsilon binary: #{@epsilon_binary}. Epsilon decimal: #{@epsilon_binary.to_i(2)}"
 puts "Power consumption: #{@gamma_binary.to_i(2) * @epsilon_binary.to_i(2)}"
+
+#get_acceptable_vals(@array, 1)
