@@ -29,33 +29,39 @@ end
 def get_binary_readings(frequency_list, num_readings, bit_criteria)
   result_binary = ""
   frequency_list.each_with_index do |bit, index|
-    if frequency_list[index].to_f / num_readings >= 0.5
-      if bit_criteria == 1
-        result_binary += "1"
-      else
-        result_binary += "0"
-      end
-    else
-      if bit_criteria == 1
-        result_binary += "0"
-      else
-        result_binary += "1"
-      end
-    end
+    result_binary += get_bit_value(frequency_list[index].to_f, num_readings, bit_criteria)
   end
 
   return result_binary
+end
+
+def get_bit_value(bit_frequency, num_readings, bit_criteria)
+  result_bit = ""
+  if bit_frequency / num_readings >= 0.5
+    if bit_criteria == 1
+      result_bit = "1"
+    else
+      result_bit = "0"
+    end
+  else
+    if bit_criteria == 1
+      result_bit = "0"
+    else
+      result_bit = "1"
+    end
+  end
+
+  return result_bit
 end
 
 def get_acceptable_vals(byte_list, bit_criteria)
   puts byte_list
   puts bit_criteria
 
-  bit_freq_list = {}
+  bit_frequency_list = get_bit_frequency(byte_list)
 
-  byte_list.each do |byte|
+  puts bit_frequency_list
 
-  end
 end
 
 parse_file('test_input.txt')
