@@ -45,5 +45,5 @@ parse_file('test_input.txt')
 get_bit_frequency
 get_binary_readings
 puts "Gamma binary: #{@gamma_binary}. Gamma decimal: #{@gamma_binary.to_i(2)}."
-puts  "Epsilon: #{@epsilon_binary}. Epsilon decimal: #{@epsilon_binary.to_i(2)}"
+puts  "Epsilon binary: #{@epsilon_binary}. Epsilon decimal: #{@epsilon_binary.to_i(2)}"
 puts "Power consumption: #{@gamma_binary.to_i(2) * @epsilon_binary.to_i(2)}"
