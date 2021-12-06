@@ -1,5 +1,6 @@
 @horizontal = 0
 @depth = 0
+@aim = 0
 
 def parse_file(file)
   read_file = File.readlines(file)
@@ -12,18 +13,30 @@ def parse_file(file)
   end
 end
 
+def forward (unit)
+  @horizontal += unit
+end
+
+def down (unit)
+  @depth += unit
+end
+
+def up (unit)
+  @depth -= unit
+end
+
 def plot_course
   @array.each do |command|
     if command[:command] == "forward"
-      @horizontal += command[:unit]
+      forward (command[:unit])
     elsif command[:command] == "down"
-      @depth += command[:unit]
+      down (command[:unit])
     elsif command[:command] == "up"
-      @depth -= command[:unit]
+      up (command[:unit])
     end
   end
 end
 
-parse_file('input.txt')
+parse_file('test_input.txt')
 plot_course
 puts "Horizontal position: #{@horizontal}. Depth: #{@depth}. Multiply: #{@horizontal * @depth}."
