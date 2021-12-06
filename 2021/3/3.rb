@@ -84,19 +84,21 @@ def get_acceptable_vals(byte_list, bit_criteria)
   end
 end
 
-parse_file('input.txt')
+parse_file('test_input.txt')
 puts "----------- STARTING SUBMARINE READINGS -----------"
 @power_bit_frequency = get_bit_frequency(@array)
 @gamma_binary = get_binary_readings(@power_bit_frequency, @array.length.to_f, 1)
 @epsilon_binary = get_binary_readings(@power_bit_frequency, @array.length.to_f, 0)
 
-puts "Gamma binary: #{@gamma_binary}. Gamma decimal: #{@gamma_binary.to_i(2)}."
-puts  "Epsilon binary: #{@epsilon_binary}. Epsilon decimal: #{@epsilon_binary.to_i(2)}"
-puts "Power consumption: #{@gamma_binary.to_i(2) * @epsilon_binary.to_i(2)}"
+puts "... calculating power consumption ... stand by ..."
+puts "Gamma rate readings:\n  Binary: #{@gamma_binary}\n  Decimal: #{@gamma_binary.to_i(2)}"
+puts  "Epsilon rate readings:\n  Binary: #{@epsilon_binary}\n  Decimal: #{@epsilon_binary.to_i(2)}"
+puts "Power consumption: #{@gamma_binary.to_i(2) * @epsilon_binary.to_i(2)}\n"
 
+puts "... Calcuating life support rating ... stand by ..."
 @oxygen_binary = get_acceptable_vals(@array, 1)
 @c02_binary = get_acceptable_vals(@array, 0)
 
-puts "Oxygen binary: #{@oxygen_binary}. Oxygen decimal: #{@oxygen_binary.to_i(2)}."
-puts "C02 binary: #{@c02_binary}. Oxygen decimal: #{@c02_binary.to_i(2)}."
+puts "Oxygen reading:\n  Binary: #{@oxygen_binary}\n  Decimal: #{@oxygen_binary.to_i(2)}"
+puts "C02 reading:\n  Binary: #{@c02_binary}\n  Decimal: #{@c02_binary.to_i(2)}"
 puts "Life support rating: #{@oxygen_binary.to_i(2) * @c02_binary.to_i(2)}"
