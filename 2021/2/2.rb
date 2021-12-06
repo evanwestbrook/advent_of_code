@@ -1,7 +1,6 @@
 @horizontal = 0
 @depth = 0
 
-
 def parse_file(file)
   read_file = File.readlines(file)
   @array = []
@@ -24,8 +23,6 @@ def plot_course
     end
   end
 end
-
-
 
 parse_file('input.txt')
 plot_course
