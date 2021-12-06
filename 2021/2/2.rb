@@ -1,6 +1,8 @@
-@horizontal = 0
-@depth = 0
-@aim = 0
+@position = {
+  horizontal: 0,
+  depth: 0,
+  aim: 0
+}
 
 def parse_file(file)
   read_file = File.readlines(file)
@@ -14,15 +16,15 @@ def parse_file(file)
 end
 
 def forward (unit)
-  @horizontal += unit
+  @position[:horizontal] += unit
 end
 
 def down (unit)
-  @depth += unit
+  @position[:depth] += unit
 end
 
 def up (unit)
-  @depth -= unit
+  @position[:depth] -= unit
 end
 
 def plot_course
@@ -39,4 +41,4 @@ end
 
 parse_file('test_input.txt')
 plot_course
-puts "Horizontal position: #{@horizontal}. Depth: #{@depth}. Multiply: #{@horizontal * @depth}."
+puts "Horizontal position: #{@position[:horizontal]}. Depth: #{@position[:depth]}. Multiply: #{@position[:horizontal] * @position[:depth]}."
