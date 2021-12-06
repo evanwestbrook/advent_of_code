@@ -37,12 +37,14 @@ end
 
 def get_bit_value(bit_frequency, num_readings, bit_criteria)
   result_bit = ""
-  if bit_frequency / num_readings >= 0.5
+  if bit_frequency / num_readings > 0.5
     if bit_criteria == 1
       result_bit = "1"
     else
       result_bit = "0"
     end
+  elsif bit_frequency / num_readings == 0.5
+    result_bit += bit_criteria.to_s
   else
     if bit_criteria == 1
       result_bit = "0"
@@ -54,17 +56,36 @@ def get_bit_value(bit_frequency, num_readings, bit_criteria)
   return result_bit
 end
 
-def get_acceptable_vals(byte_list, bit_criteria)
-  puts byte_list
-  puts bit_criteria
-
-  bit_frequency_list = get_bit_frequency(byte_list)
-
-  puts bit_frequency_list
-
+def truncate_vals_list(starting_list, match_val, index)
+  ending_list = []
+  starting_list.each do |item|
+    if item[index] == match_val
+      ending_list << item
+    end
+  end
+  return ending_list
 end
 
-parse_file('test_input.txt')
+def get_acceptable_vals(byte_list, bit_criteria)
+  truncated_list = byte_list
+
+  byte_list[0].split('').each_with_index do |byte, bit_index|
+
+    bit_frequency_list = get_bit_frequency(truncated_list)
+
+    most_common_bit_value = get_bit_value(bit_frequency_list[bit_index].to_f, truncated_list.length.to_f, bit_criteria)
+
+    truncated_list = truncate_vals_list(truncated_list, most_common_bit_value, bit_index)
+
+    if truncated_list.length == 1
+      return truncated_list[0].gsub("\n","")
+    end
+
+  end
+end
+
+parse_file('input.txt')
+puts "----------- STARTING SUBMARINE READINGS -----------"
 @power_bit_frequency = get_bit_frequency(@array)
 @gamma_binary = get_binary_readings(@power_bit_frequency, @array.length.to_f, 1)
 @epsilon_binary = get_binary_readings(@power_bit_frequency, @array.length.to_f, 0)
@@ -73,4 +94,9 @@ puts "Gamma binary: #{@gamma_binary}. Gamma decimal: #{@gamma_binary.to_i(2)}."
 puts  "Epsilon binary: #{@epsilon_binary}. Epsilon decimal: #{@epsilon_binary.to_i(2)}"
 puts "Power consumption: #{@gamma_binary.to_i(2) * @epsilon_binary.to_i(2)}"
 
-#get_acceptable_vals(@array, 1)
+@oxygen_binary = get_acceptable_vals(@array, 1)
+@c02_binary = get_acceptable_vals(@array, 0)
+
+puts "Oxygen binary: #{@oxygen_binary}. Oxygen decimal: #{@oxygen_binary.to_i(2)}."
+puts "C02 binary: #{@c02_binary}. Oxygen decimal: #{@c02_binary.to_i(2)}."
+puts "Life support rating: #{@oxygen_binary.to_i(2) * @c02_binary.to_i(2)}"
