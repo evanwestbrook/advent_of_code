@@ -14,11 +14,11 @@ def parse_file(file)
     # Extract and parse board matrices for rows
     if index > 1
       if line == "\n"
-        @boards << board
+        @boards << { rows: board }
         board = []
       elsif index == read_file.length - 1
         board << line.split(" ")
-        @boards << board
+        @boards << { rows: board }
       else
         board << line.split(" ")
       end
@@ -37,7 +37,7 @@ def find_winner(boards)
   @draw_numbers.each_with_index do |number, index|
     if index > 4
       boards.each do |board|
-        board.each do |row|
+        board[:rows].each do |row|
           if has_match(row, winning_nums)
             return {board: board, winning_nums: winning_nums}
           end
@@ -60,7 +60,7 @@ end
 
 def score_board(board, winning_nums)
   score = 0
-  board.each do |row|
+  board[:rows].each do |row|
     row_scoreable = row - winning_nums
     score += sum_array(row_scoreable)
   end
