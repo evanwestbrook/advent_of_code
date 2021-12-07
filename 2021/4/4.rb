@@ -95,7 +95,7 @@ def score_board(board, winning_nums)
   return score
 end
 
-parse_file('test_input.txt')
+parse_file('input.txt')
 
 winner_info = find_winner(@boards)
 board_score = score_board(winner_info[:board], winner_info[:winning_nums])
