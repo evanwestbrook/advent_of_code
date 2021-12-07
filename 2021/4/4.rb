@@ -2,7 +2,6 @@ def parse_file(file)
   read_file = File.readlines(file)
 
   @boards = []
-
   board = []
 
   read_file.each_with_index do |line, index|
@@ -51,22 +50,43 @@ def has_match (eval_arr, solution_arr)
   (eval_arr - solution_arr).empty?
 end
 
-def find_winner(boards)
+def find_winners(boards)
+  @first_winning_board = {}
+  @latest_winning_board = {}
+
   winning_nums = []
   @draw_numbers.each_with_index do |number, index|
-    if index > 4
-      boards.each do |board|
+    if index > 4  && @boards.empty? == false
+      boards.each_with_index do |board, index|
+        board_index = index
         # Check for winning rows
         board[:rows].each do |row|
-          if has_match(row, winning_nums)
-            return {board: board, winning_nums: winning_nums}
+          if has_match(row, winning_nums) && winning_nums.length != @draw_numbers.length
+            if @first_winning_board.empty?
+              @first_winning_board = {board: board, winning_nums: winning_nums.dup}
+            else
+              @latest_winning_board = {board: board, winning_nums: winning_nums.dup}
+            end
+
+            # remove board from consideration after it has won
+            @boards.delete(board)
+            puts "#{@boards}"
+            puts "#{@latest_winning_board}"
           end
         end
 
         # Check for winning columns
         board[:columns].each do |column|
-          if has_match(column, winning_nums)
-            return {board: board, winning_nums: winning_nums}
+          if has_match(column, winning_nums) && winning_nums.length != @draw_numbers.length
+            if @first_winning_board.empty?
+              @first_winning_board = {board: board, winning_nums: winning_nums.dup}
+            else
+              @latest_winning_board = {board: board, winning_nums: winning_nums.dup}
+            end
+            # remove board from consideration after it has won
+            @boards.delete(board)
+            puts "#{@boards}"
+            puts "#{@latest_winning_board}"
           end
         end
       end
@@ -96,10 +116,16 @@ def score_board(board, winning_nums)
 end
 
 parse_file('input.txt')
+find_winners(@boards)
 
-winner_info = find_winner(@boards)
-board_score = score_board(winner_info[:board], winner_info[:winning_nums])
-winning_score = board_score * winner_info[:winning_nums][-1].to_i
-puts "Winning Score: #{winning_score}"
-puts "Winning Number: #{winner_info[:winning_nums][-1]}"
-puts "Winning Board Score: #{board_score}"
+first_board_score = score_board(@first_winning_board[:board], @first_winning_board[:winning_nums])
+first_winning_score = first_board_score * @first_winning_board[:winning_nums][-1].to_i
+puts "First Winning Score: #{first_winning_score}"
+puts "First Winning Number: #{@first_winning_board[:winning_nums][-1]}"
+puts "First Winning Board Score: #{first_board_score}"
+
+latest_board_score = score_board(@latest_winning_board[:board], @latest_winning_board[:winning_nums])
+latest_winning_score = latest_board_score * @latest_winning_board[:winning_nums][-1].to_i
+puts "Latest Winning Score: #{latest_winning_score}"
+puts "Latest Winning Number: #{@latest_winning_board[:winning_nums][-1]}"
+puts "Latest Winning Board Score: #{latest_board_score}"
