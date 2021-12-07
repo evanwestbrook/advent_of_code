@@ -57,7 +57,7 @@ def determine_line_occupation(line_coordinates)
     if is_horizontal?(line_coordinates)
       update_occupation(line_coordinates[0], line_coordinates[2], line_coordinates[1], true)
     else
-      update_occupation(line_coordinates[2], line_coordinates[3], line_coordinates[0], false)
+      update_occupation(line_coordinates[1], line_coordinates[3], line_coordinates[0], false)
     end
   end
 end
@@ -79,10 +79,7 @@ def determine_num_avoids(occupations)
   return num_avoids
 end
 
-parse_input('test_input.txt')
-#puts "#{@vent_lines}"
+parse_input('input.txt')
 determine_occupation(@vent_lines)
-
-puts "#{@vent_occupation}"
 
 puts "# of most dangerous areas: #{determine_num_avoids(@vent_occupation)}"
