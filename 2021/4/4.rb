@@ -50,6 +50,20 @@ def has_match (eval_arr, solution_arr)
   (eval_arr - solution_arr).empty?
 end
 
+def evaluate_item(item, winning_nums, board)
+  # Exclude last draw because winning on last draw results in score of 0
+  if has_match(item, winning_nums) && winning_nums.length != @draw_numbers.length
+    if @first_winning_board.empty?
+      @first_winning_board = {board: board, winning_nums: winning_nums.dup}
+    else
+      @latest_winning_board = {board: board, winning_nums: winning_nums.dup}
+    end
+
+    # remove board from consideration after it has won
+    @boards.delete(board)
+  end
+end
+
 def find_winners(boards)
   @first_winning_board = {}
   @latest_winning_board = {}
@@ -61,33 +75,12 @@ def find_winners(boards)
         board_index = index
         # Check for winning rows
         board[:rows].each do |row|
-          if has_match(row, winning_nums) && winning_nums.length != @draw_numbers.length
-            if @first_winning_board.empty?
-              @first_winning_board = {board: board, winning_nums: winning_nums.dup}
-            else
-              @latest_winning_board = {board: board, winning_nums: winning_nums.dup}
-            end
-
-            # remove board from consideration after it has won
-            @boards.delete(board)
-            puts "#{@boards}"
-            puts "#{@latest_winning_board}"
-          end
+          evaluate_item(row, winning_nums, board)
         end
 
         # Check for winning columns
         board[:columns].each do |column|
-          if has_match(column, winning_nums) && winning_nums.length != @draw_numbers.length
-            if @first_winning_board.empty?
-              @first_winning_board = {board: board, winning_nums: winning_nums.dup}
-            else
-              @latest_winning_board = {board: board, winning_nums: winning_nums.dup}
-            end
-            # remove board from consideration after it has won
-            @boards.delete(board)
-            puts "#{@boards}"
-            puts "#{@latest_winning_board}"
-          end
+          evaluate_item(column, winning_nums, board)
         end
       end
       winning_nums << number
