@@ -11,7 +11,7 @@ def parse_file(file)
       @draw_numbers = line.split(',')
     end
 
-    # Extract and parse board matrices
+    # Extract and parse board matrices for rows
     if index > 1
       if line == "\n"
         @boards << board
@@ -23,6 +23,8 @@ def parse_file(file)
         board << line.split(" ")
       end
     end
+
+    # TODO: extract and parse board matrices for columns
   end
 end
 
