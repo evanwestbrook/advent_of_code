@@ -56,8 +56,16 @@ def find_winner(boards)
   @draw_numbers.each_with_index do |number, index|
     if index > 4
       boards.each do |board|
+        # Check for winning rows
         board[:rows].each do |row|
           if has_match(row, winning_nums)
+            return {board: board, winning_nums: winning_nums}
+          end
+        end
+
+        # Check for winning columns
+        board[:columns].each do |column|
+          if has_match(column, winning_nums)
             return {board: board, winning_nums: winning_nums}
           end
         end
@@ -89,11 +97,9 @@ end
 
 parse_file('test_input.txt')
 
-puts @boards
-
-#winner_info = find_winner(@boards)
-#board_score = score_board(winner_info[:board], winner_info[:winning_nums])
-#winning_score = board_score * winner_info[:winning_nums][-1].to_i
-#puts "Winning Score: #{winning_score}"
-#puts "Winning Number: #{winner_info[:winning_nums][-1]}"
-#puts "Winning Board Score: #{board_score}"
+winner_info = find_winner(@boards)
+board_score = score_board(winner_info[:board], winner_info[:winning_nums])
+winning_score = board_score * winner_info[:winning_nums][-1].to_i
+puts "Winning Score: #{winning_score}"
+puts "Winning Number: #{winner_info[:winning_nums][-1]}"
+puts "Winning Board Score: #{board_score}"
