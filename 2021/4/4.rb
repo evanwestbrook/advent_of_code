@@ -14,18 +14,37 @@ def parse_file(file)
     # Extract and parse board matrices for rows
     if index > 1
       if line == "\n"
-        @boards << { rows: board }
+        save_board({ rows: board })
         board = []
       elsif index == read_file.length - 1
         board << line.split(" ")
-        @boards << { rows: board }
+        save_board({ rows: board })
       else
         board << line.split(" ")
       end
     end
-
-    # TODO: extract and parse board matrices for columns
   end
+end
+
+def save_board(board)
+  board[:columns] = transpose_row_to_columns(board)
+  @boards << board
+end
+
+def transpose_row_to_columns(board)
+  columns = []
+  master_index = 0
+
+  board[:rows].each_with_index do |row, index|
+    row.each_with_index do |value, index|
+      if master_index == 0
+        columns << []
+      end
+      columns[index] << value
+    end
+    master_index += 1
+  end
+  return columns
 end
 
 def has_match (eval_arr, solution_arr)
@@ -70,9 +89,11 @@ end
 
 parse_file('test_input.txt')
 
-winner_info = find_winner(@boards)
-board_score = score_board(winner_info[:board], winner_info[:winning_nums])
-winning_score = board_score * winner_info[:winning_nums][-1].to_i
-puts "Winning Score: #{winning_score}"
-puts "Winning Number: #{winner_info[:winning_nums][-1]}"
-puts "Winning Board Score: #{board_score}"
+puts @boards
+
+#winner_info = find_winner(@boards)
+#board_score = score_board(winner_info[:board], winner_info[:winning_nums])
+#winning_score = board_score * winner_info[:winning_nums][-1].to_i
+#puts "Winning Score: #{winning_score}"
+#puts "Winning Number: #{winner_info[:winning_nums][-1]}"
+#puts "Winning Board Score: #{board_score}"
