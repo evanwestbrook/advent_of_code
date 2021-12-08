@@ -12,17 +12,6 @@
   "9": "abcdfg"
 }
 
-# Model for storing values for the 7-segment display
-@segment_hash = {
-  "a": [],
-  "b": [],
-  "c": [],
-  "d": [],
-  "e": [],
-  "f": [],
-  "g": []
-}
-
 @signals = []
 @display_frequency = {}
 
@@ -48,81 +37,37 @@ def get_length_frequency
   end
 end
 
-def check_length_frequency(digit_value)
+def check_length_frequency(output)
   # Method to determine if a given output matches numbers we know automatically by length
-  if @display_frequency[digit_value.length].length == 1
-    return { original_value: digit_value, decoded_value: @display_frequency[digit_value.length][0] }
+  if @display_frequency[output.length].length == 1
+    return @display_frequency[output.length][0]
   else
     return nil
   end
 end
 
-def update_segment_hash(segment_hash, decoded_pattern)
-  segment_hash.each do |key, value|
-    if decoded_pattern[:original_value].include? key.to_s
-      segment_hash[key] << decoded_pattern[:decoded_value]
-    end
-  end
-
-  return segment_hash
-
-  puts "#{segment_hash}"
-end
-
-def make_decoder_ring(decoded_values, segment_hash)
-  decoder_ring = {}
-  decoded_values.each do |decoded_value|
-    segment_hash = update_segment_hash(segment_hash, decoded_value)
-  end
-  reduce_vals("cfbegad", ["be", "cgeb", "edb"])
-puts "cfbegad".sub("be","").sub("cgeb","").sub("edb", "")
-  puts "Segment hash:#{segment_hash}"
-end
-
-def reduce_vals(target, to_remove)
-  puts target
-  to_remove.each do |removal|
-    target = target.sub(removal,"")
-  end
-  puts target
-end
-
-def decode_pattern(patterns)
+def decode_output(signal)
   found_array = [] # Array used to remove identified values from signal after all are handled
-  decoded_values = []
-  my_segment_hash = @segment_hash.clone
 
-  patterns.each_with_index do |pattern, index|
-    if check_length_frequency(pattern)
+  signal[:outputs].each_with_index do |output, index|
+    if check_length_frequency(output)
 
-      if @search_vals.include? check_length_frequency(pattern)[:decoded_value]
+      if @search_vals.include? check_length_frequency(output)
         @search_matches += 1 # Log value if it was in our search
-        decoded_values << check_length_frequency(pattern)
-
       end
 
-      found_array << pattern # Add to list of identified items
+      found_array << output # Add to list of identified items
     else
       # TODO: Pass to further processing
     end
   end
 
-  #decoded_values.each do |decoded_value|
-   # my_segment_hash = update_segment_hash(my_segment_hash, decoded_value)
-  #end
-
-  make_decoder_ring(decoded_values, my_segment_hash)
-
-  #puts "Segment hash:#{my_segment_hash}"
-
-  patterns = patterns - found_array # Remove identified values that no longer require processing
-  puts "Remaining patterns: #{patterns}"
-  puts "Decoded values: #{decoded_values}"
+  signal[:outputs] = signal[:outputs] - found_array # Remove identified values that no longer require processing
 end
 
 def check_signals(signals)
   signals.each_with_index do |signal, index|
-    decode_pattern(signal[:outputs])
+    decode_output(signal)
   end
 end
 
@@ -131,14 +76,9 @@ puts "------ STARTING ------"
 @search_vals = ["1", "4", "7", "8"]
 @search_matches = 0
 
-parse_input('test_input_2.txt')
+parse_input('input.txt')
 
 get_length_frequency
-puts "Freqency: #{@display_frequency}"
-#check_signals(@signals)
+check_signals(@signals)
 
-puts "Signal: #{@signals[0]}"
-
-decode_pattern(@signals[0][:patterns])
-
-#puts "# of matches: #{@search_matches}"
+puts "# of matches: #{@search_matches}"
