@@ -29,7 +29,7 @@ def project_population(days)
   end
 end
 
-parse_input('test_input.txt')
+parse_input('input.txt')
 
 initialize_school(@initial_state)
 project_population(80)
