@@ -46,29 +46,29 @@ def check_length_frequency(digit_value)
   end
 end
 
-def decode_output(signal)
-  puts "Signal: #{signal}"
+def decode_pattern(patterns)
   found_array = [] # Array used to remove identified values from signal after all are handled
 
-  signal[:outputs].each_with_index do |output, index|
-    if check_length_frequency(output)
+  patterns.each_with_index do |pattern, index|
+    if check_length_frequency(pattern)
 
-      if @search_vals.include? check_length_frequency(output)[:decoded_value]
+      if @search_vals.include? check_length_frequency(pattern)[:decoded_value]
         @search_matches += 1 # Log value if it was in our search
       end
 
-      found_array << output # Add to list of identified items
+      found_array << pattern # Add to list of identified items
     else
       # TODO: Pass to further processing
     end
   end
 
-  signal[:outputs] = signal[:outputs] - found_array # Remove identified values that no longer require processing
+  patterns = patterns - found_array # Remove identified values that no longer require processing
 end
 
 def check_signals(signals)
   signals.each_with_index do |signal, index|
-    decode_output(signal)
+    #decode_output(signal)
+    decode_pattern(signal[:outputs])
   end
 end
 
