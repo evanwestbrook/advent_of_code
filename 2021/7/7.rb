@@ -19,13 +19,10 @@ def get_crab_frequency(crabs)
   end
 end
 
-# This solution assumes it will be optimal if at least one group of crabs does not move.
-# It does not consider scenarios where some crabs are very far away and all crabs moving
-# could be more efficient.
 def process_fuel_scenarios
   fuel_scenarios = {}
-  @crab_frequencies.each do |key, value|
-    fuel_scenarios[key] = calculate_fuel(key, @crabs)
+  (@crabs.max - @crabs.min).times do |position|
+    fuel_scenarios[position] = calculate_fuel(position, @crabs)
   end
 
   return fuel_scenarios
@@ -49,9 +46,6 @@ end
 
 parse_input('test_input.txt')
 
-puts calculate_fuel(5, @crabs)
-
-get_crab_frequency(@crabs)
 fuel_scenarios = process_fuel_scenarios
 min_fuel = find_min_fuel(fuel_scenarios)
 puts "Minimum Fuel Position: #{min_fuel[:position]}"
