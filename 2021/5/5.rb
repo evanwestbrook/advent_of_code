@@ -67,7 +67,6 @@ def update_occupation(coord_1, coord_2, coord_primary, direction)
 end
 
 def determine_line_occupation(line_coordinates)
-  # Only evaluate horizontal and vertical lines
   if is_diagonal?(line_coordinates) == false
     if is_horizontal?(line_coordinates)
       update_occupation(line_coordinates[0], line_coordinates[2], line_coordinates[1], "h")
