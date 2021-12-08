@@ -37,22 +37,23 @@ def get_length_frequency
   end
 end
 
-def check_length_frequency(output)
+def check_length_frequency(digit_value)
   # Method to determine if a given output matches numbers we know automatically by length
-  if @display_frequency[output.length].length == 1
-    return @display_frequency[output.length][0]
+  if @display_frequency[digit_value.length].length == 1
+    return { original_value: digit_value, decoded_value: @display_frequency[digit_value.length][0] }
   else
     return nil
   end
 end
 
 def decode_output(signal)
+  puts "Signal: #{signal}"
   found_array = [] # Array used to remove identified values from signal after all are handled
 
   signal[:outputs].each_with_index do |output, index|
     if check_length_frequency(output)
 
-      if @search_vals.include? check_length_frequency(output)
+      if @search_vals.include? check_length_frequency(output)[:decoded_value]
         @search_matches += 1 # Log value if it was in our search
       end
 
@@ -76,9 +77,11 @@ puts "------ STARTING ------"
 @search_vals = ["1", "4", "7", "8"]
 @search_matches = 0
 
-parse_input('input.txt')
+parse_input('test_input_2.txt')
 
 get_length_frequency
 check_signals(@signals)
+
+#decode_output(@signals[1])
 
 puts "# of matches: #{@search_matches}"
