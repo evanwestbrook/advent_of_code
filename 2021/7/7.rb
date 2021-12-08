@@ -44,7 +44,7 @@ def calculate_fuel(position, crabs)
   return fuel_consumption
 end
 
-parse_input('test_input.txt')
+parse_input('input.txt')
 
 fuel_scenarios = process_fuel_scenarios
 min_fuel = find_min_fuel(fuel_scenarios)
