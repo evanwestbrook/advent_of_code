@@ -32,6 +32,6 @@ end
 parse_input('input.txt')
 
 initialize_school(@initial_state)
-project_population(80)
+project_population(256)
 
 puts "Total lanternfish population: #{@school.sum()}"
