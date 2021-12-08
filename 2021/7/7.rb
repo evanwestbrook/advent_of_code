@@ -39,13 +39,17 @@ end
 def calculate_fuel(position, crabs)
   fuel_consumption = 0
   crabs.each do |crab|
-    fuel_consumption += (crab - position).abs()
+    (crab - position).abs().times do |i|
+      fuel_consumption += i + 1
+    end
   end
 
   return fuel_consumption
 end
 
-parse_input('input.txt')
+parse_input('test_input.txt')
+
+puts calculate_fuel(5, @crabs)
 
 get_crab_frequency(@crabs)
 fuel_scenarios = process_fuel_scenarios
