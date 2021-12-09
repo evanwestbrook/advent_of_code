@@ -1,84 +1,61 @@
-# Key used to store default display key configurations from prompt
-@display_key = {
-  "0": "abcefg",
-  "1": "cf",
-  "2": "acdeg",
-  "3": "acdfg",
-  "4": "bcdf",
-  "5": "abdfg",
-  "6": "abdefg",
-  "7": "acf",
-  "8": "abcdefg",
-  "9": "abcdfg"
-}
+# Part 2 done with help of this solution:
+# https://www.reddit.com/r/adventofcode/comments/rbj87a/comment/hnrs3ax/?utm_source=share&utm_medium=web2x&context=3
+# Essentially, we deduce what we know about each digit and work backwards hard coding
+# Things learned:
+# 1. Order of inputs doesn't matter, so splitting into arrays instead of bulk strings makes processing easier down the line
+# 2. Learned how to better use map
+# 3. Instead of using code to process inputs through process of elimination, use what we can deduce about the number behaviors
+#    and hardcode that
+# 4. find is a much better search method than loops and such
 
 @signals = []
-@display_frequency = {}
 
 def parse_input(file)
   read_file = File.readlines(file)
 
   read_file.each do |signal|
     signal = signal.split(" | ")
-    @signals << { patterns: signal[0].split(" "), outputs: signal[1].split(" ") }
-
+    @signals << { patterns: signal[0].split(" ").map {|c| c.chars.sort}, outputs: signal[1].split(" ").map {|c| c.chars.sort} }
   end
 end
 
-def get_length_frequency
-  # Method to determine frequency of length of each key configuration
-  # Used to narrow down numbers we know automatically by length
-  @display_key.each do |key, value|
-    if @display_frequency[value.length]
-      @display_frequency[value.length] << key.to_s
-    else
-      @display_frequency[value.length] = [key.to_s]
-    end
-  end
+def get_decoder_ring(signal)
+  decoder_ring = {}
+  decoder_ring[1] = signal.find { |pattern| pattern.size == 2 }
+  decoder_ring[4] = signal.find { |pattern| pattern.size == 4 }
+  decoder_ring[7] = signal.find { |pattern| pattern.size == 3 }
+  decoder_ring[8] = signal.find { |pattern| pattern.size == 7 }
+  decoder_ring[6] = signal.find { |pattern| pattern.size == 6 && (pattern - decoder_ring[1]).size == 5 }
+  decoder_ring[9] = signal.find { |pattern| pattern.size == 6 && (pattern - decoder_ring[4]).size == 2 }
+  decoder_ring[0] = signal.find { |pattern| pattern.size == 6 && pattern != decoder_ring[6] && pattern != decoder_ring[9] }
+  decoder_ring[3] = signal.find { |pattern| pattern.size == 5 && (pattern - decoder_ring[1]).size == 3 }
+  decoder_ring[2] = signal.find { |pattern| pattern.size == 5 && (pattern - decoder_ring[9]).size == 1 }
+  decoder_ring[5] = signal.find { |pattern| pattern.size == 5 && pattern != decoder_ring[2] && pattern != decoder_ring[3] }
+
+  return decoder_ring
 end
 
-def check_length_frequency(output)
-  # Method to determine if a given output matches numbers we know automatically by length
-  if @display_frequency[output.length].length == 1
-    return @display_frequency[output.length][0]
-  else
-    return nil
-  end
-end
+def decode_signal(signal)
+  decoder_ring = get_decoder_ring(signal[:patterns])
+  output_value = ""
 
-def decode_output(signal)
-  found_array = [] # Array used to remove identified values from signal after all are handled
-
-  signal[:outputs].each_with_index do |output, index|
-    if check_length_frequency(output)
-
-      if @search_vals.include? check_length_frequency(output)
-        @search_matches += 1 # Log value if it was in our search
-      end
-
-      found_array << output # Add to list of identified items
-    else
-      # TODO: Pass to further processing
-    end
+  signal[:outputs].each do |value|
+    output_value += decoder_ring.key(value).to_s
   end
 
-  signal[:outputs] = signal[:outputs] - found_array # Remove identified values that no longer require processing
+  @final_sum += output_value.to_i
 end
 
 def check_signals(signals)
-  signals.each_with_index do |signal, index|
-    decode_output(signal)
+  signals.each do |signal|
+    decode_signal(signal)
   end
 end
 
 puts "------ STARTING ------"
-
-@search_vals = ["1", "4", "7", "8"]
-@search_matches = 0
+@final_sum = 0
 
 parse_input('input.txt')
 
-get_length_frequency
 check_signals(@signals)
-
-puts "# of matches: #{@search_matches}"
+puts "Final sum is: #{@final_sum}"
