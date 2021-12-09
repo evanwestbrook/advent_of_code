@@ -5,6 +5,7 @@
 
 @rows = []
 @low_points = []
+@basins = []
 
 def parse_input(file)
   read_file = File.readlines(file)
@@ -95,24 +96,70 @@ def calc_risk_level
   return risk_level
 end
 
-def evaluate_basin(low_point)
-  puts low_point
-  right = get_right(low_point[:row_index], low_point[:col_index])
-  puts right
-  left = get_left(low_point[:row_index], low_point[:col_index])
-  puts left
-  top = get_top(low_point[:row_index], low_point[:col_index])
-  puts top
-  bottom = get_bottom(low_point[:row_index], low_point[:col_index])
-  puts bottom
+def get_basin(low_point)
+  puts "Low Point: #{low_point}"
+  # Initialize basin
+  basin = {}
+  basin[low_point[:row_index].to_s + "_" + low_point[:col_index].to_s] = low_point[:height]
 
+  # Start recursively evaluating basin points
+  evaluate_point(low_point, basin)
+
+  return basin
 end
 
+def evaluate_point(point, basin)
+  #puts "Current Point: #{point}"
+  # Determine initial valid basin points
+  left = get_left(point[:row_index], point[:col_index])
+  right = get_right(point[:row_index], point[:col_index])
+  top = get_top(point[:row_index], point[:col_index])
+  bottom = get_bottom(point[:row_index], point[:col_index])
+  #puts "left: #{left} right: #{right} top: #{top} bottom: #{bottom}"
+
+  # Recursively evalute potential pasin points
+  if get_left(point[:row_index], point[:col_index]) < 9 && !basin[point[:row_index].to_s + "_" + (point[:col_index] - 1).to_s]
+    #puts "got left"
+    new_point = {height: @rows[point[:row_index]][point[:col_index] - 1], row_index: point[:row_index], col_index: point[:col_index] - 1}
+    basin[new_point[:row_index].to_s + "_" + new_point[:col_index].to_s] = new_point[:height]
+
+    evaluate_point(new_point, basin)
+  end
+  if get_right(point[:row_index], point[:col_index]) < 9  && !basin[point[:row_index].to_s + "_" + (point[:col_index] + 1).to_s]
+    #puts "got right"
+    new_point = {height: @rows[point[:row_index]][point[:col_index] + 1], row_index: point[:row_index], col_index: point[:col_index] + 1}
+    basin[new_point[:row_index].to_s + "_" + new_point[:col_index].to_s] = new_point[:height]
+    #puts point
+    evaluate_point(new_point, basin)
+  end
+  if get_top(point[:row_index], point[:col_index]) < 9  && !basin[(point[:row_index] - 1).to_s + "_" + point[:col_index].to_s]
+    #puts "got top"
+    new_point = {height: @rows[point[:row_index] - 1][point[:col_index]], row_index: point[:row_index] - 1, col_index: point[:col_index]}
+    basin[new_point[:row_index].to_s + "_" + new_point[:col_index].to_s] = new_point[:height]
+    #puts point
+    evaluate_point(new_point, basin)
+  end
+  if get_bottom(point[:row_index], point[:col_index]) < 9  && !basin[(point[:row_index] + 1).to_s + "_" + point[:col_index].to_s]
+    #puts "got bottom"
+    new_point = {height: @rows[point[:row_index] + 1][point[:col_index]], row_index: point[:row_index] + 1, col_index: point[:col_index]}
+    basin[new_point[:row_index].to_s + "_" + new_point[:col_index].to_s] = new_point[:height]
+    #puts point
+    evaluate_point(new_point, basin)
+  end
+end
+
+def get_basins
+  @low_points.each do |low_point|
+    @basins << get_basin(low_point)
+  end
+  puts @basins
+end
 
 parse_input('test_input.txt')
 find_low_points
-#puts "#{@low_points}"
+puts "#{@low_points}"
 
-#evaluate_basin(@low_points[0])
+#puts get_basin(@low_points[3])
+get_basins
 
-puts "Risk level: #{calc_risk_level}"
+#puts "Risk level: #{calc_risk_level}"
