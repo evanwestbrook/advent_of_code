@@ -67,6 +67,43 @@ def check_top_row(height, row_index, col_index)
   end
 end
 
+def check_mid_row(height, row_index, col_index)
+  puts "height: #{height}"
+  if col_index == 0
+    right = get_right(row_index, col_index)
+    top = get_top(row_index, col_index)
+    bottom = get_bottom(row_index, col_index)
+
+    puts "right: #{right} top: #{top} bottom: #{bottom}"
+
+    if height < right && height < top && height < bottom
+      @low_points << height
+    end
+
+  elsif col_index == (@rows[row_index].length - 1)
+    left = get_left(row_index, col_index)
+    top = get_top(row_index, col_index)
+    bottom = get_bottom(row_index, col_index)
+
+    puts "left: #{left} top: #{top} bottom: #{bottom}"
+
+    if height < left && height < top && height < bottom
+      @low_points << height
+    end
+  else
+    left = get_left(row_index, col_index)
+    right = get_right(row_index, col_index)
+    top = get_top(row_index, col_index)
+    bottom = get_bottom(row_index, col_index)
+
+    puts "left: #{left} right: #{right} top: #{top} bottom: #{bottom}"
+
+    if height < left && height < right && height < top && height < bottom
+      @low_points << height
+    end
+  end
+end
+
 def check_last_row(height, row_index, col_index)
   puts "height: #{height}"
   if col_index == 0
@@ -107,12 +144,11 @@ def check_low_point(height, row_index, col_index)
   elsif row_index == @rows.length - 1
     check_last_row(height, row_index, col_index)
   else
-    puts "mid row"
+    check_mid_row(height, row_index, col_index)
   end
 end
 
 def find_row_low_points(row, row_index)
-  puts @rows[row_index].length - 1
   row.each_with_index do |col, index|
     check_low_point(col, row_index, index)
   end
@@ -120,12 +156,13 @@ end
 
 def find_low_points
   @rows.each_with_index do |row, index|
+    find_row_low_points(row, index)
   end
 end
 
 parse_input('test_input.txt')
 #puts "#{@rows}"
-
-find_row_low_points(@rows[0], 0)
+find_low_points
+#find_row_low_points(@rows[2], 2)
 puts "#{@low_points}"
 
