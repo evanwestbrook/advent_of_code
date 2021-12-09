@@ -176,7 +176,7 @@ def get_basin_solution
   return solution
 end
 
-parse_input('test_input.txt')
+parse_input('input.txt')
 find_low_points
 puts "#{@low_points}"
 
