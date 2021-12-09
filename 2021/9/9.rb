@@ -39,13 +39,17 @@ def get_bottom(row_index, col_index)
   return @rows[row_index + 1][col_index]
 end
 
+def update_low_points(height, row_index, col_index)
+  @low_points << {height: height, row_index: row_index, col_index: col_index}
+end
+
 def check_top_row(height, row_index, col_index)
   if col_index == 0
     right = get_right(row_index, col_index)
     bottom = get_bottom(row_index, col_index)
 
     if height < right && height < bottom
-      @low_points << height
+      update_low_points(height, row_index, col_index)
     end
 
   elsif col_index == (@rows[row_index].length - 1)
@@ -53,7 +57,7 @@ def check_top_row(height, row_index, col_index)
     bottom = get_bottom(row_index, col_index)
 
     if height < left && height < bottom
-      @low_points << height
+      update_low_points(height, row_index, col_index)
     end
   else
     left = get_left(row_index, col_index)
@@ -61,7 +65,7 @@ def check_top_row(height, row_index, col_index)
     bottom = get_bottom(row_index, col_index)
 
     if height < left && height < right && height < bottom
-      @low_points << height
+      update_low_points(height, row_index, col_index)
     end
   end
 end
@@ -73,7 +77,7 @@ def check_mid_row(height, row_index, col_index)
     bottom = get_bottom(row_index, col_index)
 
     if height < right && height < top && height < bottom
-      @low_points << height
+      update_low_points(height, row_index, col_index)
     end
 
   elsif col_index == (@rows[row_index].length - 1)
@@ -82,7 +86,7 @@ def check_mid_row(height, row_index, col_index)
     bottom = get_bottom(row_index, col_index)
 
     if height < left && height < top && height < bottom
-      @low_points << height
+      update_low_points(height, row_index, col_index)
     end
   else
     left = get_left(row_index, col_index)
@@ -91,7 +95,7 @@ def check_mid_row(height, row_index, col_index)
     bottom = get_bottom(row_index, col_index)
 
     if height < left && height < right && height < top && height < bottom
-      @low_points << height
+      update_low_points(height, row_index, col_index)
     end
   end
 end
@@ -102,7 +106,7 @@ def check_last_row(height, row_index, col_index)
     top = get_top(row_index, col_index)
 
     if height < right && height < top
-      @low_points << height
+      update_low_points(height, row_index, col_index)
     end
 
   elsif col_index == (@rows[row_index].length - 1)
@@ -110,7 +114,7 @@ def check_last_row(height, row_index, col_index)
     top = get_top(row_index, col_index)
 
     if height < left && height < top
-      @low_points << height
+      update_low_points(height, row_index, col_index)
     end
   else
     left = get_left(row_index, col_index)
@@ -118,7 +122,7 @@ def check_last_row(height, row_index, col_index)
     top = get_top(row_index, col_index)
 
     if height < left && height < right && height < top
-      @low_points << height
+      update_low_points(height, row_index, col_index)
     end
   end
 end
@@ -148,13 +152,14 @@ end
 def calc_risk_level
   risk_level = 0
 
-  @low_points.each do |height|
-    risk_level += height + 1
+  @low_points.each do |low_point|
+    risk_level += low_point[:height] + 1
   end
 
   return risk_level
 end
 
-parse_input('input.txt')
+parse_input('test_input.txt')
 find_low_points
+puts "#{@low_points}"
 puts "Risk level: #{calc_risk_level}"
