@@ -160,9 +160,20 @@ def find_low_points
   end
 end
 
+def calc_risk_level
+  risk_level = 0
+
+  @low_points.each do |height|
+    risk_level += height + 1
+  end
+
+  return risk_level
+end
+
 parse_input('test_input.txt')
 #puts "#{@rows}"
 find_low_points
 #find_row_low_points(@rows[2], 2)
 puts "#{@low_points}"
+puts "#{calc_risk_level}"
 
