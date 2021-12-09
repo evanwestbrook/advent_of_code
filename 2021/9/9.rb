@@ -1,5 +1,7 @@
 # low points = locations lower than all adjacent locations (up, down, left, right, or edges have 3)
 # risk level = low point height + 1
+# basin = any area with an adjoining area going down that's not 9. Probably needs recursion
+# Had to adjust length b/c of new lines
 
 @rows = []
 @low_points = []
@@ -24,19 +26,35 @@ def parse_input(file)
 end
 
 def get_left(row_index, col_index)
-  return @rows[row_index][col_index - 1]
+  if (col_index - 1) < 0
+    return nil
+  else
+    return @rows[row_index][col_index - 1]
+  end
 end
 
 def get_right(row_index, col_index)
-  return @rows[row_index][col_index + 1]
+  if (col_index) > @rows[row_index].length
+    return nil
+  else
+    return @rows[row_index][col_index + 1]
+  end
 end
 
 def get_top(row_index, col_index)
-  return @rows[row_index - 1][col_index]
+  if (row_index - 1) < 0
+    return nil
+  else
+    return @rows[row_index - 1][col_index]
+  end
 end
 
 def get_bottom(row_index, col_index)
-  return @rows[row_index + 1][col_index]
+  if row_index + 1 > @rows.length - 1
+    return nil
+  else
+    return @rows[row_index + 1][col_index]
+  end
 end
 
 def update_low_points(height, row_index, col_index)
@@ -159,7 +177,24 @@ def calc_risk_level
   return risk_level
 end
 
+def evaluate_basin(low_point)
+  puts low_point
+  right = get_right(low_point[:row_index], low_point[:col_index])
+  puts right
+  left = get_left(low_point[:row_index], low_point[:col_index])
+  puts left
+  top = get_top(low_point[:row_index], low_point[:col_index])
+  puts top
+  bottom = get_bottom(low_point[:row_index], low_point[:col_index])
+  puts bottom
+
+end
+
+
 parse_input('test_input.txt')
 find_low_points
-puts "#{@low_points}"
+#puts "#{@low_points}"
+
+#evaluate_basin(@low_points[0])
+
 puts "Risk level: #{calc_risk_level}"
