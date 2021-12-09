@@ -6,6 +6,7 @@
 @rows = []
 @low_points = []
 @basins = []
+@basin_sizes = []
 
 def parse_input(file)
   read_file = File.readlines(file)
@@ -97,7 +98,7 @@ def calc_risk_level
 end
 
 def get_basin(low_point)
-  puts "Low Point: #{low_point}"
+  #puts "Low Point: #{low_point}"
   # Initialize basin
   basin = {}
   basin[low_point[:row_index].to_s + "_" + low_point[:col_index].to_s] = low_point[:height]
@@ -151,8 +152,28 @@ end
 def get_basins
   @low_points.each do |low_point|
     @basins << get_basin(low_point)
+    @basin_sizes << get_basin(low_point).length
   end
-  puts @basins
+  #puts @basins
+  #puts @basin_sizes
+end
+
+def get_basin_solution
+  solution = 1
+  sizes = @basin_sizes.sort().reverse!
+
+  # Handle situations where there are fewer than 3 valid basins
+  if @basin_sizes.length > 3
+    iterations = 3
+  else
+    iterations = @basin_sizes.length
+  end
+
+  iterations.times do |i|
+    solution = sizes[i] * solution
+  end
+
+  return solution
 end
 
 parse_input('test_input.txt')
@@ -161,5 +182,8 @@ puts "#{@low_points}"
 
 #puts get_basin(@low_points[3])
 get_basins
+puts "The solution to part 2 is: #{get_basin_solution}"
+
+
 
 #puts "Risk level: #{calc_risk_level}"
