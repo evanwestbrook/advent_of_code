@@ -56,7 +56,7 @@ def get_bottom(row_index, col_index)
   end
 end
 
-def check_row(height, row_index, col_index)
+def check_point(height, row_index, col_index)
   left = get_left(row_index, col_index)
   right = get_right(row_index, col_index)
   top = get_top(row_index, col_index)
@@ -69,7 +69,7 @@ end
 
 def find_row_low_points(row, row_index)
   row.each_with_index do |col, index|
-    check_row(col, row_index, index)
+    check_point(col, row_index, index)
   end
 end
 
