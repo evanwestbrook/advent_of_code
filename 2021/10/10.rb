@@ -31,32 +31,6 @@ def parse_input(file)
   end
 end
 
-# On further investigation, I realized that all lines are incomplete. It's just whether they're corrupted or complete
-def check_incomplete(lines)
-  # Checks to see if the lines are complete
-  lines.each do |line|
-     puts is_complete_line(line)
-  end
-end
-
-def is_complete_line(line)
-  # Checks to see if a line is complete
-  complete = 0
-  @valid_chars.each do |key, value|
-    num_open = line.each_index.select { |index| line[index] == key.to_s}.length
-    num_closed = line.each_index.select { |index| line[index] == value}.length
-    if num_open == num_closed
-      complete += 1
-    end
-  end
-
-  if complete < 4
-    return false
-  else
-    return true
-  end
-end
-
 def check_line_corruption(line)
   opening_stack = []
 
@@ -98,7 +72,7 @@ def score_corrupted_lines(corrupted_lines)
   return score
 end
 
-parse_input('input.txt')
+parse_input('test_input.txt')
 
 evaluate_lines_corruption(@lines)
 puts "Total sytax error score: #{score_corrupted_lines(@corrupted_lines)}"
