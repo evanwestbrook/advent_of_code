@@ -95,9 +95,19 @@ def evaluate_lines_corruption(lines)
   end
 end
 
+def score_corrupted_lines(corrupted_lines)
+  score = 0
+  corrupted_lines.each do |corrupted_line|
+    score += @illegal_char_scores[corrupted_line[:illegal_char].to_sym]
+  end
+
+  return score
+end
+
 parse_input('test_input.txt')
 
 #check_incomplete(@lines)
 #puts check_line_corruption(@lines[0])
 evaluate_lines_corruption(@lines)
 puts @corrupted_lines
+puts "Total sytax error score: #{score_corrupted_lines(@corrupted_lines)}"
