@@ -100,7 +100,7 @@ def score_incomplete_lines(incomplete_lines)
   end
 end
 
-parse_input('test_input.txt')
+parse_input('input.txt')
 
 evaluate_lines_corruption(@lines)
 puts "Total sytax error score: #{score_corrupted_lines(@corrupted_lines)}"
