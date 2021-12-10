@@ -66,7 +66,6 @@ def check_line_corruption(line)
   opening_stack = []
 
   line.each_with_index do |character, index|
-    puts  "Opening stack: #{opening_stack}"
     if @valid_chars[character.to_sym]
       # Add to opening_stack if it is an opening character
       opening_stack << character
@@ -104,10 +103,7 @@ def score_corrupted_lines(corrupted_lines)
   return score
 end
 
-parse_input('test_input.txt')
+parse_input('input.txt')
 
-#check_incomplete(@lines)
-#puts check_line_corruption(@lines[0])
 evaluate_lines_corruption(@lines)
-puts @corrupted_lines
 puts "Total sytax error score: #{score_corrupted_lines(@corrupted_lines)}"
