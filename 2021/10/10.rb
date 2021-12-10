@@ -1,11 +1,6 @@
-# split into array
-# count frequency of each character
-# character that is not even is corrupted?
-# Basically a palindrome search problem?
-# Store opens in an array. When close is encountered start popping matching opens out of array. If we don't get a match 1st try thats corrupted
-
 @lines = []
 @corrupted_lines = []
+@incomplete_lines = []
 @valid_chars = {
   "(": ")",
   "[": "]",
