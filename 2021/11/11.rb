@@ -3,6 +3,7 @@ require './cardinal_directions.rb'
 @rows = []
 @numflashes = 0
 @flashes = {}
+@total_octopus = 0
 
 def parse_input(file)
   read_file = File.readlines(file)
@@ -15,6 +16,7 @@ def parse_input(file)
     row_array = []
     row.length.times do |i|
       row_array << row[i].to_i
+      @total_octopus += 1
     end
 
     @rows << row_array
@@ -99,8 +101,23 @@ def process_steps(num_steps)
   end
 end
 
-puts "----- STARTING -----"
-parse_input('input.txt')
+def find_all_flash
+  num_step = 0
+  while @flashes.length != @total_octopus
+    @flashes = {}
+    process_rows
 
-process_steps(100)
-puts "# of flashes: #{@numflashes}"
+    num_step += 1
+    if @flashes.length == @total_octopus
+      return num_step
+    end
+  end
+end
+
+puts "----- STARTING -----"
+parse_input('test_input.txt')
+
+puts "First step with simultaneous flash: #{find_all_flash}"
+
+#process_steps(100)
+#puts "# of flashes: #{@numflashes}"
