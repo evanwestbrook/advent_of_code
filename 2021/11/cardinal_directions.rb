@@ -63,7 +63,7 @@ def get_s(row_index, col_index)
 end
 
 def get_nw(row_index, col_index)
-  if left_boundary?(col_index) || top_boundary?(row_index)
+  if top_boundary?(row_index) || left_boundary?(col_index)
     return 99
   else
     return @rows[row_index - 1][col_index - 1]
@@ -71,7 +71,7 @@ def get_nw(row_index, col_index)
 end
 
 def get_ne(row_index, col_index)
-  if right_boundary?(col_index, row_index) || top_boundary?(row_index)
+  if top_boundary?(row_index) || right_boundary?(col_index, row_index)
     return 99
   else
     return @rows[row_index - 1][col_index + 1]
@@ -79,7 +79,7 @@ def get_ne(row_index, col_index)
 end
 
 def get_sw(row_index, col_index)
-  if left_boundary?(col_index) || bottom_boundary?(row_index)
+  if bottom_boundary?(row_index) || left_boundary?(col_index)
     return 99
   else
     return @rows[row_index + 1][col_index - 1]
@@ -87,7 +87,7 @@ def get_sw(row_index, col_index)
 end
 
 def get_se(row_index, col_index)
-  if right_boundary?(col_index, row_index) || bottom_boundary?(row_index)
+  if bottom_boundary?(row_index) || right_boundary?(col_index, row_index)
     return 99
   else
     return @rows[row_index + 1][col_index + 1]
