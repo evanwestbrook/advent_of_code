@@ -1,12 +1,3 @@
-# Energy level 0 to 9
-# Each step:
-# 1. Energy level += 1
-# 2. Energy level > 9 flashes
-#    a. energy level adjacent (including diag) +=1
-#    b. This can propogate if it causes others to flash
-#    c. Energy = 0
-# Problem: after 100 steps, how many flashes?
-
 require './cardinal_directions.rb'
 
 @rows = []
@@ -41,22 +32,13 @@ def parse_input(file)
 end
 
 def step(energy, row_index, col_index)
-  #puts "Starting energy: #{energy}"
-
   if !@flashes[row_index.to_s + "_" + col_index.to_s]
     energy += 1
     @rows[row_index][col_index] = energy
   end
 
   if @rows[row_index][col_index] > 9
-    # Handle flashing
-    #puts "flash"
-    # Initialize flashes
-    # In this recursive scenario, we keep track of the points we have already considered in our basin.
-    #   In this manner, we do not re-evaluate points that we have already considered.
-
     handle_flash(@rows[row_index][col_index], row_index, col_index)
-    puts "flashes: #{@flashes}"
   end
 end
 
@@ -64,8 +46,6 @@ def handle_flash(energy, row_index, col_index)
   # Add coordinates to the flashes already handled by this flash and reset energy levels for next flash
   @flashes[row_index.to_s + "_" + col_index.to_s] = energy
   @rows[row_index][col_index] = 0
-  #puts flashes
-  #puts "Ending energy: #{0}"
   @numflashes += 1
   flash(row_index, col_index)
 end
@@ -98,38 +78,25 @@ end
 
 def process_row(row, row_index)
   row.each_with_index do |col, index|
-    #puts col
     step(col, row_index, index)
-    #check_point(col, row_index, index)
   end
-  #print_grid
 end
 
 def process_rows
   @rows.each_with_index do |row, index|
-    puts "Row ##{index}"
-    print_grid
-
     process_row(row, index)
   end
 end
 
 def process_steps(num_steps)
   num_steps.times do |num_step|
-    puts "----- Step ##{num_step} -----"
     @flashes = {}
     process_rows
   end
 end
 
 puts "----- STARTING -----"
-parse_input('test_input_2.txt')
-#puts "#{@rows}"
-#puts get_adjacent(1, 1)
-#puts "Step 1"
-#step(@rows[0][2], 0, 2)
-#puts "Step 2"
-#step(@rows[0][2], 0, 2)
+parse_input('input.txt')
 
-process_steps(2)
+process_steps(100)
 puts "# of flashes: #{@numflashes}"
