@@ -9,6 +9,7 @@
 
 @rows = []
 @numflashes = 0
+@flashes = {}
 
 def print_grid
   @rows.each do |row|
@@ -125,6 +126,7 @@ def step(energy, row_index, col_index)
     flashes = {}
 
     handle_flash(flashes, energy, row_index, col_index)
+    puts "flashes: #{flashes}"
   else
     energy += 1
     @rows[row_index][col_index] = energy
@@ -153,7 +155,10 @@ def flash(flashes, energy, row_index, col_index)
       handle_flash(flashes, adjacent_energy[:w], row_index, col_index - 1)
     else
       #puts "new energy west: #{adjacent_energy[:w] + 1}"
-      @rows[row_index][col_index - 1] = adjacent_energy[:w] + 1
+      # do not process if flashed this step already
+      if !flashes[row_index.to_s + "_" + (col_index - 1).to_s]
+        @rows[row_index][col_index - 1] = adjacent_energy[:w] + 1
+      end
     end
   end
   if adjacent_energy[:e] < 99
@@ -161,7 +166,10 @@ def flash(flashes, energy, row_index, col_index)
       handle_flash(flashes, adjacent_energy[:e], row_index, col_index + 1)
     else
       #puts "new energy east: #{adjacent_energy[:e] + 1}"
-      @rows[row_index][col_index + 1] = adjacent_energy[:e] + 1
+      # do not process if flashed this step already
+      if !flashes[row_index.to_s + "_" + (col_index + 1).to_s]
+        @rows[row_index][col_index + 1] = adjacent_energy[:e] + 1
+      end
     end
   end
   if adjacent_energy[:n] < 99
@@ -169,7 +177,10 @@ def flash(flashes, energy, row_index, col_index)
       handle_flash(flashes, adjacent_energy[:n], row_index - 1, col_index)
     else
       #puts "new energy north: #{adjacent_energy[:n] + 1}"
-      @rows[row_index - 1][col_index] = adjacent_energy[:n] + 1
+      # do not process if flashed this step already
+      if !flashes[(row_index - 1).to_s + "_" + col_index.to_s]
+        @rows[row_index - 1][col_index] = adjacent_energy[:n] + 1
+      end
     end
   end
   if adjacent_energy[:s] < 99
@@ -177,7 +188,10 @@ def flash(flashes, energy, row_index, col_index)
       handle_flash(flashes, adjacent_energy[:s], row_index + 1, col_index)
     else
       #puts "new energy south: #{adjacent_energy[:s] + 1}"
-      @rows[row_index + 1][col_index] = adjacent_energy[:s] + 1
+      # do not process if flashed this step already
+      if !flashes[(row_index + 1).to_s + "_" + col_index.to_s]
+        @rows[row_index + 1][col_index] = adjacent_energy[:s] + 1
+      end
     end
   end
   if adjacent_energy[:nw] < 99
@@ -185,7 +199,10 @@ def flash(flashes, energy, row_index, col_index)
       handle_flash(flashes, adjacent_energy[:nw], row_index - 1, col_index - 1)
     else
       #puts "new energy northwest: #{adjacent_energy[:nw] + 1}"
-      @rows[row_index - 1][col_index - 1] = adjacent_energy[:nw] + 1
+      # do not process if flashed this step already
+      if !flashes[(row_index - 1).to_s + "_" + (col_index - 1).to_s]
+        @rows[row_index - 1][col_index - 1] = adjacent_energy[:nw] + 1
+      end
     end
   end
   if adjacent_energy[:ne] < 99
@@ -193,7 +210,10 @@ def flash(flashes, energy, row_index, col_index)
       handle_flash(flashes, adjacent_energy[:ne], row_index - 1, col_index + 1)
     else
       #puts "new energy northeast: #{adjacent_energy[:ne] + 1}"
-      @rows[row_index - 1][col_index + 1] = adjacent_energy[:ne] + 1
+      # do not process if flashed this step already
+      if !flashes[(row_index - 1).to_s + "_" + (col_index + 1).to_s]
+        @rows[row_index - 1][col_index + 1] = adjacent_energy[:ne] + 1
+      end
     end
   end
   if adjacent_energy[:sw] < 99
@@ -201,7 +221,10 @@ def flash(flashes, energy, row_index, col_index)
       handle_flash(flashes, adjacent_energy[:sw], row_index + 1, col_index - 1)
     else
       #puts "new energy southwest: #{adjacent_energy[:sw] + 1}"
-      @rows[row_index + 1][col_index - 1] = adjacent_energy[:sw] + 1
+      # do not process if flashed this step already
+      if !flashes[(row_index + 1).to_s + "_" + (col_index - 1).to_s]
+        @rows[row_index + 1][col_index - 1] = adjacent_energy[:sw] + 1
+      end
     end
   end
   if adjacent_energy[:se] < 99
@@ -209,19 +232,28 @@ def flash(flashes, energy, row_index, col_index)
       handle_flash(flashes, adjacent_energy[:se], row_index + 1, col_index + 1)
     else
       #puts "new energy southeast: #{adjacent_energy[:se] + 1}"
-      @rows[row_index + 1][col_index + 1] = adjacent_energy[:se] + 1
+      # do not process if flashed this step already
+      if !flashes[(row_index + 1).to_s + "_" + (col_index + 1).to_s]
+        @rows[row_index + 1][col_index + 1] = adjacent_energy[:se] + 1
+      end
     end
   end
 end
 
 def process_row(row, row_index)
   row.each_with_index do |col, index|
-    step(@rows[col][index], col, index)
+    #puts col
+    step(col, row_index, index)
     #check_point(col, row_index, index)
   end
+  #print_grid
 end
 
 def process_rows
+  #puts "Row #0"
+  #print_grid
+  #process_row(@rows[0], 0)
+
   @rows.each_with_index do |row, index|
     puts "Row ##{index}"
     print_grid
@@ -246,5 +278,5 @@ parse_input('test_input.txt')
 #puts "Step 2"
 #step(@rows[0][2], 0, 2)
 
-process_steps(1)
+process_steps(2)
 puts "# of flashes: #{@numflashes}"
