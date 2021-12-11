@@ -47,7 +47,6 @@ def step(energy, row_index, col_index)
   @rows[row_index][col_index] = energy
 
   if @rows[row_index][col_index] > 9
-  #if energy >= 9
     # Handle flashing
     #puts "flash"
     # Initialize flashes
@@ -55,12 +54,7 @@ def step(energy, row_index, col_index)
     #   In this manner, we do not re-evaluate points that we have already considered.
 
     handle_flash(@rows[row_index][col_index], row_index, col_index)
-    #handle_flash(@flashes, energy, row_index, col_index)
     puts "flashes: #{@flashes}"
-  #else
-  #  energy += 1
-  #  @rows[row_index][col_index] = energy
-    #puts "Ending energy: #{energy}"
   end
 end
 
@@ -87,7 +81,8 @@ def flash(row_index, col_index)
       #puts "new energy west: #{adjacent_energy[:w] + 1}"
       # do not process if flashed this step already
       if !@flashes[row_index.to_s + "_" + (col_index - 1).to_s]
-        @rows[row_index][col_index - 1] = adjacent_energy[:w] + 1
+        #@rows[row_index][col_index - 1] = adjacent_energy[:w] + 1
+        step(adjacent_energy[:w], row_index, col_index - 1)
       end
     end
   end
@@ -98,7 +93,8 @@ def flash(row_index, col_index)
       #puts "new energy east: #{adjacent_energy[:e] + 1}"
       # do not process if flashed this step already
       if !@flashes[row_index.to_s + "_" + (col_index + 1).to_s]
-        @rows[row_index][col_index + 1] = adjacent_energy[:e] + 1
+        #@rows[row_index][col_index + 1] = adjacent_energy[:e] + 1
+        step(adjacent_energy[:e], row_index, col_index + 1)
       end
     end
   end
@@ -109,7 +105,8 @@ def flash(row_index, col_index)
       #puts "new energy north: #{adjacent_energy[:n] + 1}"
       # do not process if flashed this step already
       if !@flashes[(row_index - 1).to_s + "_" + col_index.to_s]
-        @rows[row_index - 1][col_index] = adjacent_energy[:n] + 1
+        #@rows[row_index - 1][col_index] = adjacent_energy[:n] + 1
+        step(adjacent_energy[:n], row_index - 1, col_index)
       end
     end
   end
@@ -120,7 +117,8 @@ def flash(row_index, col_index)
       #puts "new energy south: #{adjacent_energy[:s] + 1}"
       # do not process if flashed this step already
       if !@flashes[(row_index + 1).to_s + "_" + col_index.to_s]
-        @rows[row_index + 1][col_index] = adjacent_energy[:s] + 1
+        #@rows[row_index + 1][col_index] = adjacent_energy[:s] + 1
+        step(adjacent_energy[:s], row_index + 1, col_index)
       end
     end
   end
@@ -131,7 +129,8 @@ def flash(row_index, col_index)
       #puts "new energy northwest: #{adjacent_energy[:nw] + 1}"
       # do not process if flashed this step already
       if !@flashes[(row_index - 1).to_s + "_" + (col_index - 1).to_s]
-        @rows[row_index - 1][col_index - 1] = adjacent_energy[:nw] + 1
+        #@rows[row_index - 1][col_index - 1] = adjacent_energy[:nw] + 1
+        step(adjacent_energy[:nw], row_index - 1, col_index - 1)
       end
     end
   end
@@ -142,7 +141,8 @@ def flash(row_index, col_index)
       #puts "new energy northeast: #{adjacent_energy[:ne] + 1}"
       # do not process if flashed this step already
       if !@flashes[(row_index - 1).to_s + "_" + (col_index + 1).to_s]
-        @rows[row_index - 1][col_index + 1] = adjacent_energy[:ne] + 1
+        #@rows[row_index - 1][col_index + 1] = adjacent_energy[:ne] + 1
+        step(adjacent_energy[:ne], row_index - 1, col_index + 1)
       end
     end
   end
@@ -153,7 +153,8 @@ def flash(row_index, col_index)
       #puts "new energy southwest: #{adjacent_energy[:sw] + 1}"
       # do not process if flashed this step already
       if !@flashes[(row_index + 1).to_s + "_" + (col_index - 1).to_s]
-        @rows[row_index + 1][col_index - 1] = adjacent_energy[:sw] + 1
+        #@rows[row_index + 1][col_index - 1] = adjacent_energy[:sw] + 1
+        step(adjacent_energy[:sw], row_index + 1, col_index - 1)
       end
     end
   end
@@ -164,7 +165,8 @@ def flash(row_index, col_index)
       #puts "new energy southeast: #{adjacent_energy[:se] + 1}"
       # do not process if flashed this step already
       if !@flashes[(row_index + 1).to_s + "_" + (col_index + 1).to_s]
-        @rows[row_index + 1][col_index + 1] = adjacent_energy[:se] + 1
+        #@rows[row_index + 1][col_index + 1] = adjacent_energy[:se] + 1
+        step(adjacent_energy[:ne], row_index + 1, col_index + 1)
       end
     end
   end
