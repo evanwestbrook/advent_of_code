@@ -43,8 +43,10 @@ end
 def step(energy, row_index, col_index)
   #puts "Starting energy: #{energy}"
 
-  energy += 1
-  @rows[row_index][col_index] = energy
+  if !@flashes[row_index.to_s + "_" + col_index.to_s]
+    energy += 1
+    @rows[row_index][col_index] = energy
+  end
 
   if @rows[row_index][col_index] > 9
     # Handle flashing
@@ -82,18 +84,16 @@ def process_adjacent(adjacent_energy, row_index, col_index)
 end
 
 def flash(row_index, col_index)
-  # Determine valid adjacent energy levels
-  adjacent_energy = get_adjacent(row_index, col_index)
 
   # Recursively evalute potential flashes
-  process_adjacent(adjacent_energy[:w], row_index, col_index - 1)
-  process_adjacent(adjacent_energy[:e], row_index, col_index + 1)
-  process_adjacent(adjacent_energy[:n], row_index - 1, col_index)
-  process_adjacent(adjacent_energy[:s], row_index + 1, col_index)
-  process_adjacent(adjacent_energy[:nw], row_index - 1, col_index - 1)
-  process_adjacent(adjacent_energy[:ne], row_index - 1, col_index + 1)
-  process_adjacent(adjacent_energy[:sw], row_index + 1, col_index - 1)
-  process_adjacent(adjacent_energy[:se], row_index + 1, col_index + 1)
+  process_adjacent(get_adjacent(row_index, col_index)[:w], row_index, col_index - 1)
+  process_adjacent(get_adjacent(row_index, col_index)[:e], row_index, col_index + 1)
+  process_adjacent(get_adjacent(row_index, col_index)[:n], row_index - 1, col_index)
+  process_adjacent(get_adjacent(row_index, col_index)[:s], row_index + 1, col_index)
+  process_adjacent(get_adjacent(row_index, col_index)[:nw], row_index - 1, col_index - 1)
+  process_adjacent(get_adjacent(row_index, col_index)[:ne], row_index - 1, col_index + 1)
+  process_adjacent(get_adjacent(row_index, col_index)[:sw], row_index + 1, col_index - 1)
+  process_adjacent(get_adjacent(row_index, col_index)[:se], row_index + 1, col_index + 1)
 end
 
 def process_row(row, row_index)
@@ -106,10 +106,6 @@ def process_row(row, row_index)
 end
 
 def process_rows
-  #puts "Row #0"
-  #print_grid
-  #process_row(@rows[0], 0)
-
   @rows.each_with_index do |row, index|
     puts "Row ##{index}"
     print_grid
@@ -120,14 +116,14 @@ end
 
 def process_steps(num_steps)
   num_steps.times do |num_step|
-    puts "Step ##{num_step}"
+    puts "----- Step ##{num_step} -----"
     @flashes = {}
     process_rows
   end
 end
 
 puts "----- STARTING -----"
-parse_input('test_input.txt')
+parse_input('test_input_2.txt')
 #puts "#{@rows}"
 #puts get_adjacent(1, 1)
 #puts "Step 1"
