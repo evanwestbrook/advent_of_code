@@ -102,6 +102,7 @@ def process_steps(num_steps)
 end
 
 def find_all_flash
+  # Process steps until the # of flashes = the total population for a given day
   num_step = 0
   while @flashes.length != @total_octopus
     @flashes = {}
@@ -115,7 +116,7 @@ def find_all_flash
 end
 
 puts "----- STARTING -----"
-parse_input('test_input.txt')
+parse_input('input.txt')
 
 puts "First step with simultaneous flash: #{find_all_flash}"
 
