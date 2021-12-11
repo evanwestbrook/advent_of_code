@@ -68,108 +68,32 @@ def handle_flash(energy, row_index, col_index)
   flash(row_index, col_index)
 end
 
+def process_adjacent(adjacent_energy, row_index, col_index)
+  if adjacent_energy < 99
+    if adjacent_energy > 9
+      handle_flash(adjacent_energy, row_index, col_index)
+    else
+      # do not process if flashed this step already
+      if !@flashes[row_index.to_s + "_" + col_index.to_s]
+        step(adjacent_energy, row_index, col_index)
+      end
+    end
+  end
+end
+
 def flash(row_index, col_index)
   # Determine valid adjacent energy levels
   adjacent_energy = get_adjacent(row_index, col_index)
-  #puts "#{adjacent_energy}"
 
   # Recursively evalute potential flashes
-  if adjacent_energy[:w] < 99
-    if adjacent_energy[:w] > 9
-      handle_flash(adjacent_energy[:w], row_index, col_index - 1)
-    else
-      #puts "new energy west: #{adjacent_energy[:w] + 1}"
-      # do not process if flashed this step already
-      if !@flashes[row_index.to_s + "_" + (col_index - 1).to_s]
-        #@rows[row_index][col_index - 1] = adjacent_energy[:w] + 1
-        step(adjacent_energy[:w], row_index, col_index - 1)
-      end
-    end
-  end
-  if adjacent_energy[:e] < 99
-    if adjacent_energy[:e] > 9
-      handle_flash(adjacent_energy[:e], row_index, col_index + 1)
-    else
-      #puts "new energy east: #{adjacent_energy[:e] + 1}"
-      # do not process if flashed this step already
-      if !@flashes[row_index.to_s + "_" + (col_index + 1).to_s]
-        #@rows[row_index][col_index + 1] = adjacent_energy[:e] + 1
-        step(adjacent_energy[:e], row_index, col_index + 1)
-      end
-    end
-  end
-  if adjacent_energy[:n] < 99
-    if adjacent_energy[:n] > 9
-      handle_flash(adjacent_energy[:n], row_index - 1, col_index)
-    else
-      #puts "new energy north: #{adjacent_energy[:n] + 1}"
-      # do not process if flashed this step already
-      if !@flashes[(row_index - 1).to_s + "_" + col_index.to_s]
-        #@rows[row_index - 1][col_index] = adjacent_energy[:n] + 1
-        step(adjacent_energy[:n], row_index - 1, col_index)
-      end
-    end
-  end
-  if adjacent_energy[:s] < 99
-    if adjacent_energy[:s] > 9
-      handle_flash(adjacent_energy[:s], row_index + 1, col_index)
-    else
-      #puts "new energy south: #{adjacent_energy[:s] + 1}"
-      # do not process if flashed this step already
-      if !@flashes[(row_index + 1).to_s + "_" + col_index.to_s]
-        #@rows[row_index + 1][col_index] = adjacent_energy[:s] + 1
-        step(adjacent_energy[:s], row_index + 1, col_index)
-      end
-    end
-  end
-  if adjacent_energy[:nw] < 99
-    if adjacent_energy[:nw] > 9
-      handle_flash(adjacent_energy[:nw], row_index - 1, col_index - 1)
-    else
-      #puts "new energy northwest: #{adjacent_energy[:nw] + 1}"
-      # do not process if flashed this step already
-      if !@flashes[(row_index - 1).to_s + "_" + (col_index - 1).to_s]
-        #@rows[row_index - 1][col_index - 1] = adjacent_energy[:nw] + 1
-        step(adjacent_energy[:nw], row_index - 1, col_index - 1)
-      end
-    end
-  end
-  if adjacent_energy[:ne] < 99
-    if adjacent_energy[:ne] > 9
-      handle_flash(adjacent_energy[:ne], row_index - 1, col_index + 1)
-    else
-      #puts "new energy northeast: #{adjacent_energy[:ne] + 1}"
-      # do not process if flashed this step already
-      if !@flashes[(row_index - 1).to_s + "_" + (col_index + 1).to_s]
-        #@rows[row_index - 1][col_index + 1] = adjacent_energy[:ne] + 1
-        step(adjacent_energy[:ne], row_index - 1, col_index + 1)
-      end
-    end
-  end
-  if adjacent_energy[:sw] < 99
-    if adjacent_energy[:sw] > 9
-      handle_flash(adjacent_energy[:sw], row_index + 1, col_index - 1)
-    else
-      #puts "new energy southwest: #{adjacent_energy[:sw] + 1}"
-      # do not process if flashed this step already
-      if !@flashes[(row_index + 1).to_s + "_" + (col_index - 1).to_s]
-        #@rows[row_index + 1][col_index - 1] = adjacent_energy[:sw] + 1
-        step(adjacent_energy[:sw], row_index + 1, col_index - 1)
-      end
-    end
-  end
-  if adjacent_energy[:se] < 99
-    if adjacent_energy[:se] > 9
-      handle_flash(adjacent_energy[:se], row_index + 1, col_index + 1)
-    else
-      #puts "new energy southeast: #{adjacent_energy[:se] + 1}"
-      # do not process if flashed this step already
-      if !@flashes[(row_index + 1).to_s + "_" + (col_index + 1).to_s]
-        #@rows[row_index + 1][col_index + 1] = adjacent_energy[:se] + 1
-        step(adjacent_energy[:ne], row_index + 1, col_index + 1)
-      end
-    end
-  end
+  process_adjacent(adjacent_energy[:w], row_index, col_index - 1)
+  process_adjacent(adjacent_energy[:e], row_index, col_index + 1)
+  process_adjacent(adjacent_energy[:n], row_index - 1, col_index)
+  process_adjacent(adjacent_energy[:s], row_index + 1, col_index)
+  process_adjacent(adjacent_energy[:nw], row_index - 1, col_index - 1)
+  process_adjacent(adjacent_energy[:ne], row_index - 1, col_index + 1)
+  process_adjacent(adjacent_energy[:sw], row_index + 1, col_index - 1)
+  process_adjacent(adjacent_energy[:se], row_index + 1, col_index + 1)
 end
 
 def process_row(row, row_index)
