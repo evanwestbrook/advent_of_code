@@ -4,16 +4,6 @@ require './cardinal_directions.rb'
 @numflashes = 0
 @flashes = {}
 
-def print_grid
-  @rows.each do |row|
-    row_string = ""
-    row.each do |col|
-      row_string += col.to_s
-    end
-    puts row_string
-  end
-end
-
 def parse_input(file)
   read_file = File.readlines(file)
 
@@ -31,6 +21,17 @@ def parse_input(file)
   end
 end
 
+def print_grid
+  # Prints grid to console for easier debugging
+  @rows.each do |row|
+    row_string = ""
+    row.each do |col|
+      row_string += col.to_s
+    end
+    puts row_string
+  end
+end
+
 def step(energy, row_index, col_index)
   if !@flashes[row_index.to_s + "_" + col_index.to_s]
     energy += 1
@@ -43,14 +44,18 @@ def step(energy, row_index, col_index)
 end
 
 def handle_flash(energy, row_index, col_index)
-  # Add coordinates to the flashes already handled by this flash and reset energy levels for next flash
+  # Add coordinates to the flashes already handled by this flash
   @flashes[row_index.to_s + "_" + col_index.to_s] = energy
+  # Reset energy levels for next step
   @rows[row_index][col_index] = 0
+
+  # Recursively process flash
   @numflashes += 1
   flash(row_index, col_index)
 end
 
 def process_adjacent(adjacent_energy, row_index, col_index)
+  # Processes potential flashes for octopuses adjacent to a flash
   if adjacent_energy < 99
     if adjacent_energy > 9
       handle_flash(adjacent_energy, row_index, col_index)
@@ -64,8 +69,7 @@ def process_adjacent(adjacent_energy, row_index, col_index)
 end
 
 def flash(row_index, col_index)
-
-  # Recursively evalute potential flashes
+  # Process flashes for each adjacent octopus
   process_adjacent(get_adjacent(row_index, col_index)[:w], row_index, col_index - 1)
   process_adjacent(get_adjacent(row_index, col_index)[:e], row_index, col_index + 1)
   process_adjacent(get_adjacent(row_index, col_index)[:n], row_index - 1, col_index)
