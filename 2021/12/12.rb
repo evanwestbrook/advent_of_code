@@ -1,9 +1,3 @@
-# 1 small cave can be visited twice
-# Remaining small caves can only be visited once
-# Start and end can only be visted once
-# ^^ cannot return to start cave. Startin there counts as a visit
-# ^^ reaching end path ends it
-
 @datas = []
 @startings = {}
 @endings = {}
@@ -57,13 +51,10 @@ def is_lower_case?(character)
 end
 
 def visit_cave(starting, connections, cave_path, small_caves_visited)
-  #puts "Starting: #{starting}"
-
   # Duplicate running list of visted small caves so we can evaluate in each cave context
   small_caves_visited = small_caves_visited.dup
-  #puts "Small caves visited: #{small_caves_visited}"
 
-  # Visit Cave
+  # Log visit to cave and increment for small cave visits
   cave_path += ",#{starting}"
   if is_lower_case?(starting)
     if small_caves_visited[starting]
@@ -78,20 +69,13 @@ def visit_cave(starting, connections, cave_path, small_caves_visited)
     @paths << "#{cave_path},end"
   end
 
-  # Find caves accessed via starting point
-  next_caves = connections[starting]
-
-  # Vist next cave if we can
-  next_caves.each do |next_cave|
+  # Find caves accessed via starting point and vist next cave if we can
+  connections[starting].each do |next_cave|
     # Revisit small cave if none have been visited twice
     if (small_caves_visited.select { |key, value| value > 1}).length == 0
-      #puts "visiting next_cave: #{next_cave}"
-      # Log visit to cave
       visit_cave(next_cave, connections, cave_path, small_caves_visited)
     # Make sure not to re-visit small caves
     elsif !small_caves_visited[next_cave]
-      #puts "visiting next_cave: #{next_cave}"
-      # Log visit to cave
       visit_cave(next_cave, connections, cave_path, small_caves_visited)
     end
   end
@@ -114,9 +98,5 @@ end
 puts "----- STARTING -----"
 parse_input('input.txt')
 map_connections
-#puts "Connections: #{@connections}"
-#puts "Startings: #{@startings}"
-#puts "Endings: #{@endings}"
 find_paths
-#puts "#{@paths}"
 puts "Total # of paths: #{@paths.length}"
