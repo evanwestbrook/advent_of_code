@@ -57,11 +57,11 @@ def is_lower_case?(character)
 end
 
 def visit_cave(starting, connections, cave_path, small_caves_visited)
-  puts "Starting: #{starting}"
+  #puts "Starting: #{starting}"
 
   # Duplicate running list of visted small caves so we can evaluate in each cave context
   small_caves_visited = small_caves_visited.dup
-  puts "Small caves visited: #{small_caves_visited}"
+  #puts "Small caves visited: #{small_caves_visited}"
 
   # Visit Cave
   cave_path += ",#{starting}"
@@ -85,12 +85,12 @@ def visit_cave(starting, connections, cave_path, small_caves_visited)
   next_caves.each do |next_cave|
     # Revisit small cave if none have been visited twice
     if (small_caves_visited.select { |key, value| value > 1}).length == 0
-      puts "visiting next_cave: #{next_cave}"
+      #puts "visiting next_cave: #{next_cave}"
       # Log visit to cave
       visit_cave(next_cave, connections, cave_path, small_caves_visited)
     # Make sure not to re-visit small caves
     elsif !small_caves_visited[next_cave]
-      puts "visiting next_cave: #{next_cave}"
+      #puts "visiting next_cave: #{next_cave}"
       # Log visit to cave
       visit_cave(next_cave, connections, cave_path, small_caves_visited)
     end
@@ -112,11 +112,11 @@ def find_paths
 end
 
 puts "----- STARTING -----"
-parse_input('test_input_2.txt')
+parse_input('input.txt')
 map_connections
-puts "Connections: #{@connections}"
-puts "Startings: #{@startings}"
-puts "Endings: #{@endings}"
+#puts "Connections: #{@connections}"
+#puts "Startings: #{@startings}"
+#puts "Endings: #{@endings}"
 find_paths
-puts "#{@paths}"
+#puts "#{@paths}"
 puts "Total # of paths: #{@paths.length}"
