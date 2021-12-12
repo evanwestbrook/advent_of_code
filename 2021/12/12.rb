@@ -23,8 +23,12 @@ def map_connections
   @datas.each do |data|
     if data[0] == "start"
       @startings << data[1]
+    elsif data[1] == "start"
+      @startings << data[0]
     elsif data[1] == "end"
       @endings[data[0]] = data[0]
+    elsif data[0] == "end"
+      @endings[data[1]] = data[1]
     else
       if @connections[data[0]]
         @connections[data[0]] << data[1]
@@ -93,8 +97,8 @@ def find_paths
 end
 
 puts "----- STARTING -----"
-parse_input('test_input.txt')
+parse_input('test_input_2.txt')
 map_connections
 find_paths
 puts "#{@paths}"
-puts "Total # of paths: #{@paths.length}}"
+puts "Total # of paths: #{@paths.length}"
