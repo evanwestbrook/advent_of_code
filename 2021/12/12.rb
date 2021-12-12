@@ -1,8 +1,11 @@
-# Find # of distinct paths that start at start and end at end
-# Don't visit small caves more than once
+# 1 small cave can be visited twice
+# Remaining small caves can only be visited once
+# Start and end can only be visted once
+# ^^ cannot return to start cave. Startin there counts as a visit
+# ^^ reaching end path ends it
 
 @datas = []
-@startings = []
+@startings = {}
 @endings = {}
 @connections = {}
 @paths = []
@@ -22,9 +25,9 @@ end
 def map_connections
   @datas.each do |data|
     if data[0] == "start"
-      @startings << data[1]
+      @startings[data[1]] = data[1]
     elsif data[1] == "start"
-      @startings << data[0]
+      @startings[data[0]] = data[0]
     elsif data[1] == "end"
       @endings[data[0]] = data[0]
     elsif data[0] == "end"
@@ -91,13 +94,13 @@ def find_from_start(starting, connections)
 end
 
 def find_paths
-  @startings.each do |starting|
+  @startings.each do |key, starting|
     find_from_start(starting, @connections)
   end
 end
 
 puts "----- STARTING -----"
-parse_input('input.txt')
+parse_input('test_input.txt')
 map_connections
 find_paths
 #puts "#{@paths}"
