@@ -78,17 +78,11 @@ def visit_cave(starting, connections, cave_path, small_cave_visited)
 
   # Vist next cave if we can
   next_caves.each do |next_cave|
-    # Make sure not to re-vist starts or endings
-    puts "Next cave: #{next_cave}"
-    puts "Startings filtered: #{@startings[next_cave]}"
-    puts "Endings filtered: #{@endings[next_cave]}"
-    if !@startings[next_cave] && !@endings[next_cave]
-      # Make sure not to re-visit small caves
-      if !small_cave_visited[next_cave]
-        puts "visiting next_cave: #{next_cave}"
-        # Log visit to cave
-        visit_cave(next_cave, connections, cave_path, small_cave_visited)
-      end
+    # Make sure not to re-visit small caves
+    if !small_cave_visited[next_cave]
+      puts "visiting next_cave: #{next_cave}"
+      # Log visit to cave
+      visit_cave(next_cave, connections, cave_path, small_cave_visited)
     end
   end
 end
