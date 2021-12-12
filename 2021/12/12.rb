@@ -97,8 +97,8 @@ def find_paths
 end
 
 puts "----- STARTING -----"
-parse_input('test_input_2.txt')
+parse_input('input.txt')
 map_connections
 find_paths
-puts "#{@paths}"
+#puts "#{@paths}"
 puts "Total # of paths: #{@paths.length}"
