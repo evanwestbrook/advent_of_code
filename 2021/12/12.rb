@@ -56,16 +56,21 @@ def is_lower_case?(character)
   end
 end
 
-def visit_cave(starting, connections, cave_path, small_cave_visited)
+def visit_cave(starting, connections, cave_path, small_caves_visited)
   puts "Starting: #{starting}"
 
   # Duplicate running list of visted small caves so we can evaluate in each cave context
-  small_cave_visited = small_cave_visited.dup
+  small_caves_visited = small_caves_visited.dup
+  puts "Small caves visited: #{small_caves_visited}"
 
   # Visit Cave
   cave_path += ",#{starting}"
   if is_lower_case?(starting)
-    small_cave_visited[starting] = 1
+    if small_caves_visited[starting]
+      small_caves_visited[starting] += 1
+    else
+      small_caves_visited[starting] = 1
+    end
   end
 
   # Determine if we should log an ending point
@@ -78,21 +83,26 @@ def visit_cave(starting, connections, cave_path, small_cave_visited)
 
   # Vist next cave if we can
   next_caves.each do |next_cave|
-    # Make sure not to re-visit small caves
-    if !small_cave_visited[next_cave]
+    # Revisit small cave if none have been visited twice
+    if (small_caves_visited.select { |key, value| value > 1}).length == 0
       puts "visiting next_cave: #{next_cave}"
       # Log visit to cave
-      visit_cave(next_cave, connections, cave_path, small_cave_visited)
+      visit_cave(next_cave, connections, cave_path, small_caves_visited)
+    # Make sure not to re-visit small caves
+    elsif !small_caves_visited[next_cave]
+      puts "visiting next_cave: #{next_cave}"
+      # Log visit to cave
+      visit_cave(next_cave, connections, cave_path, small_caves_visited)
     end
   end
 end
 
 def find_from_start(starting, connections)
-  small_cave_visited = {}
+  small_caves_visited = {}
 
   # Visit starting cave and start exploring
   cave_path = "start"
-  visit_cave(starting, connections, cave_path, small_cave_visited)
+  visit_cave(starting, connections, cave_path, small_caves_visited)
 end
 
 def find_paths
@@ -102,7 +112,7 @@ def find_paths
 end
 
 puts "----- STARTING -----"
-parse_input('test_input.txt')
+parse_input('test_input_2.txt')
 map_connections
 puts "Connections: #{@connections}"
 puts "Startings: #{@startings}"
