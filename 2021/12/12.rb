@@ -51,6 +51,7 @@ end
 
 def visit_cave(starting, connections, cave_path, small_cave_visited)
 
+  # Duplicate running list of visted small caves so we can evaluate in each cave context
   small_cave_visited = small_cave_visited.dup
 
   # Visit Cave
@@ -59,18 +60,13 @@ def visit_cave(starting, connections, cave_path, small_cave_visited)
     small_cave_visited[starting] = 1
   end
 
-  #Determine if we should log an ending point
+  # Determine if we should log an ending point
   if @endings[starting]
     @paths << "#{cave_path},end"
   end
 
   # Find caves accessed via starting point
   next_caves = connections[starting]
-  puts next_caves
-  puts small_cave_visited
-  puts "Cave path: #{cave_path}"
-
-
 
   # Vist next cave if we can
   next_caves.each do |next_cave|
@@ -80,23 +76,13 @@ def visit_cave(starting, connections, cave_path, small_cave_visited)
       visit_cave(next_cave, connections, cave_path, small_cave_visited)
     end
   end
-
 end
-
-parse_input('test_input.txt')
-puts "#{@datas}"
-map_connections
-puts "#{@startings}"
-puts "#{@endings}"
-puts "#{@connections}"
 
 def find_from_start(starting, connections)
   small_cave_visited = {}
 
-  # Visit starting and log visit
+  # Visit starting cave and start exploring
   cave_path = "start"
-
-
   visit_cave(starting, connections, cave_path, small_cave_visited)
 end
 
@@ -106,7 +92,9 @@ def find_paths
   end
 end
 
-#find_paths(@startings[0], @endings[0], @connections)
-#find_from_start(@startings[0], @endings[0], @connections)
+puts "----- STARTING -----"
+parse_input('test_input.txt')
+map_connections
 find_paths
 puts "#{@paths}"
+puts "Total # of paths: #{@paths.length}}"
