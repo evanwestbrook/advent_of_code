@@ -41,12 +41,22 @@ def parse_input(file)
 end
 
 def transpose_dot(fold_key, unit, dot, transponsed_dots)
-  transpose_distance = dot[1] - (dot[1] - unit) * 2
+
 
   if fold_key == "y"
+    transpose_distance = dot[1] - (dot[1] - unit) * 2
     # Check add dot if it doesn't already exists
     if !transponsed_dots[dot[0].to_s + "_" + transpose_distance.to_s]
       transponsed_dots[dot[0].to_s + "_" + transpose_distance.to_s] = [dot[0].to_i, transpose_distance]
+      transponsed_dots.delete(dot[0].to_s + "_" + dot[1].to_s)
+    else
+      transponsed_dots.delete(dot[0].to_s + "_" + dot[1].to_s)
+    end
+  elsif fold_key == "x"
+    transpose_distance = dot[0] - (dot[0] - unit) * 2
+    # Check add dot if it doesn't already exists
+    if !transponsed_dots[transpose_distance.to_s + "_" + dot[1].to_s]
+      transponsed_dots[transpose_distance.to_s + "_" + dot[1].to_s] = [transpose_distance, dot[1].to_i]
       transponsed_dots.delete(dot[0].to_s + "_" + dot[1].to_s)
     else
       transponsed_dots.delete(dot[0].to_s + "_" + dot[1].to_s)
@@ -64,6 +74,7 @@ def fold_dots(fold, dots)
       transpose_dot(fold.keys[0], fold[fold.keys[0]], dot[1], transposed_dots)
     elsif fold.keys[0] == "x" && dot[1][0] > fold[fold.keys[0]]
     # Handle x folds
+      transpose_dot(fold.keys[0], fold[fold.keys[0]], dot[1], transposed_dots)
     end
   end
 
@@ -81,3 +92,4 @@ parse_input('test_input.txt')
 puts " STARTING GRID "
 print_grid(@dots)
 puts "Transposed dots: #{fold_dots(@folds[0], @dots).length}"
+puts "Transposed dots: #{fold_dots(@folds[1], fold_dots(@folds[0], @dots)).length}"
