@@ -92,10 +92,7 @@ def fold_dots(fold, dots)
     end
   end
 
-  puts " TRANSPOSED GRID "
-  print_grid(transposed_dots)
   return transposed_dots
-
 end
 
 def complete_folds(folds, dots)
@@ -112,8 +109,8 @@ puts "----- Starting -----"
 parse_input('input.txt')
 
 puts " STARTING GRID "
-print_grid(@dots)
+#print_grid(@dots)
 puts "Dots visible after completing first fold: #{fold_dots(@folds[0], @dots).length}"
-#puts "Dots visible after completing all folds: #{complete_folds(@folds, @dots).length}"
 
-#puts prind_grid(complete_folds(@folds, @dots))
+puts " FINAL GRID"
+puts print_grid(complete_folds(@folds, @dots))
