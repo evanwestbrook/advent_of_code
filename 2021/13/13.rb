@@ -2,10 +2,24 @@
 @folds = []
 
 def print_grid(dots)
-  # Hard coded print grid logic for test input debugging
-  15.times do |i|
+  # Hard coded print grid logic for input debugging
+  max_x = 0
+  dots.each do |key, value|
+    if value[0] > max_x
+      max_x = value[0]
+    end
+  end
+
+  max_y = 0
+  dots.each do |key, value|
+    if value[1] > max_y
+      max_y = value[1]
+    end
+  end
+
+  (max_y + 1).times do |i|
     row_text = ""
-    11.times do |j|
+    (max_x + 1).times do |j|
       if dots[j.to_s + "_" + i.to_s]
         row_text += "#"
       else
@@ -78,16 +92,28 @@ def fold_dots(fold, dots)
     end
   end
 
-  #puts " TRANSPOSED GRID "
-  #print_grid(transposed_dots)
+  puts " TRANSPOSED GRID "
+  print_grid(transposed_dots)
   return transposed_dots
 
+end
+
+def complete_folds(folds, dots)
+  new_dots = dots.dup
+
+  folds.each_with_index do |fold, index|
+    new_dots = fold_dots(fold, new_dots)
+  end
+
+  return new_dots
 end
 
 puts "----- Starting -----"
 parse_input('input.txt')
 
-#puts " STARTING GRID "
-#print_grid(@dots)
+puts " STARTING GRID "
+print_grid(@dots)
 puts "Dots visible after completing first fold: #{fold_dots(@folds[0], @dots).length}"
-#puts "Transposed dots: #{fold_dots(@folds[1], fold_dots(@folds[0], @dots)).length}"
+#puts "Dots visible after completing all folds: #{complete_folds(@folds, @dots).length}"
+
+#puts prind_grid(complete_folds(@folds, @dots))
