@@ -78,18 +78,16 @@ def fold_dots(fold, dots)
     end
   end
 
-  puts " TRANSPOSED GRID "
-  print_grid(transposed_dots)
+  #puts " TRANSPOSED GRID "
+  #print_grid(transposed_dots)
   return transposed_dots
 
 end
 
 puts "----- Starting -----"
+parse_input('input.txt')
 
-parse_input('test_input.txt')
-#puts "Starting dots: #{@dots}"
-#puts "Folds: #{@folds}"
-puts " STARTING GRID "
-print_grid(@dots)
-puts "Transposed dots: #{fold_dots(@folds[0], @dots).length}"
-puts "Transposed dots: #{fold_dots(@folds[1], fold_dots(@folds[0], @dots)).length}"
+#puts " STARTING GRID "
+#print_grid(@dots)
+puts "Dots visible after completing first fold: #{fold_dots(@folds[0], @dots).length}"
+#puts "Transposed dots: #{fold_dots(@folds[1], fold_dots(@folds[0], @dots)).length}"
