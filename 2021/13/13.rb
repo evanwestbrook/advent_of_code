@@ -1,6 +1,21 @@
 @dots = {}
 @folds = []
 
+def print_grid(dots)
+  # Hard coded print grid logic for test input debugging
+  15.times do |i|
+    row_text = ""
+    11.times do |j|
+      if dots[j.to_s + "_" + i.to_s]
+        row_text += "#"
+      else
+        row_text += "."
+      end
+    end
+    puts row_text
+  end
+end
+
 def parse_input(file)
   read_file = File.readlines(file)
 
@@ -26,21 +41,17 @@ def parse_input(file)
 end
 
 def transpose_dot(fold_key, unit, dot, transponsed_dots)
-  puts "Fold: #{fold_key}"
-  puts "Unit: #{unit}"
-  puts "Dot: #{dot}"
-
   transpose_distance = dot[1] - (dot[1] - unit) * 2
-  puts "Transpose distance: #{transpose_distance}"
 
   if fold_key == "y"
     # Check add dot if it doesn't already exists
     if !transponsed_dots[dot[0].to_s + "_" + transpose_distance.to_s]
       transponsed_dots[dot[0].to_s + "_" + transpose_distance.to_s] = [dot[0].to_i, transpose_distance]
       transponsed_dots.delete(dot[0].to_s + "_" + dot[1].to_s)
+    else
+      transponsed_dots.delete(dot[0].to_s + "_" + dot[1].to_s)
     end
   end
-
 end
 
 def fold_dots(fold, dots)
@@ -48,8 +59,6 @@ def fold_dots(fold, dots)
   transposed_dots = dots.dup
 
   dots.each do |dot|
-    puts "dot #{dot}"
-    puts dot[0]
     # Handle y folds
     if fold.keys[0] == "y" && dot[1][1] > fold[fold.keys[0]]
       transpose_dot(fold.keys[0], fold[fold.keys[0]], dot[1], transposed_dots)
@@ -58,11 +67,17 @@ def fold_dots(fold, dots)
     end
   end
 
-  puts "Transposed dots: #{@transposed_dots}"
+  puts " TRANSPOSED GRID "
+  print_grid(transposed_dots)
+  return transposed_dots
+
 end
 
+puts "----- Starting -----"
+
 parse_input('test_input.txt')
-puts "#{@dots}"
-puts "#{@folds}"
-fold_dots(@folds[0], @dots)
-puts "#{@dots}"
+#puts "Starting dots: #{@dots}"
+#puts "Folds: #{@folds}"
+puts " STARTING GRID "
+print_grid(@dots)
+puts "Transposed dots: #{fold_dots(@folds[0], @dots).length}"
