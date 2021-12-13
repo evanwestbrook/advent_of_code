@@ -2,7 +2,6 @@
 @folds = []
 
 def print_grid(dots)
-  # Hard coded print grid logic for input debugging
   max_x = 0
   dots.each do |key, value|
     if value[0] > max_x
@@ -62,24 +61,20 @@ def transpose_dot(fold_key, unit, dot, transponsed_dots)
     # Check add dot if it doesn't already exists
     if !transponsed_dots[dot[0].to_s + "_" + transpose_distance.to_s]
       transponsed_dots[dot[0].to_s + "_" + transpose_distance.to_s] = [dot[0].to_i, transpose_distance]
-      transponsed_dots.delete(dot[0].to_s + "_" + dot[1].to_s)
-    else
-      transponsed_dots.delete(dot[0].to_s + "_" + dot[1].to_s)
     end
   elsif fold_key == "x"
     transpose_distance = dot[0] - (dot[0] - unit) * 2
     # Check add dot if it doesn't already exists
     if !transponsed_dots[transpose_distance.to_s + "_" + dot[1].to_s]
       transponsed_dots[transpose_distance.to_s + "_" + dot[1].to_s] = [transpose_distance, dot[1].to_i]
-      transponsed_dots.delete(dot[0].to_s + "_" + dot[1].to_s)
-    else
-      transponsed_dots.delete(dot[0].to_s + "_" + dot[1].to_s)
     end
   end
+
+  transponsed_dots.delete(dot[0].to_s + "_" + dot[1].to_s)
 end
 
 def fold_dots(fold, dots)
-
+  # Deep copy so that we can update hash while iterating over it
   transposed_dots = dots.dup
 
   dots.each do |dot|
@@ -109,8 +104,6 @@ puts "----- Starting -----"
 parse_input('input.txt')
 
 puts " STARTING GRID "
-#print_grid(@dots)
 puts "Dots visible after completing first fold: #{fold_dots(@folds[0], @dots).length}"
-
 puts " FINAL GRID"
 puts print_grid(complete_folds(@folds, @dots))
