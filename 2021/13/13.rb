@@ -25,7 +25,7 @@ def parse_input(file)
   end
 end
 
-def transpose_dot(fold_key, unit, dot)
+def transpose_dot(fold_key, unit, dot, transponsed_dots)
   puts "Fold: #{fold_key}"
   puts "Unit: #{unit}"
   puts "Dot: #{dot}"
@@ -35,21 +35,30 @@ def transpose_dot(fold_key, unit, dot)
 
   if fold_key == "y"
     # Check add dot if it doesn't already exists
-    if !@dots[dot[0].to_s + "_" + transpose_distance.to_s]
-      @dots[dot[0].to_s + "_" + transpose_distance.to_s] = [dot[0].to_i, transpose_distance]
-      @dots.delete("0_14")
+    if !transponsed_dots[dot[0].to_s + "_" + transpose_distance.to_s]
+      transponsed_dots[dot[0].to_s + "_" + transpose_distance.to_s] = [dot[0].to_i, transpose_distance]
+      transponsed_dots.delete(dot[0].to_s + "_" + dot[1].to_s)
     end
   end
 
 end
 
 def fold_dots(fold, dots)
-  # Handle y folds
-  if fold.keys[0] == "y" && dots["0_14"][1] > fold[fold.keys[0]]
-    transpose_dot(fold.keys[0], fold[fold.keys[0]], dots["0_14"])
-  elsif fold.keys[0] == "x" && dots["0_14"][0] > fold[fold.keys[0]]
-  # Handle x folds
+
+  transposed_dots = dots.dup
+
+  dots.each do |dot|
+    puts "dot #{dot}"
+    puts dot[0]
+    # Handle y folds
+    if fold.keys[0] == "y" && dot[1][1] > fold[fold.keys[0]]
+      transpose_dot(fold.keys[0], fold[fold.keys[0]], dot[1], transposed_dots)
+    elsif fold.keys[0] == "x" && dot[1][0] > fold[fold.keys[0]]
+    # Handle x folds
+    end
   end
+
+  puts "Transposed dots: #{@transposed_dots}"
 end
 
 parse_input('test_input.txt')
