@@ -41,6 +41,7 @@ def parse_input(file)
 end
 
 def increment_polymer_pair(element, polymer_pairs, multiplier)
+  # Apply multiplier here based on frequency to prevent exponentially evaluating solution
   if !polymer_pairs[element]
     return 1  * multiplier
   else
