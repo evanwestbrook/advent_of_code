@@ -7,6 +7,7 @@
 
 @insertion_rules = {}
 @polymer = ""
+@polymer_pairs = {}
 @element_frequency = {}
 
 def parse_input(file)
@@ -18,11 +19,16 @@ def parse_input(file)
 
     # Handle polymer template
     if index == 0
-      @polymer = row
 
-      # Initialize potential elements in polymer
       row.length.times do |i|
+        # Initialize potential elements used
         update_possible_elements(row[i])
+        # Initialize element pairs in polymer
+        if !(i == row.length - 1)
+          if !@polymer_pairs[row[i] + row[i + 1]]
+            @polymer_pairs[row[i] + row[i + 1]] = 1
+          end
+        end
       end
     end
 
@@ -31,7 +37,7 @@ def parse_input(file)
       row = row.split(" -> ")
       @insertion_rules[row[0]] = row[1]
 
-      # Initialize potential elements in polymer
+      # Initialize potential elements used
       update_possible_elements(row[1])
     end
   end
@@ -79,6 +85,8 @@ end
 
 puts "----- Starting -----"
 parse_input('test_input.txt')
-step_polymer(10)
+puts @polymer_pairs
+puts @element_frequency
+#step_polymer(10)
 
-puts "The solution to part 2 is: #{get_polymer_score(@polymer)}"
+#puts "The solution to part 2 is: #{get_polymer_score(@polymer)}"
