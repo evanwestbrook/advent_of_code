@@ -1,3 +1,10 @@
+# use hash of legitimate pairs form insertion rules
+# Create a hash of pairs from polymer
+# Each step evaluate hash of pairs against insertion rules
+#   If insertion rules are not in hash pair, add two (NN ->> NC, CN)
+#   If insertion rules are there, index by 1
+# For scoring, still evaluate keys against element freqency. This way, we're still evaluting the string
+
 @insertion_rules = {}
 @polymer = ""
 @element_frequency = {}
@@ -71,7 +78,7 @@ def get_polymer_score(polymer)
 end
 
 puts "----- Starting -----"
-parse_input('input.txt')
+parse_input('test_input.txt')
 step_polymer(10)
 
-puts "The solution to part 1 is: #{get_polymer_score(@polymer)}"
+puts "The solution to part 2 is: #{get_polymer_score(@polymer)}"
