@@ -37,6 +37,9 @@ def update_polymer(polymer)
   end
 
   return updated_polymer
+  # Part 1 solution considerations:
+  # 1. Is there a way to update the polymer without rebuilding it each time (i.e. insert instead of rebuild). Using
+  #      an each loop prevents us from doing that natively now
 end
 
 def step_polymer(steps)
