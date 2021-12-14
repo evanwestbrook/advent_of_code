@@ -1,10 +1,3 @@
-# use hash of legitimate pairs form insertion rules
-# Create a hash of pairs from polymer
-# Each step evaluate hash of pairs against insertion rules
-#   If insertion rules are not in hash pair, add two (NN ->> NC, CN)
-#   If insertion rules are there, index by 1
-# For scoring, still evaluate keys against element freqency. This way, we're still evaluting the string
-
 @insertion_rules = {}
 @polymer_pairs = {}
 @element_frequency = {}
