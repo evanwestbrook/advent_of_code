@@ -1,3 +1,5 @@
+require 'objspace'
+
 @polymer = []
 @insertion_rules = {}
 
@@ -37,9 +39,6 @@ def update_polymer(polymer)
   end
 
   return updated_polymer
-  # Part 1 solution considerations:
-  # 1. Is there a way to update the polymer without rebuilding it each time (i.e. insert instead of rebuild). Using
-  #      an each loop prevents us from doing that natively now
 end
 
 def step_polymer(steps)
@@ -72,4 +71,7 @@ puts "----- Starting -----"
 parse_input('input.txt')
 step_polymer(10)
 
-puts "The solution to part 1 is: #{get_polymer_score(@polymer)}"
+puts "instance size: #{ObjectSpace.memsize_of(@polymer)}"
+puts "instance size: #{ObjectSpace.memsize_of(@polymer.join(""))}"
+
+puts "The solution to part 2 is: #{get_polymer_score(@polymer)}"
