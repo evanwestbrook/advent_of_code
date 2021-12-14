@@ -69,9 +69,7 @@ def update_polymer(polymer_pairs)
 end
 
 def step_polymer(steps)
-
   steps.times do |step|
-    puts "--- Step #{step} ---"
     @polymer_pairs = update_polymer(@polymer_pairs)
   end
 end
@@ -111,8 +109,7 @@ def sum_polymer_pairs(polymer_pairs)
 end
 
 puts "----- Starting -----"
-parse_input('test_input.txt')
-step_polymer(10)
-puts @polymer_pairs
+parse_input('input.txt')
+step_polymer(40)
 
 puts "The solution to part 2 is: #{get_polymer_score(@polymer_pairs)}"
