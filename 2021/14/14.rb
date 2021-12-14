@@ -45,9 +45,28 @@ def step_polymer(steps)
   end
 end
 
+def get_element_frequency(polymer)
+  element_frequency = {}
+
+  polymer.each do |element|
+    if element_frequency[element]
+      element_frequency[element] += 1
+    else
+      element_frequency[element] = 1
+    end
+  end
+
+  return element_frequency
+end
+
+def get_polymer_score(polymer)
+  element_frequency = get_element_frequency(polymer)
+
+  return element_frequency.values.max - element_frequency.values.min
+end
+
 puts "----- Starting -----"
 parse_input('test_input.txt')
-puts "#{@polymer}"
-puts @insertion_rules
 step_polymer(10)
-puts "#{@polymer.length}"
+
+puts "The solution to part 1 is: #{get_polymer_score(@polymer)}"
