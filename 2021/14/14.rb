@@ -24,7 +24,7 @@ def parse_input(file)
         update_possible_elements(row[i])
         # Initialize element pairs in polymer
         if !(i == row.length - 1)
-          @polymer_pairs[row[i] + row[i + 1]] = increment_polymer_pair(row[i] + row[i + 1], @polymer_pairs)
+          @polymer_pairs[row[i] + row[i + 1]] = increment_polymer_pair(row[i] + row[i + 1], @polymer_pairs, 1)
         end
       end
     end
@@ -40,23 +40,12 @@ def parse_input(file)
   end
 end
 
-def increment_polymer_pair(element, polymer_pairs)
+def increment_polymer_pair(element, polymer_pairs, multiplier)
   if !polymer_pairs[element]
-    return 1
+    return 1  * multiplier
   else
-    return polymer_pairs[element] += 1
+    return polymer_pairs[element] += (1 * multiplier)
   end
-end
-
-def update_polymer_pairs(element, polymer_pairs)
-
-  if !polymer_pairs[element]
-    polymer_pairs[element] = 1
-  else
-    polymer_pairs[element] += 1
-  end
-
-  return polymer_pairs
 end
 
 def update_possible_elements(element)
@@ -69,12 +58,10 @@ def update_polymer(polymer_pairs)
   updated_polymer_pairs = {}
 
   polymer_pairs.each do |polymer_pair|
-    polymer_pair[1].times do |i|
-      new_polymers = [polymer_pair[0][0] + @insertion_rules[polymer_pair[0]], @insertion_rules[polymer_pair[0]] + polymer_pair[0][1]]
+    new_polymers = [polymer_pair[0][0] + @insertion_rules[polymer_pair[0]], @insertion_rules[polymer_pair[0]] + polymer_pair[0][1]]
 
-      new_polymers.each do |new_polymer|
-        updated_polymer_pairs[new_polymer] = increment_polymer_pair(new_polymer, updated_polymer_pairs)
-      end
+    new_polymers.each do |new_polymer|
+      updated_polymer_pairs[new_polymer] = increment_polymer_pair(new_polymer, updated_polymer_pairs, polymer_pair[1])
     end
   end
 
@@ -82,7 +69,9 @@ def update_polymer(polymer_pairs)
 end
 
 def step_polymer(steps)
+
   steps.times do |step|
+    puts "--- Step #{step} ---"
     @polymer_pairs = update_polymer(@polymer_pairs)
   end
 end
@@ -124,5 +113,6 @@ end
 puts "----- Starting -----"
 parse_input('test_input.txt')
 step_polymer(10)
+puts @polymer_pairs
 
 puts "The solution to part 2 is: #{get_polymer_score(@polymer_pairs)}"
