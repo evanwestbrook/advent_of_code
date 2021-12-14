@@ -24,7 +24,7 @@ def parse_input(file)
         update_possible_elements(row[i])
         # Initialize element pairs in polymer
         if !(i == row.length - 1)
-          update_polymer_pairs(row[i] + row[i + 1], @polymer_pairs)
+          @polymer_pairs[row[i] + row[i + 1]] = increment_polymer_pair(row[i] + row[i + 1], @polymer_pairs)
         end
       end
     end
@@ -40,12 +40,23 @@ def parse_input(file)
   end
 end
 
+def increment_polymer_pair(element, polymer_pairs)
+  if !polymer_pairs[element]
+    return 1
+  else
+    return polymer_pairs[element] += 1
+  end
+end
+
 def update_polymer_pairs(element, polymer_pairs)
+
   if !polymer_pairs[element]
     polymer_pairs[element] = 1
   else
     polymer_pairs[element] += 1
   end
+
+  return polymer_pairs
 end
 
 def update_possible_elements(element)
@@ -54,38 +65,48 @@ def update_possible_elements(element)
   end
 end
 
-def insert_polymer(polymer_pair)
-  new_polymers = []
-  new_polymers << polymer_pair[0] + @insertion_rules[polymer_pair]
-  new_polymers << @insertion_rules[polymer_pair] + polymer_pair[0]
-
-  puts new_polymers
-end
-
 def update_polymer(polymer_pairs)
   updated_polymer_pairs = {}
 
   polymer_pairs.each do |polymer_pair|
-    new_polymers = [polymer_pair[0][0] + @insertion_rules[polymer_pair[0]], @insertion_rules[polymer_pair[0]] + polymer_pair[0][1]]
+    polymer_pair[1].times do |i|
+      puts "UPdated pairs at this instance: #{updated_polymer_pairs}"
+      puts "Polymer pair: #{polymer_pair}"
+      new_polymers = [polymer_pair[0][0] + @insertion_rules[polymer_pair[0]], @insertion_rules[polymer_pair[0]] + polymer_pair[0][1]]
 
-    new_polymers.each do |new_polymer|
-      update_polymer_pairs(new_polymer, updated_polymer_pairs)
+      puts "becomes: #{new_polymers}"
+      new_polymers.each do |new_polymer|
+        puts "For #{new_polymer}"
+        puts "current value: #{updated_polymer_pairs[new_polymer]}"
+
+        updated_polymer_pairs[new_polymer] = increment_polymer_pair(new_polymer, updated_polymer_pairs)
+        puts "new value: #{updated_polymer_pairs[new_polymer]}"
+        #updated_polymer_pairs = update_polymer_pairs(new_polymer, polymer_pairs)
+      end
     end
   end
+
+  #puts updated_polymer_pairs
 
   return updated_polymer_pairs
 end
 
 def step_polymer(steps)
   steps.times do |step|
+    puts "---- STEP #{step} -----"
     @polymer_pairs = update_polymer(@polymer_pairs)
+    puts "Pairs after step: #{@polymer_pairs}"
   end
 end
 
-def get_element_frequency(polymer, element_frequency)
-  element_frequency.each do |key, value|
-    element_frequency[key] = polymer.count(key.to_s)
-  end
+def get_element_frequency(polymer_pairs, element_frequency)
+
+
+
+
+  #element_frequency.each do |key, value|
+  #  element_frequency[key] = polymer.count(key.to_s)
+  #end
 
   return element_frequency
 end
@@ -99,9 +120,9 @@ end
 puts "----- Starting -----"
 parse_input('test_input.txt')
 puts @polymer_pairs
-puts @element_frequency
+#puts @element_frequency
 #insert_polymer("NN")
-step_polymer(2)
+step_polymer(3)
 puts @polymer_pairs
 
 #puts "The solution to part 2 is: #{get_polymer_score(@polymer)}"
