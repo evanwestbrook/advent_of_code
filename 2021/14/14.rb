@@ -70,43 +70,38 @@ def update_polymer(polymer_pairs)
 
   polymer_pairs.each do |polymer_pair|
     polymer_pair[1].times do |i|
-      puts "UPdated pairs at this instance: #{updated_polymer_pairs}"
-      puts "Polymer pair: #{polymer_pair}"
       new_polymers = [polymer_pair[0][0] + @insertion_rules[polymer_pair[0]], @insertion_rules[polymer_pair[0]] + polymer_pair[0][1]]
 
-      puts "becomes: #{new_polymers}"
       new_polymers.each do |new_polymer|
-        puts "For #{new_polymer}"
-        puts "current value: #{updated_polymer_pairs[new_polymer]}"
-
         updated_polymer_pairs[new_polymer] = increment_polymer_pair(new_polymer, updated_polymer_pairs)
-        puts "new value: #{updated_polymer_pairs[new_polymer]}"
-        #updated_polymer_pairs = update_polymer_pairs(new_polymer, polymer_pairs)
       end
     end
   end
-
-  #puts updated_polymer_pairs
 
   return updated_polymer_pairs
 end
 
 def step_polymer(steps)
   steps.times do |step|
-    puts "---- STEP #{step} -----"
     @polymer_pairs = update_polymer(@polymer_pairs)
-    puts "Pairs after step: #{@polymer_pairs}"
   end
 end
 
 def get_element_frequency(polymer_pairs, element_frequency)
 
+  freq_0 = element_frequency.dup
+  freq_1 = element_frequency.dup
 
+  # Determine frequency of each pair
+  polymer_pairs.each do |key, value|
+    freq_0[key[0]] += value
+    freq_1[key[1]] += value
+  end
 
-
-  #element_frequency.each do |key, value|
-  #  element_frequency[key] = polymer.count(key.to_s)
-  #end
+  # Score based on the max frequenecy of each pair
+  element_frequency.each do |key, value|
+    element_frequency[key] = [freq_0[key], freq_1[key]].max
+  end
 
   return element_frequency
 end
@@ -117,12 +112,17 @@ def get_polymer_score(polymer)
   return element_frequency.values.max - element_frequency.values.min
 end
 
+def sum_polymer_pairs(polymer_pairs)
+  mysum = 0
+  polymer_pairs.each do |key, value|
+    mysum += value
+  end
+
+  return mysum
+end
+
 puts "----- Starting -----"
 parse_input('test_input.txt')
-puts @polymer_pairs
-#puts @element_frequency
-#insert_polymer("NN")
-step_polymer(3)
-puts @polymer_pairs
+step_polymer(10)
 
-#puts "The solution to part 2 is: #{get_polymer_score(@polymer)}"
+puts "The solution to part 2 is: #{get_polymer_score(@polymer_pairs)}"
