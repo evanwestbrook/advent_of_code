@@ -66,7 +66,7 @@ def get_polymer_score(polymer)
 end
 
 puts "----- Starting -----"
-parse_input('test_input.txt')
+parse_input('input.txt')
 step_polymer(10)
 
 puts "The solution to part 1 is: #{get_polymer_score(@polymer)}"
