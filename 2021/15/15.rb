@@ -1,3 +1,8 @@
+# This solution was developed based on this working solution
+# https://github.com/daniero/code-challenges/commit/953f1bad1f6718d8c7d594d21f72511a98c68061#diff-78956375e2e864ca93a62928dc747f7117796e65c4dd4ce04502d61eb4cae63d
+# Ultimataly, I couldn't quite get Dijkstra's algorithm figured out. I roughly understand how this code is working
+# but I'm not 100% sure on the why.
+
 require 'pqueue'
 require 'set'
 
