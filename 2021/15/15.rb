@@ -1,12 +1,8 @@
-# Examine all paths. There's no minimization logic, but we're removing some paths due to dead ends
-# for each path don't revisit a point
-# if no valid points remain on a path, it's a dead end and stop recursion
+require 'pqueue'
+require 'set'
 
-require './cardinal_directions.rb'
 @rows = []
 @ending_coord = []
-@valid_paths = []
-
 
 def parse_input(file)
   read_file = File.readlines(file)
@@ -17,7 +13,7 @@ def parse_input(file)
     cols = []
 
     row.length.times do |col|
-      cols << row[col]
+      cols << row[col].to_i
     end
 
     @rows << cols
@@ -30,77 +26,43 @@ def find_stopping_coordinates(rows)
   return [rows[0].length - 1, rows.length - 1]
 end
 
-def find_paths(start_coord)
-  my_path = {}
-  my_path[start_coord[0].to_s + "_" + start_coord[1].to_s] = 0
-  puts my_path
-  move(start_coord, my_path)
+def find_neighbors(grid, x, y)
+  [
+    [x, y - 1],
+    [x + 1, y],
+    [x, y + 1],
+    [x - 1, y]
+  ].select { |row, col|
+    row >= 0 &&
+    row < grid.size &&
+    col >= 0 &&
+    col < grid[0].size
+  }
 end
 
-def has_visited(potential_coord, my_path)
-  if my_path[potential_coord[0].to_s + "_" + potential_coord[1].to_s]
-    return true
-  else
-    return false
-  end
-end
+def find_path
 
-def move(curr_coord, my_path)
+  queue = PQueue.new([[0,0]]) { |a,b| a.last < b.last }
+  visited = Set[]
 
-  if @valid_paths.length < 5
-    # Stop at the end
-    if curr_coord[0] == @ending_coord[0] && curr_coord[1] == @ending_coord[1]
-      puts "valid path!"
-      @valid_paths << my_path
-    else
-      # should be if not a boundary and if not already visited path
-      if !left_boundary?(curr_coord[1])
-        #puts "go left"
-        step([curr_coord[0], curr_coord[1] - 1], my_path)
-      end
-      if !right_boundary?(@rows, curr_coord[0], curr_coord[1])
-        # && !my_path[curr_coord[0].to_s + "_" + (curr_coord[1] + 1).to_s]
-        #puts "go right"
-        step([curr_coord[0], curr_coord[1] + 1], my_path)
-      end
-      if !top_boundary?(curr_coord[0])
-        # && !my_path[(curr_coord[0] - 1).to_s + "_" + curr_coord[1].to_s]
-        #puts "go top"
-        step([curr_coord[0] - 1, curr_coord[1]], my_path)
-      end
-      if !bottom_boundary?(@rows, curr_coord[0])
-        # && !my_path[(curr_coord[0] + 1).to_s + "_" + curr_coord[1].to_s]
-        #puts "go bottom"
-        step([curr_coord[0] + 1, curr_coord[1]], my_path)
-      end
+  until queue.empty?
+    position, risk = queue.pop
+
+    # Only proceed if a given point has not already been visited
+    next unless visited.add?(position)
+
+    if position == @ending_coord
+      return risk
+      break
     end
-  end
-end
 
-def step(curr_coord, my_path)
-
-  if has_visited(curr_coord, my_path)
-  #if my_path[curr_coord[0].to_s + "_" + curr_coord[1].to_s]
-    puts "dead end"
-  else
-    this_path = my_path.dup
-    this_path[curr_coord[0].to_s + "_" + curr_coord[1].to_s] = @rows[curr_coord[0]][curr_coord[1]]
-    #puts this_path
-    move(curr_coord, this_path)
+    find_neighbors(@rows, position[0], position[1]).each { |x,y|
+      queue.push([[x,y], risk + @rows[y][x]])
+    }
   end
 end
 
 puts "===== STARTING ====="
-parse_input('test_input.txt')
-#puts "#{@rows}"
-#puts "#{@ending_coord}"
+parse_input('input.txt')
 
-find_paths([0,0])
-
-##my_test = {}
-#my_test["0_0"] = 0
-#my_test["0_1"] = 2
-#puts has_visited([0,1],my_test)
-
-#puts !left_boundary?(1)
-puts "#{@valid_paths[4]}"
+puts "The total risk of the lowest total risk path is: #{find_path}"
