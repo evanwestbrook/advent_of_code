@@ -7,7 +7,6 @@ require 'pqueue'
 require 'set'
 
 @rows = []
-@ending_coord = []
 
 def parse_input(file)
   read_file = File.readlines(file)
@@ -23,13 +22,29 @@ def parse_input(file)
 
     @rows << cols
   end
-
-  @ending_coord = find_stopping_coordinates(@rows)
 end
 
 def find_stopping_coordinates(rows)
   return [rows[0].length - 1, rows.length - 1]
 end
+
+def expand_grid(rows, zoom_factor)
+  # Solution taken from this comment https://www.reddit.com/r/adventofcode/comments/rgqzt5/comment/honys08/?utm_source=share&utm_medium=web2x&context=3
+  # Learned cool things about flat_map to better practice on enumerables https://www.geeksforgeeks.org/ruby-enumerable-flat_map-function/
+
+  large_grid = zoom_factor.times.flat_map { |ny|
+    rows.map { |row|
+      zoom_factor.times.flat_map { |nx|
+        row.map { |risk|
+          new_risk = risk + ny+nx
+          new_risk -= 9 while new_risk > 9
+          new_risk
+        }
+      }
+    }
+  }
+end
+
 
 def find_neighbors(grid, x, y)
   [
@@ -45,7 +60,7 @@ def find_neighbors(grid, x, y)
   }
 end
 
-def find_path
+def find_path(rows, ending_coord)
 
   queue = PQueue.new([[0,0]]) { |a,b| a.last < b.last }
   visited = Set[]
@@ -56,13 +71,13 @@ def find_path
     # Only proceed if a given point has not already been visited
     next unless visited.add?(position)
 
-    if position == @ending_coord
+    if position == ending_coord
       return risk
       break
     end
 
-    find_neighbors(@rows, position[0], position[1]).each { |x,y|
-      queue.push([[x,y], risk + @rows[y][x]])
+    find_neighbors(rows, position[0], position[1]).each { |x,y|
+      queue.push([[x,y], risk + rows[y][x]])
     }
   end
 end
@@ -70,4 +85,6 @@ end
 puts "===== STARTING ====="
 parse_input('input.txt')
 
-puts "The total risk of the lowest total risk path is: #{find_path}"
+puts "Part 1: The total risk of the lowest total risk path is: #{find_path(@rows, find_stopping_coordinates(@rows))}"
+large_grid = expand_grid(@rows, 5)
+puts "Part 2: The total risk of the lowest total risk path is: #{find_path(large_grid, find_stopping_coordinates(large_grid))}"
