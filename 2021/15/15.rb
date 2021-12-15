@@ -37,33 +37,50 @@ def find_paths(start_coord)
   move(start_coord, my_path)
 end
 
-def move(curr_coord, my_path)
-  if curr_coord[0] == @ending_coord[0] && curr_coord[1] == @ending_coord[1]
-    puts "valid path!"
-    @valid_paths << my_path
+def has_visited(potential_coord, my_path)
+  if my_path[potential_coord[0].to_s + "_" + potential_coord[1].to_s]
+    return true
   else
-    if !left_boundary?(curr_coord[1])# && !my_path[curr_coord[0].to_s + "_" + (curr_coord[1] - 1).to_s]
-      #puts "go left"
-      step([curr_coord[0], curr_coord[1] - 1], my_path)
-    end
-    if !right_boundary?(@rows, curr_coord[0], curr_coord[1])# && !my_path[curr_coord[0].to_s + "_" + (curr_coord[1] + 1).to_s]
-      #puts "go right"
-      step([curr_coord[0], curr_coord[1] + 1], my_path)
-    end
-    if !top_boundary?(curr_coord[0])# && !my_path[(curr_coord[0] - 1).to_s + "_" + curr_coord[1].to_s]
-      #puts "go top"
-      step([curr_coord[0] - 1, curr_coord[1]], my_path)
-    end
-    if !bottom_boundary?(@rows, curr_coord[0])# && !my_path[(curr_coord[0] + 1).to_s + "_" + curr_coord[1].to_s]
-      #puts "go bottom"
-      step([curr_coord[0] + 1, curr_coord[1]], my_path)
+    return false
+  end
+end
+
+def move(curr_coord, my_path)
+
+  if @valid_paths.length < 5
+    # Stop at the end
+    if curr_coord[0] == @ending_coord[0] && curr_coord[1] == @ending_coord[1]
+      puts "valid path!"
+      @valid_paths << my_path
+    else
+      # should be if not a boundary and if not already visited path
+      if !left_boundary?(curr_coord[1])
+        #puts "go left"
+        step([curr_coord[0], curr_coord[1] - 1], my_path)
+      end
+      if !right_boundary?(@rows, curr_coord[0], curr_coord[1])
+        # && !my_path[curr_coord[0].to_s + "_" + (curr_coord[1] + 1).to_s]
+        #puts "go right"
+        step([curr_coord[0], curr_coord[1] + 1], my_path)
+      end
+      if !top_boundary?(curr_coord[0])
+        # && !my_path[(curr_coord[0] - 1).to_s + "_" + curr_coord[1].to_s]
+        #puts "go top"
+        step([curr_coord[0] - 1, curr_coord[1]], my_path)
+      end
+      if !bottom_boundary?(@rows, curr_coord[0])
+        # && !my_path[(curr_coord[0] + 1).to_s + "_" + curr_coord[1].to_s]
+        #puts "go bottom"
+        step([curr_coord[0] + 1, curr_coord[1]], my_path)
+      end
     end
   end
 end
 
 def step(curr_coord, my_path)
 
-  if my_path[curr_coord[0].to_s + "_" + curr_coord[1].to_s]
+  if has_visited(curr_coord, my_path)
+  #if my_path[curr_coord[0].to_s + "_" + curr_coord[1].to_s]
     puts "dead end"
   else
     this_path = my_path.dup
@@ -77,5 +94,13 @@ puts "===== STARTING ====="
 parse_input('test_input.txt')
 #puts "#{@rows}"
 #puts "#{@ending_coord}"
+
 find_paths([0,0])
-puts "#{@valid_paths}"
+
+##my_test = {}
+#my_test["0_0"] = 0
+#my_test["0_1"] = 2
+#puts has_visited([0,1],my_test)
+
+#puts !left_boundary?(1)
+puts "#{@valid_paths[4]}"
