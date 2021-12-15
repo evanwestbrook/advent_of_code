@@ -1,15 +1,6 @@
 @num_increases = 0
 @sum_array = []
 
-def file_to_array(file)
-  read_file = File.readlines(file)
-  @array = []
-
-  read_file.each do |line|
-    @array << line.to_i
-  end
-end
-
 def make_sum (index)
   sum = @array[index] + @array[index + 1] + @array[index + 2]
 end
@@ -27,6 +18,10 @@ def get_increases
   end
 end
 
-file_to_array('input.txt')
+@array = File.readlines('input.txt').collect { |line| line.gsub("\n", '').to_i}
+#puts "#{@array}"
+
+#file_to_array_2('small_input.txt')
+#file_to_array('test_input.txt')
 get_increases
 puts @num_increases
