@@ -4,6 +4,8 @@
 
 require './cardinal_directions.rb'
 @rows = []
+@ending_coord = []
+@valid_paths = []
 
 
 def parse_input(file)
@@ -20,6 +22,8 @@ def parse_input(file)
 
     @rows << cols
   end
+
+  @ending_coord = find_stopping_coordinates(@rows)
 end
 
 def find_stopping_coordinates(rows)
@@ -34,21 +38,44 @@ def find_paths(start_coord)
 end
 
 def move(curr_coord, my_path)
-  if !left_boundary?(curr_coord[1])
-    puts "go left"
+  if curr_coord[0] == @ending_coord[0] && curr_coord[1] == @ending_coord[1]
+    puts "valid path!"
+    @valid_paths << my_path
+  else
+    if !left_boundary?(curr_coord[1])# && !my_path[curr_coord[0].to_s + "_" + (curr_coord[1] - 1).to_s]
+      #puts "go left"
+      step([curr_coord[0], curr_coord[1] - 1], my_path)
+    end
+    if !right_boundary?(@rows, curr_coord[0], curr_coord[1])# && !my_path[curr_coord[0].to_s + "_" + (curr_coord[1] + 1).to_s]
+      #puts "go right"
+      step([curr_coord[0], curr_coord[1] + 1], my_path)
+    end
+    if !top_boundary?(curr_coord[0])# && !my_path[(curr_coord[0] - 1).to_s + "_" + curr_coord[1].to_s]
+      #puts "go top"
+      step([curr_coord[0] - 1, curr_coord[1]], my_path)
+    end
+    if !bottom_boundary?(@rows, curr_coord[0])# && !my_path[(curr_coord[0] + 1).to_s + "_" + curr_coord[1].to_s]
+      #puts "go bottom"
+      step([curr_coord[0] + 1, curr_coord[1]], my_path)
+    end
   end
-  if !right_boundary?(@rows, curr_coord[0], curr_coord[1])
-    puts "go right"
-  end
-  if !top_boundary?(curr_coord[0])
-    puts "go top"
-  end
-  if !bottom_boundary?(@rows, curr_coord[0])
-    puts "go bottom"
+end
+
+def step(curr_coord, my_path)
+
+  if my_path[curr_coord[0].to_s + "_" + curr_coord[1].to_s]
+    puts "dead end"
+  else
+    this_path = my_path.dup
+    this_path[curr_coord[0].to_s + "_" + curr_coord[1].to_s] = @rows[curr_coord[0]][curr_coord[1]]
+    #puts this_path
+    move(curr_coord, this_path)
   end
 end
 
 puts "===== STARTING ====="
 parse_input('test_input.txt')
 #puts "#{@rows}"
-find_paths([1,1])
+#puts "#{@ending_coord}"
+find_paths([0,0])
+puts "#{@valid_paths}"
