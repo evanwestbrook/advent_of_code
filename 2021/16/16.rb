@@ -52,6 +52,19 @@ def decode_operator_l(message)
 end
 
 def decode_operator_n(message)
+  num_packets = message[0..10].to_i(2)
+  to_decode = message[11..(message.length - 1)]
+  length_traversed = 0
+  packets = []
+
+  (num_packets).times do |i|
+    decoded_packet = decode_transmission(to_decode[length_traversed..to_decode.length])
+    length_traversed += decoded_packet[:message][:packet_len]
+
+    packets << decoded_packet
+  end
+
+  return packets
 end
 
 
@@ -69,7 +82,7 @@ def decode_literal(message)
 end
 
 #@transmission = File.readlines('literal_val_input.txt')[0].gsub("\n", '')
-@transmission = File.readlines('operator_val_input_1.txt')[0].gsub("\n", '')
+@transmission = File.readlines('operator_val_input_2.txt')[0].gsub("\n", '')
 puts "#{@transmission}"
 #puts decode_transmission(@transmission)[:binary].to_i(2)
 puts "#{decode_transmission(@transmission)}"
