@@ -1,32 +1,28 @@
-@position = {
-  horizontal: 0,
-  depth: 0,
-  aim: 0
-}
-
-def forward (unit)
-  @position[:horizontal] += unit
-  @position[:depth] += unit * @position[:aim]
+def forward(position, unit)
+  position[:horizontal] += unit
+  position[:depth] += unit * position[:aim]
 end
 
-def down (unit)
-  @position[:aim] += unit
+def down(position, unit)
+  position[:aim] += unit
 end
 
-def up (unit)
-  @position[:aim] -= unit
+def up(position, unit)
+  position[:aim] -= unit
 end
 
-def plot_course
+def plot_course (position)
   @array.each do |command|
     if command[:command] == "forward"
-      forward (command[:unit])
+      forward(position, command[:unit])
     elsif command[:command] == "down"
-      down (command[:unit])
+      down(position, command[:unit])
     elsif command[:command] == "up"
-      up (command[:unit])
+      up(position, command[:unit])
     end
   end
+
+  position
 end
 
 @array = File.readlines('test_input.txt').collect do |line|
@@ -34,5 +30,11 @@ end
   {command: line[0], unit: line[1].to_i}
 end
 
-plot_course
-puts "Horizontal position: #{@position[:horizontal]}. Depth: #{@position[:depth]}. Multiply: #{@position[:horizontal] * @position[:depth]}."
+starting_position = {
+  horizontal: 0,
+  depth: 0,
+  aim: 0
+}
+
+final_position = plot_course(starting_position)
+puts "Horizontal position: #{final_position[:horizontal]}. Depth: #{final_position[:depth]}. Multiply: #{final_position[:horizontal] * final_position[:depth]}."
