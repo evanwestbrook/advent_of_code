@@ -1,20 +1,10 @@
-# Packet pattern:
-# - 0 + First 3 = version
-# - 0 + Second 3 = type id
-# - Remaining (in chunks of 5) are values
-# type == 4 == literal value
-#  - encode a single number
-#  - split into groups of 5 (1 is a previx for remaining 4, 0 is the previx of the last one)
-#  - then padded zeroes so whole (version, type, remiaining) are divisible by 4?
-#  - Those groups then are binary converted to decimal is the answer
-# type != 4 == operator value
-#  - contains one or more packet
-#  - performs operation on 1 or more packets inside
-#  = 0 + first 3 = version
-#  - 0 + second 3 = type
-#  - 1 = length type id
-#  - if 0, next 15 are total lenght in bits (represented in binary)
-#  - if 1, next 11 are # of sub-packets immediately contained in packet
+# Note: Had to get help based on this solution: https://github.com/erikw/advent-of-code-solutions/blob/main/2021/day16/part1.rb
+# It was approaching things in a similar way to how I did initially, but it seemed to work.
+# I was having issues with my parsed array returning nested in such a manner that I couldn't parse it on subsequent
+# recursions. I was having a tough time figuring it out, so I went and got help.
+# This solution method works a little easier because it keeps consuming the values instead of trying to keep track of where they are.
+# Ultimately, live tracking all of the items and then summing them (my initial solution) proved to be a little too
+# complicated to keep track of. 
 
 def parse_decoder(file_name)
   hex_decoder = {}
@@ -27,71 +17,6 @@ def parse_decoder(file_name)
   return hex_decoder
 end
 
-def decode_transmission(message)
-  packet = { version: message[0..2].to_i(2), type: message[3..5].to_i(2)}
-
-  if packet[:type] == 4
-    packet[:message] = decode_literal(message[6..(message.length - 1)])
-    return packet
-    #return decode_literal(message[6..(message.length - 1)])
-  else
-    mode = message[6]
-    if mode == "0"
-      decode_operator_l(packet, message[7..(message.length - 1)])
-    else
-      decode_operator_n(packet, message[7..(message.length - 1)])
-    end
-  end
-end
-
-def decode_operator_l(packet, message)
-  length = message[0..14].to_i(2)
-  to_decode = message[15..(14 + length)]
-  length_traversed = 0
-  packets = [packet]
-
-  0.step do |i|
-    decoded_packet = decode_transmission(to_decode[length_traversed..to_decode.length])
-    length_traversed += decoded_packet[:message][:packet_len]
-    packets << decoded_packet
-    if length_traversed >= length
-      break
-    end
-  end
-
-  return packets
-end
-
-def decode_operator_n(packet, message)
-  num_packets = message[0..10].to_i(2)
-  to_decode = message[11..(message.length - 1)]
-  length_traversed = 0
-  packets = [packet]
-
-  (num_packets).times do |i|
-    decoded_packet = decode_transmission(to_decode[length_traversed..to_decode.length])
-    length_traversed += decoded_packet[:message][:packet_len]
-
-    packets << decoded_packet
-  end
-
-  return packets
-end
-
-
-def decode_literal(message)
-  binary = ""
-
-  0.step do |i|
-    chunk = message[(0 + i * 5)..(4 + i * 5)]
-    binary += chunk[1..4]
-
-    if chunk[0] == "0"
-      return { binary: binary, packet_len: 6 + 5 + (i * 5)}
-    end
-  end
-end
-
 def decode_hex(hex)
   binary = ""
   hex.length.times do |i|
@@ -101,16 +26,72 @@ def decode_hex(hex)
   return binary
 end
 
+def consume_digits(digitstring, length)
+  digitstring.slice!(0, length)
+end
 
+def decode_operator_l(digits, numbits)
+  start_length = digits.length
+  versions = 0
 
+  while start_length - digits.length < numbits
+    version = decode_transmission(digits)
+    break if version.nil?
+
+    versions += version
+  end
+
+  return versions
+end
+
+def decode_operator_n(digits, nopacks)
+  packs = 0
+  versions = 0
+  while packs < nopacks
+
+    v = decode_transmission(digits)
+    break if v.nil?
+
+    versions += v
+    packs += 1
+  end
+  versions
+end
+
+def decode_literal(digits)
+  binary = ""
+
+  loop do
+    chunk = consume_digits(digits, 5)
+    binary += chunk[1, 4]
+    break if chunk[0] == '0' || digits.length < 5
+  end
+  binary.to_i(2)
+end
+
+def decode_transmission(digits)
+  return nil if digits.length < 11
+
+  versions = consume_digits(digits, 3).to_i(2)
+  type_id = consume_digits(digits, 3).to_i(2)
+  case type_id
+  when 4
+    literal_value = decode_literal(digits)
+  else
+    length_type_id = consume_digits(digits, 1).to_i(2)
+    if length_type_id == 0
+      length = consume_digits(digits, 15).to_i(2)
+      versions += decode_operator_l(digits, length)
+    else
+      length = consume_digits(digits, 11).to_i(2)
+      versions += decode_operator_n(digits, length)
+    end
+  end
+  versions
+end
+
+puts "===== STARTING ====="
 @hex_decoder = parse_decoder('hex_decoder.txt')
-#decode_hex(File.readlines('hex_literal_val_input.txt')[0].gsub("\n", ''))
+transmission = decode_hex(File.readlines('input.txt')[0].gsub("\n", ''))
 
-@transmission = decode_hex(File.readlines('hex_operator_val_input_1.txt')[0].gsub("\n", ''))
-
-
-#@transmission = File.readlines('literal_val_input.txt')[0].gsub("\n", '')
-#@transmission = File.readlines('operator_val_input_2.txt')[0].gsub("\n", '')
-#puts "#{@transmission}"
-#puts decode_transmission(@transmission)[:binary].to_i(2)
-puts "#{decode_transmission(@transmission)}"
+puts "Sum of Versions: #{decode_transmission(transmission)}"
