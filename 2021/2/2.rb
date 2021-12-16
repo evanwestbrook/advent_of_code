@@ -4,17 +4,6 @@
   aim: 0
 }
 
-def parse_file(file)
-  read_file = File.readlines(file)
-  @array = []
-
-  read_file.each do |line|
-    parsed_line = line.split
-    dict = {command: parsed_line[0], unit: parsed_line[1].to_i}
-    @array << dict
-  end
-end
-
 def forward (unit)
   @position[:horizontal] += unit
   @position[:depth] += unit * @position[:aim]
@@ -40,6 +29,10 @@ def plot_course
   end
 end
 
-parse_file('input.txt')
+@array = File.readlines('test_input.txt').collect do |line|
+  line = line.gsub("\n", '').split
+  {command: line[0], unit: line[1].to_i}
+end
+
 plot_course
 puts "Horizontal position: #{@position[:horizontal]}. Depth: #{@position[:depth]}. Multiply: #{@position[:horizontal] * @position[:depth]}."
