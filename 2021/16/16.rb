@@ -26,18 +26,18 @@ def decode_transmission(message)
   else
     mode = message[6]
     if mode == "0"
-      decode_operator_l(message[7..(message.length - 1)])
+      decode_operator_l(packet, message[7..(message.length - 1)])
     else
-      decode_operator_n(message[7..(message.length - 1)])
+      decode_operator_n(packet, message[7..(message.length - 1)])
     end
   end
 end
 
-def decode_operator_l(message)
+def decode_operator_l(packet, message)
   length = message[0..14].to_i(2)
   to_decode = message[15..(14 + length)]
   length_traversed = 0
-  packets = []
+  packets = [packet]
 
   0.step do |i|
     decoded_packet = decode_transmission(to_decode[length_traversed..to_decode.length])
@@ -51,11 +51,11 @@ def decode_operator_l(message)
   return packets
 end
 
-def decode_operator_n(message)
+def decode_operator_n(packet, message)
   num_packets = message[0..10].to_i(2)
   to_decode = message[11..(message.length - 1)]
   length_traversed = 0
-  packets = []
+  packets = [packet]
 
   (num_packets).times do |i|
     decoded_packet = decode_transmission(to_decode[length_traversed..to_decode.length])
