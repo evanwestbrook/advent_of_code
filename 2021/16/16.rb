@@ -36,12 +36,21 @@ def decode_binary_message(message)
 end
 
 def decode_operator_l(message)
-  puts message
   length = message[0..14].to_i(2)
-  #puts message[15..(14 + length)]
-  puts decode_binary_message(message[15..(14 + length)])
-  #puts decode_literal(message[15..(14 + length)])
-  #puts "1010001010".to_i(2)
+  to_decode = message[15..(14 + length)]
+  length_traversed = 0
+  packets = []
+
+  0.step do |i|
+    decoded_packet = decode_binary_message(to_decode[length_traversed..to_decode.length])
+    length_traversed += decoded_packet[:packet_len]
+    packets << decoded_packet
+    if length_traversed >= length
+      break
+    end
+  end
+
+  return packets
 end
 
 def decode_operator_n(message)
@@ -65,4 +74,4 @@ end
 @transmission = File.readlines('operator_val_input_1.txt')[0].gsub("\n", '')
 puts "#{@transmission}"
 #puts decode_binary_message(@transmission)[:binary].to_i(2)
-puts decode_binary_message(@transmission)
+puts "#{decode_binary_message(@transmission)}"
