@@ -25,8 +25,28 @@ def decode_binary_message(message)
   if type == 4
     return decode_literal(message[6..(message.length - 1)])
   else
+    mode = message[6]
+    puts "Mode: #{mode}"
+    if mode == "0"
+      decode_operator_l(message[7..(message.length - 1)])
+    else
+      decode_operator_n(message[7..(message.length - 1)])
+    end
   end
 end
+
+def decode_operator_l(message)
+  puts message
+  length = message[0..14].to_i(2)
+  #puts message[15..(14 + length)]
+  puts decode_binary_message(message[15..(14 + length)])
+  #puts decode_literal(message[15..(14 + length)])
+  #puts "1010001010".to_i(2)
+end
+
+def decode_operator_n(message)
+end
+
 
 def decode_literal(message)
   binary = ""
@@ -35,12 +55,14 @@ def decode_literal(message)
     chunk = message[(0 + i * 5)..(4 + i * 5)]
     binary += chunk[1..4]
 
-    break if chunk[0] == "0"
+    if chunk[0] == "0"
+      return { binary: binary, packet_len: 6 + 5 + (i * 5)}
+    end
   end
-
-  return binary.to_i(2)
 end
 
-@transmission = File.readlines('literal_val_input.txt')[0].gsub("\n", '')
+#@transmission = File.readlines('literal_val_input.txt')[0].gsub("\n", '')
+@transmission = File.readlines('operator_val_input_1.txt')[0].gsub("\n", '')
 puts "#{@transmission}"
+#puts decode_binary_message(@transmission)[:binary].to_i(2)
 puts decode_binary_message(@transmission)
