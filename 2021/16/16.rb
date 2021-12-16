@@ -15,3 +15,32 @@
 #  - 1 = length type id
 #  - if 0, next 15 are total lenght in bits (represented in binary)
 #  - if 1, next 11 are # of sub-packets immediately contained in packet
+
+def decode_binary_message(message)
+  version = message[0..2].to_i(2)
+  type = message[3..5].to_i(2)
+  puts "Version: #{version}"
+  puts "Type: #{type}"
+
+  if type == 4
+    return decode_literal(message[6..(message.length - 1)])
+  else
+  end
+end
+
+def decode_literal(message)
+  binary = ""
+
+  0.step do |i|
+    chunk = message[(0 + i * 5)..(4 + i * 5)]
+    binary += chunk[1..4]
+
+    break if chunk[0] == "0"
+  end
+
+  return binary.to_i(2)
+end
+
+@transmission = File.readlines('literal_val_input.txt')[0].gsub("\n", '')
+puts "#{@transmission}"
+puts decode_binary_message(@transmission)
