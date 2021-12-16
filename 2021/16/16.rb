@@ -16,6 +16,17 @@
 #  - if 0, next 15 are total lenght in bits (represented in binary)
 #  - if 1, next 11 are # of sub-packets immediately contained in packet
 
+def parse_decoder(file_name)
+  hex_decoder = {}
+
+  File.readlines('hex_decoder.txt').each do |line|
+    line = line.gsub("\n", '').split(" = ")
+    hex_decoder[line[0]] = line[1]
+  end
+
+  return hex_decoder
+end
+
 def decode_transmission(message)
   packet = { version: message[0..2].to_i(2), type: message[3..5].to_i(2)}
 
@@ -81,8 +92,25 @@ def decode_literal(message)
   end
 end
 
+def decode_hex(hex)
+  binary = ""
+  hex.length.times do |i|
+    binary += @hex_decoder[hex[i]]
+  end
+
+  return binary
+end
+
+
+
+@hex_decoder = parse_decoder('hex_decoder.txt')
+#decode_hex(File.readlines('hex_literal_val_input.txt')[0].gsub("\n", ''))
+
+@transmission = decode_hex(File.readlines('hex_operator_val_input_1.txt')[0].gsub("\n", ''))
+
+
 #@transmission = File.readlines('literal_val_input.txt')[0].gsub("\n", '')
-@transmission = File.readlines('operator_val_input_2.txt')[0].gsub("\n", '')
-puts "#{@transmission}"
+#@transmission = File.readlines('operator_val_input_2.txt')[0].gsub("\n", '')
+#puts "#{@transmission}"
 #puts decode_transmission(@transmission)[:binary].to_i(2)
 puts "#{decode_transmission(@transmission)}"
