@@ -16,17 +16,15 @@
 #  - if 0, next 15 are total lenght in bits (represented in binary)
 #  - if 1, next 11 are # of sub-packets immediately contained in packet
 
-def decode_binary_message(message)
-  version = message[0..2].to_i(2)
-  type = message[3..5].to_i(2)
-  puts "Version: #{version}"
-  puts "Type: #{type}"
+def decode_transmission(message)
+  packet = { version: message[0..2].to_i(2), type: message[3..5].to_i(2)}
 
-  if type == 4
-    return decode_literal(message[6..(message.length - 1)])
+  if packet[:type] == 4
+    packet[:message] = decode_literal(message[6..(message.length - 1)])
+    return packet
+    #return decode_literal(message[6..(message.length - 1)])
   else
     mode = message[6]
-    puts "Mode: #{mode}"
     if mode == "0"
       decode_operator_l(message[7..(message.length - 1)])
     else
@@ -42,8 +40,8 @@ def decode_operator_l(message)
   packets = []
 
   0.step do |i|
-    decoded_packet = decode_binary_message(to_decode[length_traversed..to_decode.length])
-    length_traversed += decoded_packet[:packet_len]
+    decoded_packet = decode_transmission(to_decode[length_traversed..to_decode.length])
+    length_traversed += decoded_packet[:message][:packet_len]
     packets << decoded_packet
     if length_traversed >= length
       break
@@ -73,5 +71,5 @@ end
 #@transmission = File.readlines('literal_val_input.txt')[0].gsub("\n", '')
 @transmission = File.readlines('operator_val_input_1.txt')[0].gsub("\n", '')
 puts "#{@transmission}"
-#puts decode_binary_message(@transmission)[:binary].to_i(2)
-puts "#{decode_binary_message(@transmission)}"
+#puts decode_transmission(@transmission)[:binary].to_i(2)
+puts "#{decode_transmission(@transmission)}"
