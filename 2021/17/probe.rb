@@ -7,8 +7,8 @@ class Probe
   end
 
   def print_info
-    puts "Coordinates: #{@x_coord} , #{@y_coord}"
-    puts "Velocity: #{@x_velocity} , #{@y_velocity}"
+    puts "Coordinates: (#{@x_coord}, #{@y_coord})"
+    puts "Velocity: (#{@x_velocity}, #{@y_velocity})"
   end
 
   def move
@@ -37,5 +37,13 @@ class Probe
     end
 
     return false
+  end
+
+  def inbounds?(x_target_range, y_target_range)
+    if @x_coord <= x_target_range[1] && @y_coord  >= y_target_range[0]
+      return true
+    else
+      return false
+    end
   end
 end

@@ -1,5 +1,9 @@
 require './probe.rb'
 
+# Start at lowest height we could be at (with the minimum x?)
+# keep backing off x and increasing y until we miss
+# one right before that will be the solution
+
 def parse_input(file)
   File.readlines(file).each do |row|
     instructions = row.gsub("\n", '')
@@ -12,14 +16,23 @@ end
 def fire_probe(velocity)
   probe = Probe.new([0,0], velocity)
 
-  loop do
+  while probe.inbounds?(@x_range, @y_range)
     probe.move
     if probe.hit?(@x_range, @y_range)
+      puts "Hit with:"
       probe.print_info
       break
     end
   end
+
+  if !probe.inbounds?(@x_range, @y_range)
+    puts "Miss with: "
+    probe.print_info
+  end
 end
 
+puts "===== STARTING ====="
 parse_input('test_input.txt')
-fire_probe([7,2])
+puts "X range: #{@x_range}"
+puts "Y range: #{@y_range}"
+fire_probe([6, 0])
