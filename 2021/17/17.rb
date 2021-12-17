@@ -41,7 +41,7 @@ def find_velocity(x, y)
   x_coord = probe[:probe].x_coord
   index = 1
 
-  while x_coord < @x_range.max do
+  while index < 10000000 do
     if probe[:hit]
       @hit_velocities << velocity
 
