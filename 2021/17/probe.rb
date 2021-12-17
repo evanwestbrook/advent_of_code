@@ -1,5 +1,5 @@
 class Probe
-  attr_accessor :max_y
+  attr_accessor :x_coord, :y_coord, :x_velocity, :y_velocity, :max_y
   def initialize(coordinates, velocity)
     @x_coord = coordinates[0]
     @y_coord = coordinates[1]
