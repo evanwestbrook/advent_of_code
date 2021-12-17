@@ -31,34 +31,33 @@ def fire_probe(velocity)
 end
 
 def find_all_velocities
-  starting_velocity = [0 - @y_range.max + 1, 1] # range at which top left is hit
-  puts "Starting: velocity #{starting_velocity}"
-  @hit_velocities << starting_velocity
-
-  get_velocities(starting_velocity)
-
-  #increase y velocity unitl miss
-  #reduce yvelocity until miss
-  # increas x velocity and repeat
-
+  find_velocity(0,0)
 end
 
-def get_velocities(velocity)
-  puts "Velocity: #{velocity}"
+
+def find_velocity(x, y)
+  velocity = [x,y]
+  probe = fire_probe(velocity)
+  x_coord = probe[:probe].x_coord
+  index = 1
+
+  while x_coord < @x_range.max do
+    if probe[:hit]
+      @hit_velocities << velocity
+
+      explore_x(velocity)
+    end
+    velocity = [x + index, y]
+    probe = fire_probe(velocity)
+    x_coord = probe[:probe].x_coord
+    index += 1
+    explore_x(velocity)
+  end
+end
+
+def explore_x(velocity)
   increase_velocities_y(velocity)
   decrease_velocities_y(velocity)
-
-  inc_x_v = velocity.dup
-  inc_x_v = [inc_x_v[0] + 1, inc_x_v[1]]
-  probe = fire_probe(inc_x_v)
-  if probe[:hit]
-    @hit_velocities << inc_x_v
-    get_velocities(inc_x_v)
-  #else
-  #elsif probe[:probe].x_coord < @x_range.max
-    puts probe[:probe].x_coord
-  #  get_velocities(inc_x_v)
-  end
 end
 
 def increase_velocities_y(velocity)
@@ -97,7 +96,7 @@ puts "===== STARTING ====="
 parse_input('test_input.txt')
 puts "X range: #{@x_range}"
 puts "Y range: #{@y_range}"
+
 find_all_velocities
-#puts "Hit velocities #{@hit_velocities}"
-#puts "Hit velocities #{@hit_velocities.length}"
-puts @x_range.max
+puts "Hit velocities #{@hit_velocities}"
+puts "Hit velocities #{@hit_velocities.length}"
