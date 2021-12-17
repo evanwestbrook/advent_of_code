@@ -29,10 +29,13 @@ def fire_probe(velocity)
   end
 end
 
+def find_starting_x
+  starting_x = 0 - @y_range.max + 1
+  return starting_x
+end
+
 def find_max_y_velocity
-  starting_x = 0 - @y_range[1] + 1
-  #puts starting_x
-  go = true
+  starting_x = 0 - @y_range.max + 1
   velocity = [starting_x, 0]
 
   loop do
@@ -46,8 +49,9 @@ def find_max_y_velocity
 end
 
 puts "===== STARTING ====="
-@max_y = 0
 parse_input('test_input.txt')
+puts "X range: #{@x_range}"
+puts "Y range: #{@y_range}"
 max_velocity = find_max_y_velocity
 
 puts "Velocity for max y: #{max_velocity}"
