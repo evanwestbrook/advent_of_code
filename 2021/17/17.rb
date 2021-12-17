@@ -3,7 +3,7 @@ require './probe.rb'
 # Start at lowest height we could be at (with the minimum x?)
 # keep backing off x and increasing y until we miss
 # one right before that will be the solution
-@hit_velocities = []
+@hit_velocities = {}
 
 def parse_input(file)
   File.readlines(file).each do |row|
@@ -35,7 +35,11 @@ def find_all_velocities
   y = 0
   100.times do |i|
     if fire_probe([x + i, y])[:hit]
-      @hit_velocities << [x + i, y]
+      if @hit_velocities[(x + i).to_s + "_" + y.to_s]
+        @hit_velocities[(x + i).to_s + "_" + y.to_s] = @hit_velocities[(x + i).to_s + "_" + y.to_s] + 1
+      else
+        @hit_velocities[(x + i).to_s + "_" + y.to_s] = 1
+      end
     end
     check_y(x + i, y)
   end
@@ -44,12 +48,20 @@ end
 def check_y(x, y)
   100.times do |i|
     if fire_probe([x, y + i])[:hit]
-      @hit_velocities << [x, y + i]
+      if @hit_velocities[x.to_s + "_" + (y + i).to_s]
+        @hit_velocities[x.to_s + "_" + (y + i).to_s] = @hit_velocities[x.to_s + "_" + (y + i).to_s] + 1
+      else
+        @hit_velocities[x.to_s + "_" + (y + i).to_s] = 1
+      end
     end
   end
   100.times do |i|
     if fire_probe([x, y - i])[:hit]
-      @hit_velocities << [x, y - i]
+      if @hit_velocities[x.to_s + "_" + (y - i).to_s]
+        @hit_velocities[x.to_s + "_" + (y - i).to_s] = @hit_velocities[x.to_s + "_" + (y - i).to_s] + 1
+      else
+        @hit_velocities[x.to_s + "_" + (y - i).to_s] = 1
+      end
     end
   end
 end
