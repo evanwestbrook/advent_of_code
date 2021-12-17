@@ -31,63 +31,25 @@ def fire_probe(velocity)
 end
 
 def find_all_velocities
-  find_velocity(0,0)
-end
-
-
-def find_velocity(x, y)
-  velocity = [x,y]
-  probe = fire_probe(velocity)
-  x_coord = probe[:probe].x_coord
-  index = 1
-
-  while index < 10000000 do
-    if probe[:hit]
-      @hit_velocities << velocity
-
-      explore_x(velocity)
+  x = 0
+  y = 0
+  100.times do |i|
+    if fire_probe([x + i, y])[:hit]
+      @hit_velocities << [x + i, y]
     end
-    velocity = [x + index, y]
-    probe = fire_probe(velocity)
-    x_coord = probe[:probe].x_coord
-    index += 1
-    explore_x(velocity)
+    check_y(x + i, y)
   end
 end
 
-def explore_x(velocity)
-  increase_velocities_y(velocity)
-  decrease_velocities_y(velocity)
-end
-
-def increase_velocities_y(velocity)
-  inc_v = velocity.dup
-
-  inc_v = [inc_v[0], inc_v[1] + 1]
-
-  loop do
-    probe = fire_probe(inc_v)
-    if probe[:hit]
-      @hit_velocities << inc_v
-      inc_v = [inc_v[0], inc_v[1] + 1]
-    else
-      break
+def check_y(x, y)
+  100.times do |i|
+    if fire_probe([x, y + i])[:hit]
+      @hit_velocities << [x, y + i]
     end
   end
-end
-
-def decrease_velocities_y(velocity)
-  inc_v = velocity.dup
-
-  inc_v = [inc_v[0], inc_v[1] - 1]
-
-  loop do
-    probe = fire_probe(inc_v)
-    if probe[:hit]
-      @hit_velocities << inc_v
-      inc_v = [inc_v[0], inc_v[1] - 1]
-    else
-      break
+  100.times do |i|
+    if fire_probe([x, y - i])[:hit]
+      @hit_velocities << [x, y - i]
     end
   end
 end
