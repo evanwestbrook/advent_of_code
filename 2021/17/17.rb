@@ -48,10 +48,12 @@ end
 def fire_probe(velocity)
   coords = [0,0]
 
-  7.times do |i|
+  loop do
     res = step(coords, velocity)
     if res[:hit]
-      puts "hit!"
+      p res
+      return "hit!"
+      break
     else
       coords = res[:coords]
       velocity = res[:velocity]
