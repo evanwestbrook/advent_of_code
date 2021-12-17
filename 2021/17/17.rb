@@ -33,7 +33,7 @@ end
 def find_all_velocities
   x = 0
   y = 0
-  100.times do |i|
+  1000.times do |i|
     if fire_probe([x + i, y])[:hit]
       if @hit_velocities[(x + i).to_s + "_" + y.to_s]
         @hit_velocities[(x + i).to_s + "_" + y.to_s] = @hit_velocities[(x + i).to_s + "_" + y.to_s] + 1
@@ -46,7 +46,7 @@ def find_all_velocities
 end
 
 def check_y(x, y)
-  100.times do |i|
+  1000.times do |i|
     if fire_probe([x, y + i])[:hit]
       if @hit_velocities[x.to_s + "_" + (y + i).to_s]
         @hit_velocities[x.to_s + "_" + (y + i).to_s] = @hit_velocities[x.to_s + "_" + (y + i).to_s] + 1
@@ -55,7 +55,7 @@ def check_y(x, y)
       end
     end
   end
-  100.times do |i|
+  1000.times do |i|
     if fire_probe([x, y - i])[:hit]
       if @hit_velocities[x.to_s + "_" + (y - i).to_s]
         @hit_velocities[x.to_s + "_" + (y - i).to_s] = @hit_velocities[x.to_s + "_" + (y - i).to_s] + 1
@@ -67,7 +67,7 @@ def check_y(x, y)
 end
 
 puts "===== STARTING ====="
-parse_input('test_input.txt')
+parse_input('input.txt')
 puts "X range: #{@x_range}"
 puts "Y range: #{@y_range}"
 
