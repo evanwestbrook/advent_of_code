@@ -18,18 +18,14 @@ def fire_probe(velocity)
 
   while probe.inbounds?(@x_range, @y_range)
     probe.move
+
     if probe.hit?(@x_range, @y_range)
-      #puts "Hit with:"
-      #probe.print_info
-      return true
-      #break
+      return { hit: true, probe: probe }
     end
   end
 
   if !probe.inbounds?(@x_range, @y_range)
-    #puts "Miss with: "
-    #probe.print_info
-    return false
+    return { hit: false }
   end
 end
 
@@ -40,10 +36,9 @@ def find_max_y_velocity
   velocity = [starting_x, 0]
 
   loop do
-    if fire_probe(velocity)
+    if fire_probe(velocity)[:hit]
       velocity = [velocity[0], velocity[1] + 1]
     else
-      #go =  false
       return [velocity[0], velocity[1] - 1]
     end
 
@@ -51,6 +46,9 @@ def find_max_y_velocity
 end
 
 puts "===== STARTING ====="
+@max_y = 0
 parse_input('test_input.txt')
+max_velocity = find_max_y_velocity
 
-puts "Velocity for max y: #{find_max_y_velocity}"
+puts "Velocity for max y: #{max_velocity}"
+puts "The max y for this velocity is: #{fire_probe(max_velocity)[:probe].max_y}"

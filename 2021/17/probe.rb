@@ -1,9 +1,11 @@
 class Probe
+  attr_accessor :max_y
   def initialize(coordinates, velocity)
     @x_coord = coordinates[0]
     @y_coord = coordinates[1]
     @x_velocity = velocity[0]
     @y_velocity = velocity[1]
+    @max_y = 0
   end
 
   def print_info
@@ -26,6 +28,10 @@ class Probe
 
   def step_y
     @y_coord += @y_velocity
+    if @y_coord >= @max_y
+      @max_y = @y_coord
+    end
+
     @y_velocity -= 1
   end
 
