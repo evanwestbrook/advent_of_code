@@ -70,3 +70,4 @@ end
 
 snailfish_numbers = open("input.txt").each_line.map{parse_snailfish_number(_1)}
 puts get_magnitude(snailfish_numbers.reduce{add(_1, _2)})
+p snailfish_numbers.permutation(2).map{|a, b| get_magnitude(add(a,b))}.max
