@@ -67,10 +67,7 @@ def check_y(x, y)
 end
 
 puts "===== STARTING ====="
-parse_input('input.txt')
-puts "X range: #{@x_range}"
-puts "Y range: #{@y_range}"
-
+parse_input('./data/input.txt')
 find_all_velocities
 puts "Hit velocities #{@hit_velocities}"
 puts "Hit velocities #{@hit_velocities.length}"
