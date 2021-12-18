@@ -1,13 +1,3 @@
-@snailfish_numbers = []
-
-def parse_input(file)
-  File.readlines(file).each do |row|
-    snailfish_number = row.gsub("\n", '')
-    #snailfish_number = eval(snailfish_number)
-    @snailfish_numbers << snailfish_number
-  end
-end
-
 def parse_snailfish_number(snailfish_number)
   # Parse number into ruby complex number of a+bi where a is number and b is depth
   depth = 0
@@ -55,8 +45,6 @@ def explode(sf_num, index)
   sf_num[index] = 0 + (first.imaginary - 1).i
 end
 
-parse_input('test_input_6.txt')
+snailfish_numbers = open("input.txt").each_line.map{parse_snailfish_number(_1)}
 
-#puts "#{@snailfish_numbers}"
-add(@snailfish_numbers[0],@snailfish_numbers[1])
 
