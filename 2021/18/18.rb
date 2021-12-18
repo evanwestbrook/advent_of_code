@@ -35,7 +35,12 @@ def split(sf_num, index)
   sf_num[index] = sf_num[index].real / 2 + (sf_num[index].imaginary + 1).i
 end
 
-def explode(exploder, snailfish_number)
+def explode(sf_num, index)
+  first, second = sf_num.slice(index, 2)
+  sf_num[index - 1] += first.real if index != 0
+  sf_num[index + 2] += second.real if sf_num[index + 2]
+  sf_num.delete_at(index)
+  sf_num[index] = 0 + (first.imaginary - 1).i
 end
 
 parse_input('test_input_6.txt')
