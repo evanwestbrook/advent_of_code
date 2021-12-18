@@ -45,6 +45,19 @@ def explode(sf_num, index)
   sf_num[index] = 0 + (first.imaginary - 1).i
 end
 
+def get_magnitude(sf_num)
+  loop do
+    max_depth = sf_num.map(&:imaginary).max
+    break if max_depth == 0
+
+    index = sf_num.index{_1.imaginary == max_depth}
+    sf_num[index] = 3 * sf_num[index].real + 2 * sf_num[index + 1].real + (sf_num[index].imaginary - 1).i
+    sf_num.delete_at(index + 1)
+  end
+
+  return sf_num.first.real
+end
+
 snailfish_numbers = open("input.txt").each_line.map{parse_snailfish_number(_1)}
 
 
