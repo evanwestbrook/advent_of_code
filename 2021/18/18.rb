@@ -27,11 +27,23 @@ def parse_snailfish_number(snailfish_number)
 end
 
 def add(left, right)
-  return [left, right]
+  joined = left.dup.concat(right).map{_1 + 1.i}
+  loop do
+    index_to_explode = joined.index{_1.imaginary >= 5}
+    if index_to_explode
+      explode(joined, index_to_explode) and next
+    end
+    index_to_split = joined.index{_1.real >= 10}
+    if index_to_split
+      split(joined, index_to_split) and next
+    end
+    break
+  end
+  return joined
 end
 
 def split(sf_num, index)
-  sf_num.insert(index + 1, sf_num[index].real / 2.0).round + (sf_num[index].imaginary + 1).i)
+  sf_num.insert(index + 1, (sf_num[index].real / 2.0).round + (sf_num[index].imaginary + 1).i)
   sf_num[index] = sf_num[index].real / 2 + (sf_num[index].imaginary + 1).i
 end
 
@@ -45,6 +57,6 @@ end
 
 parse_input('test_input_6.txt')
 
-puts "#{@snailfish_numbers}"
-puts "#{parse_snailfish_number(@snailfish_numbers[4])}"
+#puts "#{@snailfish_numbers}"
+add(@snailfish_numbers[0],@snailfish_numbers[1])
 
