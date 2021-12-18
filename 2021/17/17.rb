@@ -69,5 +69,4 @@ end
 puts "===== STARTING ====="
 parse_input('./data/input.txt')
 find_all_velocities
-puts "Hit velocities #{@hit_velocities}"
 puts "Hit velocities #{@hit_velocities.length}"
