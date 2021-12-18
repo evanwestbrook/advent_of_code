@@ -3,9 +3,26 @@
 def parse_input(file)
   File.readlines(file).each do |row|
     snailfish_number = row.gsub("\n", '')
-    snailfish_number = eval(snailfish_number)
+    #snailfish_number = eval(snailfish_number)
     @snailfish_numbers << snailfish_number
   end
+end
+
+def parse_snailfish_number(snailfish_number)
+  depth = 0
+  parsed_number = []
+
+  snailfish_number.chars.each do |char|
+    if char.match?(/\d/)
+      parsed_number << char.to_i + depth.i
+    elsif char == "["
+      depth += 1
+    elsif char == "]"
+      depth -= 1
+    end
+  end
+
+  return parsed_number
 end
 
 def add(left, right)
@@ -21,11 +38,6 @@ end
 
 parse_input('test_input_6.txt')
 
-test_num = eval("[[[[[9,8],1],2],3],4]")
-test_exploder = eval("[9,8]")
-#puts "#{test_num[0][0][0][0]}"
-
-#explode(test_exploder, test_num)
-
-puts "#{split(11)}"
+puts "#{@snailfish_numbers}"
+puts "#{parse_snailfish_number(@snailfish_numbers[4])}"
 
