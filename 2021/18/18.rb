@@ -9,6 +9,7 @@ def parse_input(file)
 end
 
 def parse_snailfish_number(snailfish_number)
+  # Parse number into ruby complex number of a+bi where a is number and b is depth
   depth = 0
   parsed_number = []
 
@@ -29,8 +30,9 @@ def add(left, right)
   return [left, right]
 end
 
-def split(regular_number)
-  return [(regular_number.to_f / 2).floor.to_i, (regular_number.to_f / 2).ceil.to_i]
+def split(sf_num, index)
+  sf_num.insert(index + 1, sf_num[index].real / 2.0).round + (sf_num[index].imaginary + 1).i)
+  sf_num[index] = sf_num[index].real / 2 + (sf_num[index].imaginary + 1).i
 end
 
 def explode(exploder, snailfish_number)
