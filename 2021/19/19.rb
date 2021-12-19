@@ -48,6 +48,8 @@ def common_points(s1, s2, i1, i2)
     end
    end
   end
+
+  return [nil, nil]
 end
 
 
@@ -57,16 +59,35 @@ puts "===== STARTING ====="
 
 
 
-parse_input('./data/test_input_2.txt')
+parse_input('./data/input.txt')
 
-match = {"0": @scanners[0]}
+matched = {"0": @scanners[0]}
 distances = [0, 0, 0]
 done = []
 
 loop do
-  @scanners.each do |scanner|
-    p scanner
+  @scanners.each_with_index do |scanner, i |
+    if done.include?(scanner) || !matched.include?(scanner)
+      @scanners.each_with_index do |sub_scanner, j|
+        if matched.include? sub_scanner || scanner == sub_scanner
+          common_points = common_points(matched[i], scanners[j], scanner, sub_scanner)
+
+          if common_points[0]
+            matched[j] = common_points[0]
+            distances << common_points[1]
+          end
+
+        end
+      end
+
+      done << scanner
+
+    end
+  end
+
+  if done.length == @scanners.length
     break
   end
-  break
 end
+
+p matched[:"0"].length
