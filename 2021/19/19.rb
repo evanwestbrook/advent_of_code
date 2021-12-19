@@ -5,8 +5,7 @@ require './matrix_math.rb'
 
 def parse_input(file)
   @scanners = []
-  scanner = {}
-  scanner_num = 0
+  scanner = []
   file_lines = File.readlines(file)
 
   file_lines.each_with_index do |row, index|
@@ -15,14 +14,11 @@ def parse_input(file)
       if index > 0
         @scanners << scanner
       end
-      scanner = {}
-      row = row.split(" ")
-      scanner_num = row[2].to_i
-      scanner[scanner_num] = []
+      scanner = []
     elsif row.include? ","
       row = row.split(",")
       row = row.map{ |coord| coord = coord.to_i}
-      scanner[scanner_num] << row
+      scanner << row
     end
 
     if index == file_lines.length - 1
@@ -51,10 +47,10 @@ def common_points(s1, s2, i1, i2)
       end
     end
    end
-
-
   end
 end
+
+
 
 puts "===== STARTING ====="
 @bases = get_bases
@@ -62,3 +58,15 @@ puts "===== STARTING ====="
 
 
 parse_input('./data/test_input_2.txt')
+
+match = {"0": @scanners[0]}
+distances = [0, 0, 0]
+done = []
+
+loop do
+  @scanners.each do |scanner|
+    p scanner
+    break
+  end
+  break
+end
