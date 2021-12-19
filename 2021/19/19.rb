@@ -18,10 +18,6 @@ def parse_input(file)
       row = row.map{ |coord| coord = coord.to_i}
       scanner[scanner_num] << row
     end
-
-    #instructions = instructions.split(",")
-    #@x_range = instructions[0].split("x=")[1].split("..").map { |s| s.to_i}
-    #@y_range = instructions[1].split("y=")[1].split("..").map { |s| s.to_i}
   end
 end
 
