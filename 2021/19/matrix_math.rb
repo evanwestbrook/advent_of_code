@@ -82,7 +82,7 @@ def apply_rotation(vbase, facing)
   return matrix
 end
 
-def basic_transform(coordinate, basis)
+def basis_transform(coordinate, basis)
   a = basis[0][0]
   b = basis[0][1]
   c = basis[0][2]
