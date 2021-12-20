@@ -140,6 +140,5 @@ def get_num_lit(input_image)
 end
 
 parse_input('./data/input.txt')
-print_image(enhance(@input_image, 2))
 
-puts "The # of lit pixels is #{get_num_lit(enhance(@input_image, 2))}"
+puts "The # of lit pixels is #{get_num_lit(enhance(@input_image, 50))}"
