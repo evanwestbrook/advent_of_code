@@ -28,8 +28,8 @@ def print_image(image)
   end
 end
 
-def get_enhancement_arr(input_image, x, y)
-  neighbors = get_adjacent(input_image, y, x)
+def get_enhancement_arr(input_image, x, y, padding_char)
+  neighbors = get_adjacent(input_image, y, x, padding_char)
 
   top_row = [neighbors[:nw], neighbors[:n], neighbors[:ne]]
   mid_row = [neighbors[:w], input_image[y][x], neighbors[:e]]
@@ -54,15 +54,15 @@ def decode_enhancement_arr(enhancement_arr)
 end
 
 
-def simulate_infinite_space(input_image)
+def simulate_infinite_space(input_image, padding_char)
 
   new_image = input_image.dup
 
   # Add padding to top
   2.times do
-    pre_row = [".", ".", ".", "."]
+    pre_row = [padding_char, padding_char, padding_char, padding_char]
     input_image[0].length.times do |i|
-      pre_row << "."
+      pre_row << padding_char
     end
     new_image.unshift(pre_row)
   end
@@ -70,8 +70,8 @@ def simulate_infinite_space(input_image)
   # Add padding to mid
   input_image.each do |row|
     2.times do
-      row.unshift(".")
-      row.push(".")
+      row.unshift(padding_char)
+      row.push(padding_char)
     end
   end
 
@@ -79,7 +79,7 @@ def simulate_infinite_space(input_image)
   2.times do
     pre_row = []
     input_image[0].length.times do |i|
-      pre_row << "."
+      pre_row << padding_char
     end
     new_image.push(pre_row)
   end
@@ -88,19 +88,19 @@ def simulate_infinite_space(input_image)
 end
 
 
-def enhance_pixel(input_image, x, y)
-  return @enhancement_algo[decode_enhancement_arr(get_enhancement_arr(input_image, x, y))]
+def enhance_pixel(input_image, x, y, padding_char)
+  return @enhancement_algo[decode_enhancement_arr(get_enhancement_arr(input_image, x, y, padding_char))]
 end
 
-def enhance_image(input_image)
+def enhance_image(input_image, padding_char)
   new_image = []
 
-  infinite_image = simulate_infinite_space(input_image)
+  infinite_image = simulate_infinite_space(input_image, padding_char)
 
   infinite_image.each_with_index do |row, i|
     new_row = []
     row.each_with_index do |col, j|
-      new_col = enhance_pixel(infinite_image, j, i)
+      new_col = enhance_pixel(infinite_image, j, i, padding_char)
       new_row << new_col
     end
     new_image << new_row
@@ -112,8 +112,19 @@ end
 def enhance(input_image, n)
   new_image = input_image.dup
 
-  n.times do
-    new_image = enhance_image(new_image)
+  padding_char = "."
+  flicker_char = "."
+  # If empty space (000000000) is not decoded as "." then the infinite space flickers between "." and "#"
+  if @enhancement_algo[0] == "#"
+    flicker_char = "#"
+  end
+
+  n.times do |i|
+    if i.odd?
+      new_image = enhance_image(new_image, flicker_char)
+    else
+      new_image = enhance_image(new_image, padding_char)
+    end
   end
 
   return new_image
@@ -128,6 +139,7 @@ def get_num_lit(input_image)
   return num_lit
 end
 
-parse_input('./data/test_input.txt')
+parse_input('./data/input.txt')
+print_image(enhance(@input_image, 2))
 
 puts "The # of lit pixels is #{get_num_lit(enhance(@input_image, 2))}"
