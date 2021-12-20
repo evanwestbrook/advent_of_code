@@ -102,4 +102,4 @@ end
 @equipment_locations =  find_scanner_positions(@scanners, @scanner_mappings)
 
 puts "There are #{@equipment_locations[:beacons].length} beacons"
-puts "The largest Manhattan distance between two sscnners is #{@equipment_locations[:scanners].combination(2).map { |a, b| (b-a).map(&:abs).sum }.max}"
+puts "The largest Manhattan distance between two scanners is #{@equipment_locations[:scanners].combination(2).map { |a, b| (b-a).map(&:abs).sum }.max}"
