@@ -12,7 +12,6 @@ def parse_input(file)
     if index == 0
       @enhancement_algo = row
     elsif row.include? "."
-
       row_arr = []
       row.length.times do |i|
         row_arr << row[i]
@@ -54,12 +53,50 @@ def decode_enhancement_arr(enhancement_arr)
   return binary.to_i(2)
 end
 
+
+def simulate_infinite_space(input_image)
+
+  new_image = input_image.dup
+
+  # Add padding to top
+  2.times do
+    pre_row = [".", ".", ".", "."]
+    input_image[0].length.times do |i|
+      pre_row << "."
+    end
+    new_image.unshift(pre_row)
+  end
+
+  # Add padding to mid
+  input_image.each do |row|
+    2.times do
+      row.unshift(".")
+      row.push(".")
+    end
+  end
+
+  # Add padding to mottom
+  # Add padding to top
+  2.times do
+    pre_row = []
+    input_image[0].length.times do |i|
+      pre_row << "."
+    end
+    new_image.push(pre_row)
+  end
+
+  print_image(new_image)
+end
+
+
 def enhance_pixel(input_image, x, y)
   return @enhancement_algo[decode_enhancement_arr(get_enhancement_arr(input_image, x, y))]
 end
 
 parse_input('./data/test_input.txt')
-print_image(@input_image)
+#print_image(@input_image)
+
+simulate_infinite_space(@input_image)
 
 #p enhance_pixel(@input_image, 2, 2)
 
