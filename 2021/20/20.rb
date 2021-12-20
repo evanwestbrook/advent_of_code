@@ -75,8 +75,7 @@ def simulate_infinite_space(input_image)
     end
   end
 
-  # Add padding to mottom
-  # Add padding to top
+  # Add padding to bottom
   2.times do
     pre_row = []
     input_image[0].length.times do |i|
@@ -85,7 +84,7 @@ def simulate_infinite_space(input_image)
     new_image.push(pre_row)
   end
 
-  print_image(new_image)
+  return new_image
 end
 
 
@@ -93,10 +92,23 @@ def enhance_pixel(input_image, x, y)
   return @enhancement_algo[decode_enhancement_arr(get_enhancement_arr(input_image, x, y))]
 end
 
+def enhance_image(input_image)
+  new_image = []
+
+  infinite_image = simulate_infinite_space(input_image)
+
+  infinite_image.each_with_index do |row, i|
+    new_row = []
+    row.each_with_index do |col, j|
+      new_col = enhance_pixel(infinite_image, j, i)
+      new_row << new_col
+    end
+    new_image << new_row
+  end
+
+  return new_image
+end
+
 parse_input('./data/test_input.txt')
-#print_image(@input_image)
 
-simulate_infinite_space(@input_image)
-
-#p enhance_pixel(@input_image, 2, 2)
-
+print_image(enhance_image(@input_image))
