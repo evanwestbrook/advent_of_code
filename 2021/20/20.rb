@@ -3,14 +3,13 @@ require './cardinal_directions.rb'
 @enhancement_algo = ""
 @input_image = []
 
-#each step consdiers growing one outwards on all sides
-
 def parse_input(file)
   File.readlines(file).each_with_index do |row, index|
     row = row.gsub(/\n/, "")
     # Get enhancement algorithm
     if index == 0
       @enhancement_algo = row
+    # Parse out the image
     elsif row.include? "."
       row_arr = []
       row.length.times do |i|
@@ -55,7 +54,6 @@ end
 
 
 def simulate_infinite_space(input_image, padding_char)
-
   new_image = input_image.dup
 
   # Add padding to top
@@ -77,11 +75,11 @@ def simulate_infinite_space(input_image, padding_char)
 
   # Add padding to bottom
   2.times do
-    pre_row = []
+    post_row = []
     input_image[0].length.times do |i|
-      pre_row << padding_char
+      post_row << padding_char
     end
-    new_image.push(pre_row)
+    new_image.push(post_row)
   end
 
   return new_image
@@ -139,6 +137,6 @@ def get_num_lit(input_image)
   return num_lit
 end
 
-parse_input('./data/input.txt')
+parse_input('./data/test_input.txt')
 
-puts "The # of lit pixels is #{get_num_lit(enhance(@input_image, 50))}"
+puts "The # of lit pixels is #{get_num_lit(enhance(@input_image, 2))}"
