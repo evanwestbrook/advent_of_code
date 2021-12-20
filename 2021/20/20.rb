@@ -109,6 +109,25 @@ def enhance_image(input_image)
   return new_image
 end
 
+def enhance(input_image, n)
+  new_image = input_image.dup
+
+  n.times do
+    new_image = enhance_image(new_image)
+  end
+
+  return new_image
+end
+
+def get_num_lit(input_image)
+  num_lit = 0
+  input_image.each do |row|
+    num_lit += row.count("#")
+  end
+
+  return num_lit
+end
+
 parse_input('./data/test_input.txt')
 
-print_image(enhance_image(@input_image))
+puts "The # of lit pixels is #{get_num_lit(enhance(@input_image, 2))}"
