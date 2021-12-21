@@ -2,21 +2,6 @@ require './player.rb'
 require './deterministic_die.rb'
 require './dirac_die.rb'
 
-def create_dirac_combos(starting1, starting2)
-  combo_hash = {}
-
-  10.times do |i|
-    10.times do |j|
-      combo_hash[(i + 1).to_s + "_" + (j + 1).to_s] = { num: 0, curr_score: 0 }
-    end
-  end
-
-  first = starting1.to_s + "_" + starting2.to_s
-  combo_hash[first] = { num: 1, curr_score: 0 }
-
-  return combo_hash
-end
-
 def play_deterministic_game
   $END_SCORE = 1000
   die = DeterministicDie.new(100)
@@ -45,37 +30,4 @@ def play_deterministic_game
   puts "Solution:#{loser.score * die.num_rolls}"
 end
 
-def play_dirac_game
-
-  $END_SCORE = 21
-  $PLAYER_1_WINS = 0
-  $PLAYER_2_WINS = 0
-
-  board_options = create_dirac_combos(4, 8)
-  universes = board_options.select{ |key, value| value[:num] > 0 }
-
-  while board_options.select{ |key, value| value[:num] > 0 }.length() > 0 do
-
-    universes = board_options.select{ |key, value| value[:num] > 0 }
-
-    universes.each do |key, value|
-      locations = key.split("_")
-      die = DiracDie.new(1)
-      player1 = Player.new(locations[0].to_i, value[:curr_score], 0)
-      player2 = Player.new(locations[1].to_i, 0, 1)
-
-      player1.take_turn_dirac(die, 0, board_options, locations)
-      player2.take_turn_dirac(die, 0, board_options, locations)
-    end
-  end
-
-  p $PLAYER_1_WINS
-  p $PLAYER_2_WINS
-
-end
-
-#play_deterministic_game
-
 play_dirac_game
-#p create_dirac_combos(4, 8)
-
