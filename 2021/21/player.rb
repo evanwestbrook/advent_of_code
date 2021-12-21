@@ -9,10 +9,11 @@ class Player
     to_move = 0
     3.times do
       to_move += die.roll
-      p to_move
     end
 
     move(to_move)
+
+    @score += @position
   end
 
   private
