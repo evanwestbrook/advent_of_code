@@ -19,7 +19,12 @@ class Player
   private
 
   def move(to_move)
+    puts "to_move: #{to_move}"
     max_position = @position + to_move
-    @position = max_position - (max_position / 10) * 10
+    if max_position - (max_position / 10) * 10 == 0
+      @position = 10
+    else
+      @position = max_position - (max_position / 10) * 10
+    end
   end
 end
