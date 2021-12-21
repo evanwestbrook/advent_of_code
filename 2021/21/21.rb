@@ -1,12 +1,12 @@
 require './player.rb'
 require './deterministic_die.rb'
 
-$END_SCORE = 1000
-die = DeterministicDie.new(100)
-player1 = Player.new(4)
-player2 = Player.new(8)
+def play_deterministic_game
+  $END_SCORE = 1000
+  die = DeterministicDie.new(100)
+  player1 = Player.new(4)
+  player2 = Player.new(8)
 
-def play_game(die, player1, player2)
   loser = ""
 
   loop do
@@ -29,4 +29,4 @@ def play_game(die, player1, player2)
   puts "Solution:#{loser.score * die.num_rolls}"
 end
 
-play_game(die, player1, player2)
+play_deterministic_game
