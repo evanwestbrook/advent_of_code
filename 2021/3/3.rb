@@ -1,7 +1,3 @@
-# Potential improvements and things to consider
-# 1. Each total reading is an inverse of the other (gamma vs episilon, oxygen vs c02, etc.). Would it be possible to
-#    only perform one iteration for each end result (power, life support, etc.) instead of the current 4 for each value
-
 def parse_file(file)
   read_file = File.readlines(file)
   @array = []
