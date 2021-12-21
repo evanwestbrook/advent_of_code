@@ -6,39 +6,15 @@ def create_dirac_combos(starting1, starting2)
   combo_hash = {}
 
   10.times do |i|
-    3.times do |j|
-      key_val_1 = starting1 + i + 1
-      if key_val_1 > 10
-        key_val_1 = key_val_1 - 10
-      end
-
-      key_val_2 = starting2 + j + 1
-      if key_val_2 > 10
-        key_val_2 = key_val_2 - 10
-      end
-      key = key_val_1.to_s + "_" + key_val_2.to_s
-
-      combo_hash[key] = 0
+    10.times do |j|
+      combo_hash[(i + 1).to_s + "_" + (j + 1).to_s] = 0
     end
   end
 
-  p combo_hash.length
+  first = starting1.to_s + "_" + starting2.to_s
+  combo_hash[first] = 1
 
-  10.times do |i|
-    3.times do |j|
-      key_val_2 = starting1 + i + 1
-      if key_val_2 > 10
-        key_val_2 = key_val_2 - 10
-      end
-
-      key_val_1 = starting1 + j + 1
-      if key_val_1 > 10
-        key_val_1 = key_val_1 - 10
-      end
-      key = key_val_1.to_s + "_" + key_val_2.to_s
-      combo_hash[key] = 0
-    end
-  end
+  return combo_hash
 end
 
 def play_deterministic_game
@@ -70,31 +46,37 @@ def play_deterministic_game
 end
 
 def play_dirac_game
+  puts "dirac"
   $END_SCORE = 21
   $PLAYER_1_WINS = 0
   $PLAYER_2_WINS = 0
 
-  die = DiracDie.new(1)
-  player1 = Player.new(4, 0, 0)
-  player2 = Player.new(8, 0, 1)
+  board_options = create_dirac_combos(4, 8)
+  universes = board_options.select{ |key, value| value > 0 }
 
-  universes = [{player1: player1, player2: player2}]
+  p universes
 
-  universes.each_with_index do |universe, index|
-    break if $PLAYER_2_WINS >= 341960390180808
-    universe[:player1].take_turn_dirac(die, 0, universes, universe)
-    universe[:player2].take_turn_dirac(die, 0, universes, universe)
-    puts "# of universes: #{universes.length}"
-    #puts "Player 1 wins #{$PLAYER_1_WINS}"
-    #puts "Player 2 wins #{$PLAYER_2_WINS}"
+  universes.each do |key, value|
+    locations = key.split("_")
+    die = DiracDie.new(1)
+    player1 = Player.new(locations[0].to_i, 0, 0)
+    player2 = Player.new(locations[1].to_i, 0, 1)
+
+    player1.take_turn_dirac(die, 0, board_options, locations)
+    player2.take_turn_dirac(die, 0, board_options, locations)
+
+    #board_options[key] -= 1
+    break
+
   end
-  puts "Player 1 wins #{$PLAYER_1_WINS}"
-  puts "Player 2 wins #{$PLAYER_2_WINS}"
+
+  p board_options.select{ |key, value| value > 0 }
+  p $PLAYER_1_WINS
+  p $PLAYER_2_WINS
 
 end
 
-p create_dirac_combos(4, 8)
-
-
 #play_deterministic_game
-#play_dirac_game
+
+play_dirac_game
+
