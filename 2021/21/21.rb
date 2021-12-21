@@ -41,21 +41,16 @@ def play_dirac_game
 
   universes = [{player1: player1, player2: player2}]
 
-  puts "Staring universes:"
-  p universes
-
   universes.each_with_index do |universe, index|
-    break if index == 1000
+    break if $PLAYER_2_WINS >= 341960390180808
     universe[:player1].take_turn_dirac(die, 0, universes, universe)
-    puts "Step 1 universes:"
-    p universes
-    p universes.length
-    puts "PLayer 1 wins #{$PLAYER_1_WINS}"
+    universe[:player2].take_turn_dirac(die, 0, universes, universe)
+    puts "# of universes: #{universes.length}"
+    #puts "Player 1 wins #{$PLAYER_1_WINS}"
+    #puts "Player 2 wins #{$PLAYER_2_WINS}"
   end
-
-  #universes[0][:player1].take_turn_dirac(die, 0, universes, universes[0])
-
-
+  puts "Player 1 wins #{$PLAYER_1_WINS}"
+  puts "Player 2 wins #{$PLAYER_2_WINS}"
 
 end
 
