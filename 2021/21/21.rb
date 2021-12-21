@@ -2,8 +2,8 @@ require './player.rb'
 require './deterministic_die.rb'
 
 die = DeterministicDie.new
-player1 = Player.new(4)
-player2 = Player.new(8)
+player1 = Player.new(3)
+player2 = Player.new(10)
 
 def play_game(die, player1, player2)
   loser = ""
