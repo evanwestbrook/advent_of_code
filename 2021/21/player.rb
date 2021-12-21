@@ -31,10 +31,12 @@ class Player
 
             $PLAYER_1_WINS += 1
             # Remove winning game
-            board_options[player1.position.to_s + "_" + locations[1].to_s] -= 1
+            board_options[player1.position.to_s + "_" + locations[1].to_s][:num] -= 1
+            board_options[player1.position.to_s + "_" + locations[1].to_s][:curr_score] = 0
           else
             # Update state
-            board_options[player1.position.to_s + "_" + locations[1].to_s] += 1
+            board_options[player1.position.to_s + "_" + locations[1].to_s][:num] += 1
+            board_options[player1.position.to_s + "_" + locations[1].to_s][:curr_score] += player1.score
 
             player1.take_turn_dirac(die, turn_num + 1, board_options, [player1.position, locations[1].to_i])
           end
@@ -44,10 +46,12 @@ class Player
 
             $PLAYER_2_WINS += 1
             # Remove winning game
-            board_options[locations[0].to_s + "_" + player2.position.to_s] -= 1
+            board_options[locations[0].to_s + "_" + player2.position.to_s][:num] -= 1
+            board_options[locations[0].to_s + "_" + player2.position.to_s][:curr_score] = 0
           else
             # Update state
-            board_options[locations[0].to_s + "_" + player2.position.to_s] += 1
+            board_options[locations[0].to_s + "_" + player2.position.to_s][:num] += 1
+            board_options[locations[0].to_s + "_" + player2.position.to_s][:curr_score] += player2.score
 
             player2.take_turn_dirac(die, turn_num + 1, board_options, [locations[0].to_i, player2.position])
           end
@@ -56,10 +60,11 @@ class Player
 
       # Remove current state
       if @player_num == 0
-
-        board_options[orig_pos.to_s + "_" + locations[1].to_s] -= 1
+        board_options[orig_pos.to_s + "_" + locations[1].to_s][:num] -= 1
+        board_options[orig_pos.to_s + "_" + locations[1].to_s][:curr_score] = 0
       elsif @player_num == 0
-        board_options[locations[0].to_s + "_" + orig_pos.to_s] -= 1
+        board_options[locations[0].to_s + "_" + orig_pos.to_s][:num] -= 1
+        board_options[locations[0].to_s + "_" + orig_pos.to_s][:curr_score] = 0
       end
     end
   end

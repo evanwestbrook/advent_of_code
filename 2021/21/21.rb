@@ -7,12 +7,12 @@ def create_dirac_combos(starting1, starting2)
 
   10.times do |i|
     10.times do |j|
-      combo_hash[(i + 1).to_s + "_" + (j + 1).to_s] = 0
+      combo_hash[(i + 1).to_s + "_" + (j + 1).to_s] = { num: 0, curr_score: 0 }
     end
   end
 
   first = starting1.to_s + "_" + starting2.to_s
-  combo_hash[first] = 1
+  combo_hash[first] = { num: 1, curr_score: 0 }
 
   return combo_hash
 end
@@ -52,14 +52,14 @@ def play_dirac_game
   $PLAYER_2_WINS = 0
 
   board_options = create_dirac_combos(4, 8)
-  universes = board_options.select{ |key, value| value > 0 }
+  universes = board_options.select{ |key, value| value[:num] > 0 }
 
   p universes
 
   universes.each do |key, value|
     locations = key.split("_")
     die = DiracDie.new(1)
-    player1 = Player.new(locations[0].to_i, 0, 0)
+    player1 = Player.new(locations[0].to_i, value[:curr_score], 0)
     player2 = Player.new(locations[1].to_i, 0, 1)
 
     player1.take_turn_dirac(die, 0, board_options, locations)
@@ -70,7 +70,7 @@ def play_dirac_game
 
   end
 
-  p board_options.select{ |key, value| value > 0 }
+  p board_options.select{ |key, value| value[:num] > 0 }
   p $PLAYER_1_WINS
   p $PLAYER_2_WINS
 
@@ -79,4 +79,5 @@ end
 #play_deterministic_game
 
 play_dirac_game
+#p create_dirac_combos(4, 8)
 
