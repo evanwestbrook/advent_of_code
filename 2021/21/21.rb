@@ -1,22 +1,23 @@
 require './player.rb'
 require './deterministic_die.rb'
 
-die = DeterministicDie.new
-player1 = Player.new(3)
-player2 = Player.new(10)
+$END_SCORE = 1000
+die = DeterministicDie.new(100)
+player1 = Player.new(4)
+player2 = Player.new(8)
 
 def play_game(die, player1, player2)
   loser = ""
 
   loop do
     player1.take_turn(die)
-    if player1.score >= 1000
+    if player1.score >= $END_SCORE
       puts "Player 1 wins"
       loser = player2
       break
     end
     player2.take_turn(die)
-    if player2.score >= 1000
+    if player2.score >= $END_SCORE
       puts "Player 2 wins"
       loser = player1
       break
