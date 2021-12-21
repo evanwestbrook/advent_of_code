@@ -5,12 +5,27 @@ die = DeterministicDie.new
 player1 = Player.new(4)
 player2 = Player.new(8)
 
-4.times do |index|
-  player1.take_turn(die)
-  puts "P1 #{index} position: #{player1.position}"
-  puts "P1 #{index} score: #{player1.score}"
-  player2.take_turn(die)
-  puts "P2 #{index} position: #{player2.position}"
-  puts "P2 #{index} score: #{player2.score}"
+def play_game(die, player1, player2)
+  loser = ""
 
+  loop do
+    player1.take_turn(die)
+    if player1.score >= 1000
+      puts "Player 1 wins"
+      loser = player2
+      break
+    end
+    player2.take_turn(die)
+    if player2.score >= 1000
+      puts "Player 2 wins"
+      loser = player1
+      break
+    end
+  end
+
+  puts "Loser Score:#{loser.score}"
+  puts "Die rolls:#{die.num_rolls}"
+  puts "Solution:#{loser.score * die.num_rolls}"
 end
+
+play_game(die, player1, player2)

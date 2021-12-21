@@ -6,7 +6,7 @@ class DeterministicDie
   end
 
   def roll
-    @num_roll += 1
+    @num_rolls += 1
     if @value < 100
       @value += 1
     else
