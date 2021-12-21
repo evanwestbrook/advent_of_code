@@ -1,5 +1,6 @@
 require './player.rb'
 require './deterministic_die.rb'
+require './dirac_die.rb'
 
 def play_deterministic_game
   $END_SCORE = 1000
@@ -10,13 +11,13 @@ def play_deterministic_game
   loser = ""
 
   loop do
-    player1.take_turn(die)
+    player1.take_turn_deterministic(die)
     if player1.score >= $END_SCORE
       puts "Player 1 wins"
       loser = player2
       break
     end
-    player2.take_turn(die)
+    player2.take_turn_deterministic(die)
     if player2.score >= $END_SCORE
       puts "Player 2 wins"
       loser = player1
@@ -29,4 +30,6 @@ def play_deterministic_game
   puts "Solution:#{loser.score * die.num_rolls}"
 end
 
-play_deterministic_game
+#play_deterministic_game
+die = DiracDie.new(1)
+p die.roll

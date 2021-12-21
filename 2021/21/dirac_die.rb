@@ -1,17 +1,16 @@
 class DiracDie
-  attr_accessor
-  def initialize (num_sides)
-    @num_sides = num_sides
-    @value = 0
+  attr_accessor :value
+  def initialize (value)
+    @value = value
   end
 
   def roll
-    @num_rolls += 1
-    if @value < @num_sides
-      @value += 1
-    else
-      @value = 1
-    end
-    return @value
+    dice = [
+      DiracDie.new(1),
+      DiracDie.new(2),
+      DiracDie.new(3)
+    ]
+
+    return dice
   end
 end

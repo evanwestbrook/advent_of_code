@@ -5,7 +5,7 @@ class Player
     @score = 0
   end
 
-  def take_turn(die)
+  def take_turn_deterministic(die)
     to_move = 0
     3.times do
       to_move += die.roll
