@@ -43,11 +43,19 @@ def play_dirac_game
 
   puts "Staring universes:"
   p universes
-  universes[0][:player1].take_turn_dirac(die, 0, universes, universes[0])
 
-  puts "Step 1 universes:"
-  p universes
-  p universes.length
+  universes.each_with_index do |universe, index|
+    break if index == 1000
+    universe[:player1].take_turn_dirac(die, 0, universes, universe)
+    puts "Step 1 universes:"
+    p universes
+    p universes.length
+    puts "PLayer 1 wins #{$PLAYER_1_WINS}"
+  end
+
+  #universes[0][:player1].take_turn_dirac(die, 0, universes, universes[0])
+
+
 
 end
 

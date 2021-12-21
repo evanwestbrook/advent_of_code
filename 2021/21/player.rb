@@ -25,15 +25,19 @@ class Player
         if @player_num == 0
           universe = { player1: Player.new(new_pos, @score + new_pos, @player_num), player2: universe[:player2] }
           if universe[:player1].score >= $END_SCORE
-            $PLAYER_1_WINS += 0
+            $PLAYER_1_WINS += 1
           else
             universes << universe
             universe[:player1].take_turn_dirac(die, turn_num + 1, universes, universe)
           end
         elsif @player_num == 1
           universe = { player1: universe[:player1], player2: Player.new(new_pos, @score + new_pos, @player_num) }
-          universes << universe
-          universe[:player2].take_turn_dirac(die, turn_num + 1, universes, universe)
+          if universe[:player2].score >= $END_SCORE
+            $PLAYER_2_WINS += 1
+          else
+            universes << universe
+            universe[:player2].take_turn_dirac(die, turn_num + 1, universes, universe)
+          end
         end
       end
     end
