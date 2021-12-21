@@ -2,6 +2,45 @@ require './player.rb'
 require './deterministic_die.rb'
 require './dirac_die.rb'
 
+def create_dirac_combos(starting1, starting2)
+  combo_hash = {}
+
+  10.times do |i|
+    3.times do |j|
+      key_val_1 = starting1 + i + 1
+      if key_val_1 > 10
+        key_val_1 = key_val_1 - 10
+      end
+
+      key_val_2 = starting2 + j + 1
+      if key_val_2 > 10
+        key_val_2 = key_val_2 - 10
+      end
+      key = key_val_1.to_s + "_" + key_val_2.to_s
+
+      combo_hash[key] = 0
+    end
+  end
+
+  p combo_hash.length
+
+  10.times do |i|
+    3.times do |j|
+      key_val_2 = starting1 + i + 1
+      if key_val_2 > 10
+        key_val_2 = key_val_2 - 10
+      end
+
+      key_val_1 = starting1 + j + 1
+      if key_val_1 > 10
+        key_val_1 = key_val_1 - 10
+      end
+      key = key_val_1.to_s + "_" + key_val_2.to_s
+      combo_hash[key] = 0
+    end
+  end
+end
+
 def play_deterministic_game
   $END_SCORE = 1000
   die = DeterministicDie.new(100)
@@ -54,5 +93,8 @@ def play_dirac_game
 
 end
 
+p create_dirac_combos(4, 8)
+
+
 #play_deterministic_game
-play_dirac_game
+#play_dirac_game
