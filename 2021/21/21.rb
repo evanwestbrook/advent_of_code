@@ -46,7 +46,7 @@ def play_deterministic_game
 end
 
 def play_dirac_game
-  puts "dirac"
+
   $END_SCORE = 21
   $PLAYER_1_WINS = 0
   $PLAYER_2_WINS = 0
@@ -54,9 +54,42 @@ def play_dirac_game
   board_options = create_dirac_combos(4, 8)
   universes = board_options.select{ |key, value| value[:num] > 0 }
 
-  p universes
 
-  universes.each do |key, value|
+  i = 0
+  while universes.length > 0 do
+    p "iteration: #{i}" #watch it grow
+
+
+
+    universes = universes.each do |key, value|
+      locations = key.split("_")
+      die = DiracDie.new(1)
+      player1 = Player.new(locations[0].to_i, value[:curr_score], 0)
+      player2 = Player.new(locations[1].to_i, 0, 1)
+
+      player1.take_turn_dirac(die, 0, board_options, locations)
+      player2.take_turn_dirac(die, 0, board_options, locations)
+
+      #break
+
+    end
+    p universes
+
+
+
+    if $PLAYER_1_WINS >= 444356092776315
+      break
+    end
+    i += 1
+  end
+
+  p $PLAYER_1_WINS
+  p $PLAYER_2_WINS
+
+end
+
+def iterate_universe (universes, board_options)
+  universes = universes.each do |key, value|
     locations = key.split("_")
     die = DiracDie.new(1)
     player1 = Player.new(locations[0].to_i, value[:curr_score], 0)
@@ -65,15 +98,11 @@ def play_dirac_game
     player1.take_turn_dirac(die, 0, board_options, locations)
     player2.take_turn_dirac(die, 0, board_options, locations)
 
-    #board_options[key] -= 1
-    break
+    #break
 
   end
 
-  p board_options.select{ |key, value| value[:num] > 0 }
-  p $PLAYER_1_WINS
-  p $PLAYER_2_WINS
-
+  return universes
 end
 
 #play_deterministic_game
