@@ -47,4 +47,34 @@ This logic gave my frequency hash something like the following for `{pos: # in p
 We now have the # of wins a player had in a turn and the counts of where the player is on the board in each of our universes. In other words, for this turn, instead of storing 27 (roll 3 universes length) different universes, we're only storing 6 (current positions length)! Great? Not so much. When doing this scratch work, I realized that even though board positions overlap betwen universes, the scores don't. Take position 2 for example. After Roll 3, position 2 has scores of 17, 18, and 19. I somehow needed to track the score for each of these universes. This meant that intead of scoring 6 universes, I would still need to store 14 (27 - 13 wins,) and that was just one step for one player! I couldn't quite figure out how to update this logic to also store scores in a non-memory instensive way, so I went searching for more answers.
 
 ### The winning approach
+The winning approach involved [memoization](https://en.wikipedia.org/wiki/Memoization) which is more or less what I was trying (and failing) to implement in the previous section. It turns out that I was on the right track, but I was looking at it from the wrong angle.
 
+#### Dirac Die logic
+We could simplify our Dirac Die roll results into a frequency hash instead of storing board locations. What I mean here is that since dirac die rolls will produce the same result each turn, we can simplify some of our universe expansion logic by modeling the results all of the rolls at a given turn. The code in [this commit](https://github.com/evanwestbrook/advent_of_code/blob/4b2fdc3125a870c8c7aee8bb715164a420770340/2021/21/21.rb#L70) will give the total # of dice options for a given turn. In case you're curious, the answer is 27 distinct options:
+
+`[[1, 1, 1], [1, 1, 2], [1, 1, 3], [1, 2, 1], [1, 2, 2], [1, 2, 3], [1, 3, 1], [1, 3, 2], [1, 3, 3], [2, 1, 1], [2, 1, 2], [2, 1, 3], [2, 2, 1], [2, 2, 2], [2, 2, 3], [2, 3, 1], [2, 3, 2], [2, 3, 3], [3, 1, 1], [3, 1, 2], [3, 1, 3], [3, 2, 1], [3, 2, 2], [3, 2, 3], [3, 3, 1], [3, 3, 2], [3, 3, 3]]`
+
+We could iterate over all of these options, but we don't necessarily need to. The move a player takes on a given turn is not determinant on the value for each roll. It is determined based on the _total die score_ during the turn. In other words, we're not so much concerned with `rolls` so much as we are `rolls.sum()`. Using this logic, we can simplify our dirac roll results into the following:
+
+`{3=>1, 4=>3, 5=>6, 6=>7, 7=>6, 8=>3, 9=>1}`
+
+This hash represents the total universes resulting in each score. For example, 1 universe will have a score of 3, and 6 universes will have a score of 5. This is moving closer to the previous concept of tracking the # of universes in each state of the board. Instead, we are tracking the # of universes in each roll state. We can then simplify our logic. Let's say that during a given turn the ending score of 5 results in a win. From our hash, we can conclude that _6_ universes won without having to evaluate each one
+
+#### Game Logic
+We can simplify the number of iterations that run by not actually playing the game for each recursive turn. Instead, we can just have each player take turns until all of their universes result in a winning game. In other words, we are getting all possible scores based on the # of rolls for each player. Then we can compare the each turn to see who won for that turn and count the wins! Here's how the logic works:
+
+For a given turn we evaluate for each ending dirac die roll sum:
+1. Duplicate our player so that we have a deep copy
+2. Check to see if the player won and stop recursion if the player won
+3. Track the turn #, player score for this turn, and the total # of points (given the # of universes in which a dirac die sum occurs)
+4. Reursively evaluate until we're done.
+
+Given these steps, we "only" have to evaluate 155 turns for Player 1 and 148 turns for Player 2
+
+Once we have all possible scores for rolls for both players, we just evaluate each turn comparing each player. For example, we have the first win on turn 4:
+
+`Player 1: {"4_22": 39992}` --> `Player 1: Turn #: 4, Score: 22, # Universes for this state: 39992`
+
+`Player 2: {"4_20": 44961}` --> `Player 2: Turn #: 4, Score: 20, # Universes for this state: 44961`
+
+On Turn 4, Player 1 wins in 39,992 universes, and Player 2 loses in 44,961 universes. Given that each Player 2 loss is a Player 1 win, Player 1 wins in 1,798,080,312 (39992 * 44961) universes on Step 4!
