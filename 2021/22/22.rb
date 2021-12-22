@@ -26,7 +26,7 @@ def parse_input(file)
   return reboot_steps
 end
 
-def initialize_reactor(min, max)
+def make_reactor(min, max)
   reactor = {}
 
   range = min.to_s + ".." + max.to_s
@@ -88,7 +88,7 @@ def process_step(step, reactor)
   end
 end
 
-def reboot_reactor(steps, reactor)
+def initialize_reactor(steps, reactor)
   steps.each do |step|
     process_step(step, reactor)
   end
@@ -98,9 +98,7 @@ puts "===== STARTING ====="
 $MIN_DIM = -50
 $MAX_DIM = 50
 @reboot_steps = parse_input('./data/input.txt')
-@reactor = initialize_reactor($MIN_DIM, $MAX_DIM)
+@reactor = make_reactor($MIN_DIM, $MAX_DIM)
 
-puts "Total cubes: #{@reactor.select { |key, value| value == "off"}.length}"
-
-reboot_reactor(@reboot_steps, @reactor)
-puts "Num on: #{@reactor.select { |key, value| value == "on"}.length}"
+initialize_reactor(@reboot_steps, @reactor)
+puts "Num on after initialization: #{@reactor.select { |key, value| value == "on"}.length}"
