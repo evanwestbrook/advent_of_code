@@ -1,5 +1,5 @@
 class Player
-  attr_accessor :position, :score
+  attr_accessor :position, :score, :player_num
   def initialize(position, score, player_num)
     @position = position
     @score = score
@@ -17,56 +17,9 @@ class Player
     @score += @position
   end
 
-  def take_turn_dirac(die, turn_num, board_options, locations)
-
-    if turn_num < 3
-      dice = die.roll
-      orig_pos = @position
-
-      dice.each do |die|
-        new_pos = move(die.value)
-        if @player_num == 0
-          player1 = Player.new(new_pos, @score + new_pos, @player_num)
-          if player1.score >= $END_SCORE
-
-            $PLAYER_1_WINS += 1
-            # Remove winning game
-            board_options[player1.position.to_s + "_" + locations[1].to_s][:num] -= 1
-            board_options[player1.position.to_s + "_" + locations[1].to_s][:curr_score] = 0
-          else
-            # Update state
-            board_options[player1.position.to_s + "_" + locations[1].to_s][:num] += 1
-            board_options[player1.position.to_s + "_" + locations[1].to_s][:curr_score] += player1.score
-
-            player1.take_turn_dirac(die, turn_num + 1, board_options, [player1.position, locations[1].to_i])
-          end
-        elsif @player_num == 1
-          player2 = Player.new(new_pos, @score + new_pos, @player_num)
-          if player2.score >= $END_SCORE
-
-            $PLAYER_2_WINS += 1
-            # Remove winning game
-            board_options[locations[0].to_s + "_" + player2.position.to_s][:num] -= 1
-            board_options[locations[0].to_s + "_" + player2.position.to_s][:curr_score] = 0
-          else
-            # Update state
-            board_options[locations[0].to_s + "_" + player2.position.to_s][:num] += 1
-            board_options[locations[0].to_s + "_" + player2.position.to_s][:curr_score] += player2.score
-
-            player2.take_turn_dirac(die, turn_num + 1, board_options, [locations[0].to_i, player2.position])
-          end
-        end
-      end
-
-      # Remove current state
-      if @player_num == 0
-        board_options[orig_pos.to_s + "_" + locations[1].to_s][:num] -= 1
-        board_options[orig_pos.to_s + "_" + locations[1].to_s][:curr_score] = 0
-      elsif @player_num == 0
-        board_options[locations[0].to_s + "_" + orig_pos.to_s][:num] -= 1
-        board_options[locations[0].to_s + "_" + orig_pos.to_s][:curr_score] = 0
-      end
-    end
+  def take_turn_dirac(to_move)
+    @position = move(to_move)
+    @score += @position
   end
 
   private
