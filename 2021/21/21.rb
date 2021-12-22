@@ -67,6 +67,42 @@ def get_dirac_rolls
   return dirac_sums
 end
 
+def play_dirac_game
+  @dirac_rolls = get_dirac_rolls
+
+  player_positions = [3, 10]
+  length_dicts = []
+
+  # Get all possibilities for a given number
+  player_positions.each do |player_position|
+    d = {}
+    roll_next(player_position, 0, 0, 1, d)
+    length_dicts.append(d)
+  end
+
+  won = [0,0]
+
+  length_dicts[0].each do |length1_score1, value1|
+    l1s1split = length1_score1.to_s.split("_")
+    length1 = l1s1split[0].to_i
+    score1 = l1s1split[1].to_i
+
+    length_dicts[1].each do |length2_score2, value2|
+      l2s2split = length2_score2.to_s.split("_")
+      length2 = l2s2split[0].to_i
+      score2 = l2s2split[1].to_i
+
+      if score1 >= 21 && length2 == length1 - 1 && score2 < 21
+        won[0] += value1 * value2
+      end
+      if score2 >= 21 && length2 == length1 - 1 && score1 < 21
+        won[1] += value1 * value2
+      end
+    end
+  end
+
+  puts "The # of universes in which the most player with the most wins wins is #{won.max()}"
+end
 # trying this solution
 # https://github.com/HrRodan/adventofcode2021/blob/master/day21/day21_part2.py
 
@@ -94,37 +130,5 @@ def roll_next(position, score, length, p, length_dict)
   end
 end
 
-@dirac_rolls = get_dirac_rolls
-
-player_positions = [3, 10]
-length_dicts = []
-
-# Get all possibilities for a given number
-player_positions.each do |player_position|
-  d = {}
-  roll_next(player_position, 0, 0, 1, d)
-  length_dicts.append(d)
-end
-
-won = [0,0]
-
-length_dicts[0].each do |length1_score1, value1|
-  l1s1split = length1_score1.to_s.split("_")
-  length1 = l1s1split[0].to_i
-  score1 = l1s1split[1].to_i
-
-  length_dicts[1].each do |length2_score2, value2|
-    l2s2split = length2_score2.to_s.split("_")
-    length2 = l2s2split[0].to_i
-    score2 = l2s2split[1].to_i
-
-    if score1 >= 21 && length2 == length1 - 1 && score2 < 21
-      won[0] += value1 * value2
-    end
-    if score2 >= 21 && length2 == length1 - 1 && score1 < 21
-      won[1] += value1 * value2
-    end
-  end
-end
-
-puts "The # of universes in which the most player with the most wins wins is #{won.max()}"
+play_deterministic_game
+#play_dirac_game
