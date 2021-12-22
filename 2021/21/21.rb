@@ -30,7 +30,7 @@ def play_deterministic_game
   puts "Solution:#{loser.score * die.num_rolls}"
 end
 
-def count_wins(player, player1, player2)
+def count_wins_2(player, player1, player2)
 
   if check_score(player1, player2)
     return check_score(player1, player2)
@@ -90,11 +90,23 @@ def get_dirac_rolls
     end
   end
 
-  return rolls_3
+  dirac_sums = {}
+
+  rolls_3.each do |roll|
+    roll_sum = roll.sum()
+    if dirac_sums[roll_sum]
+      dirac_sums[roll_sum] += 1
+    else
+      dirac_sums[roll_sum] = 1
+    end
+  end
+
+  return dirac_sums
 end
 
 def play_dirac_game
   @dirac_rolls = get_dirac_rolls
+  @won = [0, 0]
 
   player1 = Player.new(10, 0, 0)
   player2 = Player.new(4, 0, 1)
@@ -103,4 +115,46 @@ def play_dirac_game
   p wins.max()
 end
 
-play_dirac_game
+
+def play(pos, score, roll)
+  new_pos = ((pos - 1 + roll) % 10) + 1
+  new_score = score + new_pos
+  return new_pos, new_score
+end
+
+# The following is from this solution but did not work well for me
+#https://www.reddit.com/r/adventofcode/comments/rl6p8y/2021_day_21_solutions/hph4r3k/?utm_source=share&utm_medium=web2x&context=3
+def count_wins(player, pos0, score0, pos1, score1)
+  if score0 >= 21
+    return 1, 0
+  elsif score1 >= 21
+    return 0, 1
+  end
+
+  wins = [0,0]
+
+  @dirac_rolls.each do |key, value|
+    @i +=1
+    p @i
+    if player == 0
+      new_pos, new_score = play(pos0, score0, key.to_i)
+      wins0, wins1 = count_wins(1, new_pos, new_score, pos1, score1)
+    else
+      new_pos, new_score = play(pos1, score1, key.to_i)
+      wins0, wins1 = count_wins(0, pos0, score0, new_pos, new_score)
+    end
+
+    wins[0] += wins0
+    wins[1] += wins1
+  end
+
+  return wins
+end
+
+@dirac_rolls = get_dirac_rolls
+
+p @dirac_rolls
+
+@i = 0
+
+p count_wins(0, 10, 0, 4, 0)
