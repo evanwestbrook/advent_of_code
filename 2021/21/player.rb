@@ -12,19 +12,19 @@ class Player
       to_move += die.roll
     end
 
-    @position = move(to_move)
+    self.position = move(to_move)
 
-    @score += @position
+    self.score += self.position
   end
 
   def take_turn_dirac(to_move)
-    @position = move(to_move)
-    @score += @position
+    self.position = move(to_move)
+    self.score += self.position
   end
 
   private
 
   def move(to_move)
-    return (@position + to_move - 1) % 10 + 1
+    return (self.position + to_move - 1) % 10 + 1
   end
 end

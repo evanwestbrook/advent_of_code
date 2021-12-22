@@ -30,64 +30,62 @@ def play_deterministic_game
   puts "Solution:#{loser.score * die.num_rolls}"
 end
 
-def get_dirac_rolls
-  die = DiracDie.new(1)
+# trying this solution
+# https://github.com/HrRodan/adventofcode2021/blob/master/day21/day21_part2.py
 
-  rolls = []
+def roll_next(player, length, point, length_dict)
 
-  dice = die.roll
-  dice.each do |die|
-    rolls << [die.value]
-  end
+  @dirac_rolls.each do |roll_sum, count|
+    # Copy so we have distinct player
+    my_player = player.dup
 
-  rolls_2 = []
-  rolls.each do |roll|
-    dice.each do |die|
-      rolls_2 << [roll[0], die.value]
+    # Log a win or take the turn
+    if my_player.score >= 21
+      return
     end
-  end
-  rolls_3 = []
-  rolls_2.each do |roll|
-    dice.each do |die|
-      rolls_3 << [roll[0], roll[1], die.value]
-    end
-  end
+    my_player.take_turn_dirac(roll_sum.to_i)
 
-  dirac_sums = {}
+    # Log the score for this player given the # of rolls
+    new_length = length + 1
+    p_new = point * count
 
-  rolls_3.each do |roll|
-    roll_sum = roll.sum()
-    if dirac_sums[roll_sum]
-      dirac_sums[roll_sum] += 1
+    if length_dict[new_length.to_s + "_" + my_player.score.to_s]
+      length_dict[new_length.to_s + "_" + my_player.score.to_s] += p_new
     else
-      dirac_sums[roll_sum] = 1
+      length_dict[new_length.to_s + "_" + my_player.score.to_s] = p_new
     end
-  end
 
-  return dirac_sums
+    roll_next(my_player, new_length, p_new, length_dict)
+  end
 end
 
 def play_dirac_game
   die = DiracDie.new(1)
   @dirac_rolls =  die.get_dirac_rolls
 
-  player_positions = [3, 10]
   length_dicts = []
 
-  # Get all possibilities for a given number
-  player_positions.each do |player_position|
+  player1 = Player.new(3, 0, 0)
+  player2 = Player.new(10, 0, 1)
+
+  players = [player1, player2]
+
+  # Get all possibilities of scores based on the # of rolls for each player
+  players.each do |player|
     d = {}
-    roll_next(player_position, 0, 0, 1, d)
+    roll_next(player, 0, 1, d)
     length_dicts.append(d)
   end
 
   won = [0,0]
 
+  # For all of player 1 rolls
   length_dicts[0].each do |length1_score1, value1|
     l1s1split = length1_score1.to_s.split("_")
     length1 = l1s1split[0].to_i
     score1 = l1s1split[1].to_i
 
+    # Compare with the corresponding roll for for player 1
     length_dicts[1].each do |length2_score2, value2|
       l2s2split = length2_score2.to_s.split("_")
       length2 = l2s2split[0].to_i
@@ -104,33 +102,7 @@ def play_dirac_game
 
   puts "The # of universes in which the most player with the most wins wins is #{won.max()}"
 end
-# trying this solution
-# https://github.com/HrRodan/adventofcode2021/blob/master/day21/day21_part2.py
 
-def move_player(position, score, steps)
-  position_final = (position + steps - 1) % 10 + 1
-  return position_final, score + position_final
-end
-
-def roll_next(position, score, length, p, length_dict)
-  @dirac_rolls.each do |roll_sum, count|
-    if score >= 21
-      return
-    end
-    new_position, new_score = move_player(position, score, roll_sum.to_i)
-    new_length = length + 1
-    p_new = p * count
-
-    if length_dict[new_length.to_s + "_" + new_score.to_s]
-      length_dict[new_length.to_s + "_" + new_score.to_s] += p_new
-    else
-      length_dict[new_length.to_s + "_" + new_score.to_s] = p_new
-    end
-
-    roll_next(new_position, new_score, new_length, p_new, length_dict)
-  end
-end
-
-#play_deterministic_game
+play_deterministic_game
 play_dirac_game
 
