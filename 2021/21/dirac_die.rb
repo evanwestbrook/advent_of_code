@@ -15,7 +15,7 @@ class DiracDie
   end
 
   def get_dirac_rolls
-
+    # Method to get the count for all possible sums of a dice rol
     rolls = []
 
     dice = self.roll
