@@ -30,9 +30,6 @@ def play_deterministic_game
   puts "Solution:#{loser.score * die.num_rolls}"
 end
 
-# trying this solution
-# https://github.com/HrRodan/adventofcode2021/blob/master/day21/day21_part2.py
-
 def roll_next(player, length, point, length_dict)
 
   @dirac_rolls.each do |roll_sum, count|
