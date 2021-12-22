@@ -50,11 +50,9 @@ def eval_range(step_range)
 end
 
 def truncate_ranges(step)
-
   step[:x] = eval_range(step[:x])
   step[:y] = eval_range(step[:y])
   step[:z] = eval_range(step[:z])
-
 end
 
 def process_step(step, reactor)
@@ -86,7 +84,8 @@ def initialize_reactor(steps, reactor)
 end
 
 def reboot_reactor(steps, reactor)
-  steps.each do |step|
+  steps.each_with_index do |step, index|
+    puts "Processing Step ##{index} of #{steps.length}"
     process_step(step, reactor)
   end
 end
