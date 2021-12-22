@@ -68,7 +68,8 @@ def get_dirac_rolls
 end
 
 def play_dirac_game
-  @dirac_rolls = get_dirac_rolls
+  die = DiracDie.new(1)
+  @dirac_rolls =  die.get_dirac_rolls
 
   player_positions = [3, 10]
   length_dicts = []
@@ -130,5 +131,6 @@ def roll_next(position, score, length, p, length_dict)
   end
 end
 
-play_deterministic_game
-#play_dirac_game
+#play_deterministic_game
+play_dirac_game
+
