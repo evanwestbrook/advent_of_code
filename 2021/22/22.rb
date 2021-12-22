@@ -78,7 +78,8 @@ def process_step(step, reactor)
 end
 
 def initialize_reactor(steps, reactor)
-  steps.each do |step|
+  steps.each_with_index do |step, index|
+    puts "Processing Step ##{index} of #{steps.length}"
     truncate_ranges(step)
     process_step(step, reactor)
   end
@@ -96,5 +97,8 @@ $MAX_DIM = 50
 @reboot_steps = parse_input('./data/input.txt')
 @reactor = {}
 
-initialize_reactor(@reboot_steps, @reactor)
-puts "Num on after initialization: #{@reactor.select { |key, value| value == "on"}.length}"
+#initialize_reactor(@reboot_steps, @reactor)
+#puts "Num on after initialization: #{@reactor.select { |key, value| value == "on"}.length}"
+
+reboot_reactor(@reboot_steps, @reactor)
+puts "Num on after reboot: #{@reactor.select { |key, value| value == "on"}.length}"
