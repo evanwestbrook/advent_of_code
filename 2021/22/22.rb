@@ -1,5 +1,4 @@
 def parse_input(file)
-
   reboot_steps = []
   File.readlines(file).each_with_index do |row, index|
     row = row.gsub(/\n/, "")
@@ -27,7 +26,6 @@ def parse_input(file)
 end
 
 def parse_input_2(file)
-
   reboot_steps = []
   File.readlines(file).each_with_index do |row, index|
     row = row.gsub(/\n/, "")
@@ -113,8 +111,6 @@ def initialize_reactor(steps, reactor)
 end
 
 def reboot_reactor(steps)
-  # Used this example
-  # https://github.com/purple4reina/advent-of-code-2021/blob/main/day22/day.py
   total = 0
   prev_steps = []
   new_prev_steps = []
@@ -163,14 +159,10 @@ end
 puts "===== STARTING ====="
 $MIN_DIM = -50
 $MAX_DIM = 50
-#@reboot_steps = parse_input('./data/input.txt')
+@reboot_steps = parse_input('./data/input.txt')
 @reboot_steps_2 = parse_input_2('./data/input.txt')
-#@reactor = {}
+@reactor = {}
 
-p reboot_reactor(@reboot_steps_2)
-
-#initialize_reactor(@reboot_steps, @reactor)
-#puts "Num on after initialization: #{@reactor.select { |key, value| value == "on"}.length}"
-
-#reboot_reactor(@reboot_steps, @reactor)
-#puts "Num on after reboot: #{@reactor.select { |key, value| value == "on"}.length}"
+initialize_reactor(@reboot_steps, @reactor)
+puts "Num on after initialization: #{@reactor.select { |key, value| value == "on"}.length}"
+puts "Num on after reboot: #{reboot_reactor(@reboot_steps_2)}"
