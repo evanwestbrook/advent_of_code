@@ -88,7 +88,7 @@ def process_step(step, reactor)
   end
 end
 
-def process_commands(steps, reactor)
+def reboot_reactor(steps, reactor)
   steps.each do |step|
     process_step(step, reactor)
   end
@@ -97,18 +97,10 @@ end
 puts "===== STARTING ====="
 $MIN_DIM = -50
 $MAX_DIM = 50
-@reboot_steps = parse_input('./data/test.txt')
+@reboot_steps = parse_input('./data/input.txt')
 @reactor = initialize_reactor($MIN_DIM, $MAX_DIM)
 
-#truncate_ranges(@reboot_steps[20])
-#p @reboot_steps[0]
-#truncate_ranges(@reboot_steps[0])
-#p @reboot_steps[0]
-#truncate_ranges(@reboot_steps[10])
-
 puts "Total cubes: #{@reactor.select { |key, value| value == "off"}.length}"
-#process_step(@reboot_steps[20], @reactor)
-#puts "Num on: #{@reactor.select { |key, value| value == "on"}.length}"
 
-process_commands(@reboot_steps, @reactor)
+reboot_reactor(@reboot_steps, @reactor)
 puts "Num on: #{@reactor.select { |key, value| value == "on"}.length}"
