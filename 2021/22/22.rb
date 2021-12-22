@@ -26,22 +26,6 @@ def parse_input(file)
   return reboot_steps
 end
 
-def make_reactor(min, max)
-  reactor = {}
-
-  range = min.to_s + ".." + max.to_s
-
-  Array(eval(range)).each do |x|
-    Array(eval(range)).each do |y|
-      Array(eval(range)).each do |z|
-        reactor[x.to_s + "_" + y.to_s + "_" + z.to_s] = "off"
-      end
-    end
-  end
-
-  return reactor
-end
-
 def eval_range(step_range)
   x_min = step_range.min()
   x_max = step_range.max()
@@ -98,7 +82,7 @@ puts "===== STARTING ====="
 $MIN_DIM = -50
 $MAX_DIM = 50
 @reboot_steps = parse_input('./data/input.txt')
-@reactor = make_reactor($MIN_DIM, $MAX_DIM)
+@reactor = {}
 
 initialize_reactor(@reboot_steps, @reactor)
 puts "Num on after initialization: #{@reactor.select { |key, value| value == "on"}.length}"
