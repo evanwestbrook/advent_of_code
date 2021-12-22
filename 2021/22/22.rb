@@ -26,6 +26,36 @@ def parse_input(file)
   return reboot_steps
 end
 
+def parse_input_2(file)
+
+  reboot_steps = []
+  File.readlines(file).each_with_index do |row, index|
+    row = row.gsub(/\n/, "")
+    # Get command
+    commands = row.split(" ")
+    step = {command: commands[0]}
+    ranges = commands[1].split(",")
+
+    # Get ranges for each direction
+    do_range = []
+    ranges.each do |range|
+      direction = range.split("=")
+      vals = direction[1].split("..")
+
+      val_a = vals[0].to_i
+      val_b = vals[1].to_i
+
+      do_range << [[val_a, val_b].min(), [val_a, val_b].max()]
+    end
+
+    step[:ranges] = do_range
+
+    reboot_steps << step
+  end
+
+  return reboot_steps
+end
+
 def eval_range(step_range)
   x_min = step_range.min()
   x_max = step_range.max()
@@ -77,27 +107,70 @@ end
 
 def initialize_reactor(steps, reactor)
   steps.each_with_index do |step, index|
-    puts "Processing Step ##{index} of #{steps.length}"
     truncate_ranges(step)
     process_step(step, reactor)
   end
 end
 
-def reboot_reactor(steps, reactor)
-  steps.each_with_index do |step, index|
-    puts "Processing Step ##{index} of #{steps.length}"
-    process_step(step, reactor)
+def reboot_reactor(steps)
+  # Used this example
+  # https://github.com/purple4reina/advent-of-code-2021/blob/main/day22/day.py
+  total = 0
+  prev_steps = []
+  new_prev_steps = []
+
+  steps.each do |step|
+    prev_steps = new_prev_steps
+    new_prev_steps = []
+    xs = step[:ranges][0][0]
+    xe = step[:ranges][0][1]
+    ys = step[:ranges][1][0]
+    ye = step[:ranges][1][1]
+    zs = step[:ranges][2][0]
+    ze = step[:ranges][2][1]
+
+    if step[:command] == "on"
+      total += (xe - xs + 1) * (ye - ys + 1) * (ze - zs + 1)
+      new_prev_steps.append([-1, step[:ranges]])
+    end
+
+    prev_steps.each do |prev_step|
+      new_prev_steps.append([prev_step[0], prev_step[1]])
+      pxs = prev_step[1][0][0]
+      pxe = prev_step[1][0][1]
+      pys = prev_step[1][1][0]
+      pye = prev_step[1][1][1]
+      pzs = prev_step[1][2][0]
+      pze = prev_step[1][2][1]
+
+      mxe = [xe, pxe].min()
+      mxs = [xs, pxs].max()
+      mye = [ye, pye].min()
+      mys = [ys, pys].max()
+      mze = [ze, pze].min()
+      mzs = [zs, pzs].max()
+
+      if mxe > mxs && mye > mys && mze > mzs
+        total += (mxe - mxs + 1) * (mye - mys + 1) * (mze - mzs + 1) * prev_step[0]
+        new_prev_steps.append([-prev_step[0], [[mxs, mxe], [mys, mye], [mzs, mze]]])
+      end
+    end
   end
+
+  return total
 end
 
 puts "===== STARTING ====="
 $MIN_DIM = -50
 $MAX_DIM = 50
-@reboot_steps = parse_input('./data/input.txt')
-@reactor = {}
+#@reboot_steps = parse_input('./data/input.txt')
+@reboot_steps_2 = parse_input_2('./data/input.txt')
+#@reactor = {}
+
+p reboot_reactor(@reboot_steps_2)
 
 #initialize_reactor(@reboot_steps, @reactor)
 #puts "Num on after initialization: #{@reactor.select { |key, value| value == "on"}.length}"
 
-reboot_reactor(@reboot_steps, @reactor)
-puts "Num on after reboot: #{@reactor.select { |key, value| value == "on"}.length}"
+#reboot_reactor(@reboot_steps, @reactor)
+#puts "Num on after reboot: #{@reactor.select { |key, value| value == "on"}.length}"
