@@ -59,13 +59,18 @@ end
 
 def process_step(step, reactor)
   # Check if all step directions are in range
-  truncate_ranges(step)
-
   if step[:x] && step[:y] && step[:z]
     step[:x].each do |x|
       step[:y].each do |y|
         step[:z].each do |z|
-          reactor[x.to_s + "_" + y.to_s + "_" + z.to_s] = step[:command]
+          if step[:command] == "on"
+            reactor[x.to_s + "_" + y.to_s + "_" + z.to_s] = step[:command]
+          else
+            # Don't need to turn off reactor cubes that are already off
+            if reactor[x.to_s + "_" + y.to_s + "_" + z.to_s]
+              reactor[x.to_s + "_" + y.to_s + "_" + z.to_s] = step[:command]
+            end
+          end
         end
       end
     end
@@ -73,6 +78,13 @@ def process_step(step, reactor)
 end
 
 def initialize_reactor(steps, reactor)
+  steps.each do |step|
+    truncate_ranges(step)
+    process_step(step, reactor)
+  end
+end
+
+def reboot_reactor(steps, reactor)
   steps.each do |step|
     process_step(step, reactor)
   end
