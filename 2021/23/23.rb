@@ -4,3 +4,6 @@
   "C" 100,
   "D" 1000
 }
+
+# Part 1
+# Solved it manually on paper...
