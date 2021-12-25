@@ -123,5 +123,5 @@ end
 
 puts "===== STARTING ====="
 
-@sea_cucumbers = parse_input('./data/test.txt')
+@sea_cucumbers = parse_input('./data/input.txt')
 find_landing(@sea_cucumbers)
