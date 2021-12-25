@@ -23,6 +23,17 @@ def parse_input(file)
   return sea_cucumbers
 end
 
+def print_cucumbers(sea_cucumbers)
+  sea_cucumbers.each do |cucumber_row|
+    print_row = ""
+    cucumber_row.each do |cucumber|
+      print_row += cucumber
+    end
+
+    puts print_row
+  end
+end
+
 def step_east(sea_cucumbers)
   sea_cucumbers.each do |cucumber_row|
     # Duplicate row for comparison so cucumbers only move 1 space per step
@@ -50,9 +61,33 @@ end
 
 def step_south(sea_cucumbers)
   num_cols = sea_cucumbers[0].length
+  num_rows = sea_cucumbers.length
 
   num_cols.times do |i|
-    sea_cucumbers.each_with_index do |cucumber_row, index|
+
+    # Create an array of col values because this parses better for some reason
+    my_col = []
+    num_rows.times do |j|
+      my_col << sea_cucumbers[j][i]
+    end
+
+    my_col.each_with_index do |cucumber, index|
+      # If it moves south
+      if cucumber == "v"
+        # check boundary case
+        if index == my_col.length - 1
+          # if it can move south
+          if my_col[0] == "."
+            sea_cucumbers[0][i] = "v"
+            sea_cucumbers[index][i] = "."
+          end
+        else
+          if my_col[index + 1] == "."
+            sea_cucumbers[index + 1][i] = "v"
+            sea_cucumbers[index][i] = "."
+          end
+        end
+      end
     end
   end
 end
@@ -60,7 +95,10 @@ end
 puts "===== STARTING ====="
 
 @sea_cucumbers = parse_input('./data/test.txt')
-p @sea_cucumbers
+print_cucumbers(@sea_cucumbers)
+puts "STEP 1 a"
 step_east(@sea_cucumbers)
-p @sea_cucumbers
+print_cucumbers(@sea_cucumbers)
+puts "STEP 1 b"
 step_south(@sea_cucumbers)
+print_cucumbers(@sea_cucumbers)
