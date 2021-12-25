@@ -23,4 +23,44 @@ def parse_input(file)
   return sea_cucumbers
 end
 
-p parse_input('./data/test.txt')
+def step_east(sea_cucumbers)
+  sea_cucumbers.each do |cucumber_row|
+    # Duplicate row for comparison so cucumbers only move 1 space per step
+    old_row = cucumber_row.dup
+    old_row.each_with_index do |cucumber, index|
+      # If it moves east
+      if cucumber == ">"
+        # check boundary case
+        if index == old_row.length - 1
+          # if it can move east
+          if old_row[0] == "."
+            cucumber_row[0] = ">"
+            cucumber_row[index] = "."
+          end
+        else
+          if old_row[index + 1] == "."
+            cucumber_row[index + 1] = ">"
+            cucumber_row[index] = "."
+          end
+        end
+      end
+    end
+  end
+end
+
+def step_south(sea_cucumbers)
+  num_cols = sea_cucumbers[0].length
+
+  num_cols.times do |i|
+    sea_cucumbers.each_with_index do |cucumber_row, index|
+    end
+  end
+end
+
+puts "===== STARTING ====="
+
+@sea_cucumbers = parse_input('./data/test.txt')
+p @sea_cucumbers
+step_east(@sea_cucumbers)
+p @sea_cucumbers
+step_south(@sea_cucumbers)
