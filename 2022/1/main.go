@@ -5,18 +5,41 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 )
 
 func main() {
 	fmt.Println("Day 1")
 
-	lines, err := parseFile("./test_data.txt")
+	part1("./input_1_data.txt")
+}
+
+func part1(filePath string) {
+	fmt.Println("Part 1:")
+	lines, err := parseFile(filePath)
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
 	}
 
-	fmt.Println(lines)
+	var maxCalories int = 0
+	var currentCalories int = 0
 
+	for _, line := range lines {
+		if line == "" {
+			if currentCalories > maxCalories {
+				maxCalories = currentCalories
+			}
+			currentCalories = 0
+		} else {
+			lv, err := strconv.Atoi(line)
+			if err != nil {
+				log.Fatalf("strconv: %s", err)
+			}
+			currentCalories = currentCalories + lv
+		}
+	}
+
+	fmt.Println(maxCalories)
 }
 
 func parseFile(filePath string) ([]string, error) {
