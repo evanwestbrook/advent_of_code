@@ -18,6 +18,8 @@ func main() {
 
 func part2(filePath string) {
 	fmt.Println("Part 2:")
+
+	// Read file
 	lines, err := parseFile(filePath)
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
@@ -26,11 +28,12 @@ func part2(filePath string) {
 	var ec []int
 	var cc int = 0
 
+	// Populate range of Calories each elf is carrying
 	for i, line := range lines {
 		if line == "" {
 			ec = append(ec, cc)
 			cc = 0
-		} else if i == len(lines) - 1{
+		} else if i == len(lines) - 1{ // Handle final elf with no trailing blank delimiter
 			lv, err := strconv.Atoi(line)
 			if err != nil {
 				log.Fatalf("strconv: %s", err)
@@ -47,6 +50,7 @@ func part2(filePath string) {
 		}
 	}
 
+	// Sort range of Calories each elf is carrying DESC
 	sort.Sort(sort.IntSlice(ec))
 	sort.Slice(ec, func(i, j int) bool {
 		return ec[i] > ec[j]
@@ -57,30 +61,32 @@ func part2(filePath string) {
 
 func part1(filePath string) {
 	fmt.Println("Part 1:")
+	// Read file
 	lines, err := parseFile(filePath)
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
 	}
 
-	var maxCalories int = 0
-	var currentCalories int = 0
+	// Iterate range of Calories each elf is carrying and store the maximum weight when found
+	var mc int = 0
+	var cc int = 0
 
 	for _, line := range lines {
 		if line == "" {
-			if currentCalories > maxCalories {
-				maxCalories = currentCalories
+			if cc > mc {
+				mc = cc
 			}
-			currentCalories = 0
+			cc = 0
 		} else {
 			lv, err := strconv.Atoi(line)
 			if err != nil {
 				log.Fatalf("strconv: %s", err)
 			}
-			currentCalories = currentCalories + lv
+			cc = cc + lv
 		}
 	}
 
-	fmt.Println(maxCalories)
+	fmt.Println(mc)
 }
 
 func parseFile(filePath string) ([]string, error) {
