@@ -11,7 +11,7 @@ import (
 func main() {
 	fmt.Println("Day 2")
 
-	//part1("./test_data.txt")
+	part1("./test_data.txt")
 	part2("./test_data.txt")
 }
 
@@ -24,11 +24,29 @@ func part2(filePath string) {
 		log.Fatalf("readLines: %s", err)
 	}
 
-	// Score each round and track cumulative score
+	// Score each round and track cumulative score based on new rules
+	moveWins := map[string]string{
+		"A": "C",
+		"B": "A",
+		"C": "B",
+	}
+
+	moveLose := map[string]string{
+		"A": "B",
+		"B": "C",
+		"C": "A",
+	}
+
 	var tc int = 0
 	for _, line := range lines {
 		ps := strings.Split(line, " ")
-		tc = tc + scoreRound(ps[0], ps[1])
+		if ps[1] == "X" {
+			tc = tc + scoreRound(ps[0], moveWins[ps[0]])
+		} else if ps[1] == "Y" {
+			tc = tc + scoreRound(ps[0], ps[0])
+		} else {
+			tc = tc + scoreRound(ps[0], moveLose[ps[0]])
+		}
 	}
 
 	fmt.Println(tc)
