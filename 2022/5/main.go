@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -16,26 +17,66 @@ func main() {
 
 func part1(filePath string) {
 	fmt.Println("Part 1")
+
+
+	crateData := make(map[int][]string)
+	moveData := make(map[int][][]int)
+
+	buildData(filePath, crateData, moveData)
+
+	fmt.Println(crateData)
+	fmt.Println(moveData)
+}
+
+func buildData (filePath string, crateData map[int][]string, moveData map[int][][]int) {
 	// Read file
 	lines, err := parseFile(filePath)
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
 	}
 
-	crateData := make(map[int][]string)
-
 	crateDataMode := true
 
-	for _, line := range lines {
-		if strings.Contains(line, "1") {
+	for i, line := range lines {
+		if strings.Contains(line, "1") { // The column numbers are the first indicators that we are done with crates
 			crateDataMode = false
 		}
 		if crateDataMode {
 			buildCrateData(line, crateData)
+		} else {
+			if strings.Contains(line, "move") {
+				moveData[i] = append(moveData[i], buildMoveData(line))
+				buildMoveData(line)
+			}
 		}
 	}
+}
 
-	fmt.Println(crateData)
+func buildMoveData(line string) []int{
+	/*
+	  Build move data using the pattern that commands always go:
+	    move --> from --> to
+		So we can always assume the same indices for where these commands go
+	*/
+	var moveData []int
+
+	row := strings.Split(line, " ")
+
+	moveData = append(moveData, convertString(row[1]))
+	moveData = append(moveData, convertString(row[3]))
+	moveData = append(moveData, convertString(row[5]))
+
+	return moveData
+}
+
+func convertString(st string) int {
+	// Convert string to integer
+	cv, err := strconv.Atoi(st)
+	if err != nil {
+		log.Fatalf("strconv: %s", err)
+	}
+
+	return cv
 }
 
 func buildCrateData(line string, crateData map[int][]string) {
