@@ -18,26 +18,38 @@ func main() {
 func part1(filePath string) {
 	fmt.Println("Part 1")
 
-
-	crateData := make(map[int][]string)
-	moveData := make(map[int][][]int)
-
-	buildData(filePath, crateData, moveData)
+	crateData, moveData := buildData(filePath)
 
 	fmt.Println(crateData)
 	fmt.Println(moveData)
+
+	//processMoves(crateData, moveData)
+
+	// TODO: use moveData to update crateData until the end of all moves
 }
 
-func buildData (filePath string, crateData map[int][]string, moveData map[int][][]int) {
+func processMoves(crateData map[int][]string, moveData map[int][][]int) {
+
+	moveCrate(crateData, moveData[0][0])
+}
+
+func moveCrate(crateData map[int][]string, move []int) {
+	fmt.Println(crateData)
+	fmt.Println(move)
+}
+
+func buildData (filePath string) (map[int][]string, [][]int){
 	// Read file
 	lines, err := parseFile(filePath)
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
 	}
 
+	var moveData [][]int
+	crateData := make(map[int][]string)
 	crateDataMode := true
 
-	for i, line := range lines {
+	for _, line := range lines {
 		if strings.Contains(line, "1") { // The column numbers are the first indicators that we are done with crates
 			crateDataMode = false
 		}
@@ -45,11 +57,13 @@ func buildData (filePath string, crateData map[int][]string, moveData map[int][]
 			buildCrateData(line, crateData)
 		} else {
 			if strings.Contains(line, "move") {
-				moveData[i] = append(moveData[i], buildMoveData(line))
+				moveData = append(moveData, buildMoveData(line))
 				buildMoveData(line)
 			}
 		}
 	}
+
+	return crateData, moveData
 }
 
 func buildMoveData(line string) []int{
