@@ -6,35 +6,58 @@ import (
 	"log"
 	"os"
 	"strings"
+	"sort"
 )
 
 func main() {
 	fmt.Println("Day 3")
 
-	//part1("./test_data.txt")
+	part1("./test_data.txt")
 	part2("./test_data.txt")
 }
 
 func part2(filePath string) {
 	fmt.Println("Part 2")
 	// Read file
-	rss, err := parseFile(filePath)
+	rss, err := parseFile(filePath) // Rucksacks
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
 	}
 
-	rsgs := getRucksackGroups(rss)
-	fmt.Println(rsgs)
+	// Divide rucksacks into Elf Groups of 3, Determine each groups badge, and calculate total priority
+	rsgs := getRucksackGroups(rss) // Rucksack Groups
+	tp := 0 // Total Priority
 
 	for _, rsg := range rsgs {
-		fmt.Println(rsg)
+		gb := findSharedGroupItems(rsg) // Group Badge
+		tp =  tp + calculateSharedItemPriorities(gb)
 	}
+
+	fmt.Println(tp)
+}
+
+func findSharedGroupItems(rucksacks []string) []string {
+	var gb []string // Group Badge
+
+	// Sort rucksacks by total content lenght ASC because least full will have to be contained in the others
+	sort.Slice(rucksacks, func(i, j int) bool {
+		return rucksacks[i] < rucksacks[j]
+  })
+
+	lf := strings.Split(rucksacks[0],"") // Least full rucksack
+
+	for _, it := range lf { // Item in rucksack
+		if strings.Contains(rucksacks[1], it) && strings.Contains(rucksacks[2], it) && !slice_contains(gb, it){
+			gb = append(gb, it)
+		}
+	}
+	return gb
 }
 
 func getRucksackGroups(ruckSacks []string) map[int][]string {
-	var rsgs = make(map[int][]string)
-	rsgid := 0
-	cgs := 0
+	var rsgs = make(map[int][]string) // Rucksack Groups
+	rsgid := 0 // Rucksack Group ID
+	cgs := 0 // Current Group Size
 
 	for _, rs := range ruckSacks {
 		rsgs[rsgid] = append(rsgs[rsgid], rs)
@@ -70,8 +93,8 @@ func part1(filePath string) {
 }
 
 func calculateSharedItemPriorities(sharedItems []string) int {
-	ip := createItemPriorities()
-	sip := 0
+	ip := createItemPriorities() // Item Priority
+	sip := 0 // Shared Item Priority
 
 	for _, item := range sharedItems {
 		sip = sip + ip[item]
@@ -83,20 +106,20 @@ func calculateSharedItemPriorities(sharedItems []string) int {
 func createItemPriorities() map[string]int {
 	letters := []string{"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"}
 
-	var ips = make(map[string]int)
-	for i, letter := range letters {
-		ips[letter] = i + 1
-		ips[strings.ToUpper(letter)] = i + 27
+	var ips = make(map[string]int) // Item priorities
+	for i, lt := range letters { // Letter
+		ips[lt] = i + 1
+		ips[strings.ToUpper(lt)] = i + 27
 	}
 
 	return ips
 }
 
 func findSharedItems(compartments []string) []string {
-	var sis []string
+	var sis []string // Shared Items
 
-	cis := strings.Split(compartments[0],"")
-	for _, ci := range cis {
+	cis := strings.Split(compartments[0],"") // Compartment items shared
+	for _, ci := range cis { // Compartment item
 		if strings.Contains(compartments[1], ci) && !slice_contains(sis, ci) {
 			sis = append(sis, ci)
 		}
@@ -116,8 +139,8 @@ func slice_contains(s []string, str string) bool {
 }
 
 func getRucksackCompartments(ruckSack string) []string {
-	cs := len(ruckSack) / 2
-	return []string{ruckSack[0:cs], ruckSack[cs:len(ruckSack)]}
+	cs := len(ruckSack) / 2 // Compartment Size
+	return []string{ruckSack[0:cs], ruckSack[cs:]}
 }
 
 func parseFile(filePath string) ([]string, error) {
