@@ -12,7 +12,8 @@ import (
 func main() {
 	fmt.Println("Day 5")
 
-	part1("./input_data.txt")
+	part1("./test_data.txt")
+	part2("./test_data.txt")
 }
 
 func part1(filePath string) {
@@ -22,8 +23,55 @@ func part1(filePath string) {
 
 	var finalCrates map[int][]string
 
-	finalCrates = processMoves(crateData, moveData)
+	finalCrates = processMoves(false, crateData, moveData)
 	printTopCrates(finalCrates)
+}
+
+func part2(filePath string) {
+	fmt.Println("Part 2")
+
+	crateData, moveData := buildData(filePath)
+
+	var finalCrates map[int][]string
+
+	finalCrates = processMoves(true, crateData, moveData)
+	printTopCrates(finalCrates)
+}
+
+func bulkMoveCrate(crateData map[int][]string, moveData []int) map[int][]string{
+	numCrates := moveData[0]
+	from := moveData[1]
+	to := moveData[2]
+
+	// Updates crates during a given action in a move
+	movingCrates := crateData[from][0:numCrates]
+
+	// Create new column for the from index not containing the crates to move
+	newFromCol := crateData[from][numCrates:]
+
+	// Create new column using the crate to move and the existing column
+	var newToCol []string
+	for _, crate := range movingCrates {
+		newToCol = append(newToCol, crate)
+	}
+
+	for _, crate := range crateData[to] {
+		newToCol = append(newToCol, crate)
+	}
+
+	newCrateData := make(map[int][]string)
+
+	for key, value := range crateData {
+		if key == from {
+			newCrateData[key] = newFromCol
+		} else if key == to {
+			newCrateData[key] = newToCol
+		} else {
+			newCrateData[key] = value
+		}
+	}
+
+	return newCrateData
 }
 
 func printTopCrates(crateData map[int][]string) {
@@ -37,12 +85,16 @@ func printTopCrates(crateData map[int][]string) {
 	fmt.Println(message)
 }
 
-func processMoves(crateData map[int][]string, moveData [][]int) map[int][]string {
+func processMoves(bulk_move bool, crateData map[int][]string, moveData [][]int) map[int][]string {
 
 	updatedCrates := crateData
 
 	for _, move := range moveData {
-		updatedCrates = moveCrate(updatedCrates, move)
+		if bulk_move {
+			updatedCrates = bulkMoveCrate(updatedCrates, move)
+		} else {
+			updatedCrates = moveCrate(updatedCrates, move)
+		}
 	}
 
 	return updatedCrates
