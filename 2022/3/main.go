@@ -11,7 +11,42 @@ import (
 func main() {
 	fmt.Println("Day 3")
 
-	part1("./input_data.txt")
+	//part1("./test_data.txt")
+	part2("./test_data.txt")
+}
+
+func part2(filePath string) {
+	fmt.Println("Part 2")
+	// Read file
+	rss, err := parseFile(filePath)
+	if err != nil {
+		log.Fatalf("readLines: %s", err)
+	}
+
+	rsgs := getRucksackGroups(rss)
+	fmt.Println(rsgs)
+
+	for _, rsg := range rsgs {
+		fmt.Println(rsg)
+	}
+}
+
+func getRucksackGroups(ruckSacks []string) map[int][]string {
+	var rsgs = make(map[int][]string)
+	rsgid := 0
+	cgs := 0
+
+	for _, rs := range ruckSacks {
+		rsgs[rsgid] = append(rsgs[rsgid], rs)
+		cgs = cgs + 1
+
+		// If at max group size, index group id and reset current group size
+		if cgs > 2 {
+			rsgid = rsgid + 1
+			cgs = 0
+		}
+	}
+	return rsgs
 }
 
 func part1(filePath string) {
