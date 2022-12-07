@@ -13,6 +13,52 @@ func main() {
 	fmt.Println("Day 4")
 
 	part1("./test_data.txt")
+	part2("./test_data.txt")
+}
+
+func part2(filePath string) {
+	fmt.Println("Part 1")
+	// Read file
+	pairs, err := parseFile(filePath)
+	if err != nil {
+		log.Fatalf("readLines: %s", err)
+	}
+
+	totalPartialContains :=0
+
+	for _, pair := range pairs {
+		pairAssignments := parsePair(pair)
+		if partiallyContains(pairAssignments) {
+			totalPartialContains = totalPartialContains + 1
+		}
+	}
+
+	fmt.Println(totalPartialContains)
+}
+
+func partiallyContains(pairAssignments [][]int) bool {
+	assignmentOne := pairAssignments[0]
+	assignmentTwo := pairAssignments[1]
+
+	/*
+	A partially contained assigment is if:
+	1.
+	  fullyContains
+	2.
+	  Assignment A lower range >= Assigment B lower range
+	  Assignment B upper range <= Assigment A upper range
+		Assignment A lower range <= Assignment B upper range
+	*/
+
+	if fullyContains(pairAssignments) {
+		return true
+	} else if assignmentOne[0] >= assignmentTwo[0] && assignmentTwo[1] <= assignmentOne[1] && assignmentOne[0] <= assignmentTwo[1]{
+		return true
+	} else if assignmentTwo[0] >= assignmentOne[0] && assignmentOne[1] <= assignmentTwo[1] && assignmentTwo[0] <= assignmentOne[1]{
+		return true
+	}
+
+	return false
 }
 
 func part1(filePath string) {
@@ -40,6 +86,10 @@ func fullyContains(pairAssignments [][]int) bool {
 	// Determine if either assignment fully contains the other
 	assignmentOne := pairAssignments[0]
 	assignmentTwo := pairAssignments[1]
+
+	// A fully contained assigment is if:
+	// Assignment A lower range >= Assigment B lower range
+	// Assignment A upper range <= Assigment B upper range
 
 	// If assignment one is within assignment two
 	if assignmentOne[0] >= assignmentTwo[0] && assignmentOne[1] <= assignmentTwo[1] {
