@@ -88,10 +88,12 @@ func buildCrateData(line string, crateData map[int][]string) {
 	row := strings.Split(line,"")
 
 	valCounter := 3 // Start at 3 so that index 1 will be picked up
-	for i, stack := range row {
+	stackId := 1
+	for _, stack := range row {
 		if valCounter == 4 {
-			crateData[i] = append(crateData[i], stack)
+			crateData[stackId] = append(crateData[stackId], stack)
 			valCounter = 0
+			stackId = stackId + 1
 		}
 
 		valCounter = valCounter + 1
