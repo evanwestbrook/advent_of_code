@@ -91,7 +91,9 @@ func buildCrateData(line string, crateData map[int][]string) {
 	stackId := 1
 	for _, stack := range row {
 		if valCounter == 4 {
-			crateData[stackId] = append(crateData[stackId], stack)
+			if stack != " " {
+				crateData[stackId] = append(crateData[stackId], stack)
+			}
 			valCounter = 0
 			stackId = stackId + 1
 		}
