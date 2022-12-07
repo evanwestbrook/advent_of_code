@@ -12,7 +12,7 @@ import (
 func main() {
 	fmt.Println("Day 5")
 
-	part1("./test_data.txt")
+	part1("./input_data.txt")
 }
 
 func part1(filePath string) {
@@ -20,22 +20,73 @@ func part1(filePath string) {
 
 	crateData, moveData := buildData(filePath)
 
-	fmt.Println(crateData)
-	fmt.Println(moveData)
+	var finalCrates map[int][]string
 
-	//processMoves(crateData, moveData)
-
-	// TODO: use moveData to update crateData until the end of all moves
+	finalCrates = processMoves(crateData, moveData)
+	printTopCrates(finalCrates)
 }
 
-func processMoves(crateData map[int][]string, moveData map[int][][]int) {
+func printTopCrates(crateData map[int][]string) {
+	message := ""
 
-	moveCrate(crateData, moveData[0][0])
+	// Loop over length of crate stacks since maps aren't ordered and we need the answer in the correct order
+	for i := 0; i < len(crateData); i++ {
+		message = message + crateData[i + 1][0]
+	}
+
+	fmt.Println(message)
 }
 
-func moveCrate(crateData map[int][]string, move []int) {
-	fmt.Println(crateData)
-	fmt.Println(move)
+func processMoves(crateData map[int][]string, moveData [][]int) map[int][]string {
+
+	updatedCrates := crateData
+
+	for _, move := range moveData {
+		updatedCrates = moveCrate(updatedCrates, move)
+	}
+
+	return updatedCrates
+}
+
+func moveCrate(crateData map[int][]string, move []int) map[int][]string{
+	// Processes all crates moves for a given move
+	newCrates := crateData
+
+	// For the # of crates moved in this move
+	for i := 0; i < move[0]; i++ {
+		newCrates = updateCrates(newCrates, move[1], move[2])
+	}
+
+	return newCrates
+}
+
+func updateCrates(crateData map[int][]string, from int, to int) map[int][]string{
+	// Updates crates during a given action in a move
+	movingCrate := crateData[from][0]
+
+	// Create new column for the from index not containing the crate to move
+	newFromCol := crateData[from][1:]
+
+	// Create new column using the crate to move and the existing column
+	var newToCol []string
+	newToCol = append(newToCol, movingCrate)
+	for _, crate := range crateData[to] {
+		newToCol = append(newToCol, crate)
+	}
+
+	newCrateData := make(map[int][]string)
+
+	for key, value := range crateData {
+		if key == from {
+			newCrateData[key] = newFromCol
+		} else if key == to {
+			newCrateData[key] = newToCol
+		} else {
+			newCrateData[key] = value
+		}
+	}
+
+	return newCrateData
 }
 
 func buildData (filePath string) (map[int][]string, [][]int){
