@@ -11,6 +11,7 @@ import (
 func main() {
 	fmt.Println("Day 6")
 	part1("./test1_data.txt")
+	part2("./test1_data.txt")
 }
 
 func part1(filePath string) {
@@ -22,6 +23,30 @@ func part1(filePath string) {
 	}
 
 	fmt.Println(findPacketMarker(lines[0]))
+}
+
+func part2(filePath string) {
+	fmt.Println("Part 2")
+	// Read file
+	lines, err := parseFile(filePath)
+	if err != nil {
+		log.Fatalf("readLines: %s", err)
+	}
+
+	fmt.Println(findMesageMarker(lines[0]))
+}
+func findMesageMarker(datastream string) int {
+	chars := strings.Split(datastream,"")
+
+	// Analyze search markers until a valid one is found
+	for i := range chars {
+		searchMarker := createMarker(i, 14, chars)
+		if validSearchMarker(searchMarker) {
+			return i + 14
+		}
+	}
+
+	return 0
 }
 
 func findPacketMarker(datastream string) int {
