@@ -25,7 +25,7 @@ func part1(filePath string) {
 	treeGrid := prepData(lines)
 	fmt.Println(treeGrid)
 
-	checkVisibility(3, 3, treeGrid)
+	fmt.Println(checkVisibility(1, 1, treeGrid))
 
 	/*var totalVisible int
 
@@ -34,11 +34,24 @@ func part1(filePath string) {
 	fmt.Println(totalVisible)*/
 }
 
-func checkVisibility(x_coord int, y_coord int, treeGrid [][]string) {
-	fmt.Println(topVisible(x_coord, y_coord, treeGrid))
-	fmt.Println(bottomVisible(x_coord, y_coord, treeGrid))
-	fmt.Println(leftVisible(x_coord, y_coord, treeGrid))
-	fmt.Println(rightVisible(x_coord, y_coord, treeGrid))
+func checkVisibility(x_coord int, y_coord int, treeGrid [][]string) bool {
+
+	// TODO: factor in visibility to the closest edge
+
+	if !topVisible(x_coord, y_coord, treeGrid) {
+		return false
+	}
+	if !bottomVisible(x_coord, y_coord, treeGrid) {
+		return false
+	}
+	if !leftVisible(x_coord, y_coord, treeGrid) {
+		return false
+	}
+	if !rightVisible(x_coord, y_coord, treeGrid) {
+		return false
+	}
+
+	return true
 }
 
 func rightVisible(x_coord int, y_coord int, treeGrid [][]string) bool {
