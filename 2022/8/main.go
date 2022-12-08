@@ -11,7 +11,7 @@ import (
 func main() {
 	fmt.Println("Day 8")
 
-	part1("./test_data.txt")
+	part1("./input_data.txt")
 }
 
 func part1(filePath string) {
@@ -23,15 +23,20 @@ func part1(filePath string) {
 	}
 
 	treeGrid := prepData(lines)
-	fmt.Println(treeGrid)
 
-	fmt.Println(checkVisibility(3, 3, treeGrid))
-
-	/*var totalVisible int
+	var totalVisible int
 
 	totalVisible = calcEdgeVisible(treeGrid)
 
-	fmt.Println(totalVisible)*/
+	for i := 1; i < len(treeGrid[0]) - 1; i++ {
+		for j := 1; j < len(treeGrid) - 1; j++ {
+			if checkVisibility(i, j, treeGrid) {
+				totalVisible = totalVisible + 1
+			}
+		}
+	}
+
+	fmt.Println(totalVisible)
 }
 
 
