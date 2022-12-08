@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -15,6 +16,7 @@ func main() {
 	fmt.Println("Day 7")
 
 	part1("./test_data.txt")
+	part2("./test_data.txt")
 }
 
 func part1(filePath string) {
@@ -27,6 +29,69 @@ func part1(filePath string) {
 
 	fmt.Println(findLargestDir(lines))
 }
+
+func part2(filePath string) {
+	fmt.Println("Part 2")
+	// Read file
+	lines, err := parseFile(filePath)
+	if err != nil {
+		log.Fatalf("readLines: %s", err)
+	}
+
+	dirSizes := findDirSizes(lines)
+
+	fmt.Println(findDeleteDir(dirSizes))
+}
+
+func findDeleteDir(sizes []int) int{
+	used := sizes[len(sizes) - 1]
+	free := 70000000 - used
+
+	i := sort.Search(len(sizes), func(i int) bool {
+		return free + sizes[i] >= 30000000
+	})
+
+	return sizes[i]
+}
+
+func findDirSizes(lines []string) []int{
+	var stack, sizes []int
+
+	popd := func() { // cd out of directory and compute dirSize
+		dirSize := stack[len(stack) - 1]
+		sizes = append(sizes, dirSize)
+		// If stack contains a directory, add its directory size to the parent stack
+		if stack = stack[:len(stack)-1]; len(stack) > 0 {
+			stack[len(stack) - 1] += dirSize
+		}
+	}
+
+	// Data output is already DFS, so we just have to parse thorugh with keywords
+	for _, line := range lines {
+		switch line := line; line[:4] { // First 4 chars in a line will always be a command if there is one
+		case "$ cd":
+			if line[5:] != ".." { // Content after the cd command isn't going out of directory
+				stack = append(stack, 0) // cd into new directory
+			} else {
+				popd()
+			}
+		case "$ ls", "dir ": // Nothing to do, next line
+		default: //file
+			fs := strings.Fields(line)
+			fileSize, _ := strconv.Atoi(fs[0])
+			stack[len(stack)-1] += fileSize
+		}
+	}
+
+	for len(stack) > 0 {
+		popd()
+	}
+
+	sort.Ints(sizes)
+
+	return sizes
+}
+
 
 func findLargestDir(lines []string) int64 {
 	var stack []int64 // Stack of directory sizes
@@ -47,7 +112,7 @@ func findLargestDir(lines []string) int64 {
 				sum += dirSize
 			}
 
-			// If stack contains a file, add its directory size to the parent stack
+			// If stack contains a directory, add its directory size to the parent stack
 			if stack = stack[:len(stack)-1]; len(stack) > 0 {
 				stack[len(stack) - 1] += dirSize
 			}
