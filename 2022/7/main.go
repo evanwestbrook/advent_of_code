@@ -14,7 +14,7 @@ func main() {
 	// https://www.reddit.com/r/adventofcode/comments/zesk40/comment/izbm1mc/?utm_source=share&utm_medium=web2x&context=3
 	fmt.Println("Day 7")
 
-	part1("./input_data.txt")
+	part1("./test_data.txt")
 }
 
 func part1(filePath string) {
@@ -25,6 +25,10 @@ func part1(filePath string) {
 		log.Fatalf("readLines: %s", err)
 	}
 
+	fmt.Println(findLargestDir(lines))
+}
+
+func findLargestDir(lines []string) int64 {
 	var stack []int64 // Stack of directory sizes
 	var sum int64 // Total sum of directory sizes
 
@@ -55,7 +59,7 @@ func part1(filePath string) {
 		}
 	}
 
-	fmt.Println(sum)
+	return sum
 }
 
 func parseFile(filePath string) ([]string, error) {
