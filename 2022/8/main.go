@@ -24,8 +24,9 @@ func part1(filePath string) {
 
 	treeGrid := prepData(lines)
 	fmt.Println(treeGrid)
+	xBoundary, yBoundary := getEdgeBoundary(treeGrid)
 
-	fmt.Println(checkVisibility(1, 1, treeGrid))
+	fmt.Println(checkVisibility(1, 2, xBoundary, yBoundary, treeGrid))
 
 	/*var totalVisible int
 
@@ -34,21 +35,43 @@ func part1(filePath string) {
 	fmt.Println(totalVisible)*/
 }
 
-func checkVisibility(x_coord int, y_coord int, treeGrid [][]string) bool {
+func getEdgeBoundary(treeGrid [][]string) (int, int){
+	xBoundary := len(treeGrid[0]) / 2 // Assume always odd widths and round up
+	yBoundary := len(treeGrid) / 2 // Assume always odd heights and round up
 
-	// TODO: factor in visibility to the closest edge
+	return xBoundary, yBoundary
+}
 
-	if !topVisible(x_coord, y_coord, treeGrid) {
-		return false
+func checkVisibility(x_coord int, y_coord int, xBoundary int, yBoundary int, treeGrid [][]string) bool {
+
+	fmt.Println(treeGrid[y_coord][x_coord])
+	fmt.Println(x_coord, y_coord, xBoundary, yBoundary)
+	if y_coord < yBoundary {
+		fmt.Println("checked top")
+		if !topVisible(x_coord, y_coord, treeGrid) {
+			return false
+		}
 	}
-	if !bottomVisible(x_coord, y_coord, treeGrid) {
-		return false
+
+	if y_coord > yBoundary {
+		fmt.Println("checked bottom")
+		if !bottomVisible(x_coord, y_coord, treeGrid) {
+			return false
+		}
 	}
-	if !leftVisible(x_coord, y_coord, treeGrid) {
-		return false
+
+	if x_coord < xBoundary {
+		fmt.Println("checked left")
+		if !leftVisible(x_coord, y_coord, treeGrid) {
+			return false
+		}
 	}
-	if !rightVisible(x_coord, y_coord, treeGrid) {
-		return false
+
+	if x_coord > xBoundary {
+		fmt.Println("checked right")
+		if !rightVisible(x_coord, y_coord, treeGrid) {
+			return false
+		}
 	}
 
 	return true
