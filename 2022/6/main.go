@@ -10,7 +10,7 @@ import (
 
 func main() {
 	fmt.Println("Day 6")
-	part1("./input_data.txt")
+	part1("./test1_data.txt")
 }
 
 func part1(filePath string) {
@@ -29,13 +29,24 @@ func findPacketMarker(datastream string) int {
 
 	// Analyze search markers until a valid one is found
 	for i := range chars {
-		searchMarker := []string{chars[i + 0], chars[i + 1], chars[i + 2], chars[i + 3],}
+		searchMarker := createMarker(i, 4, chars)
 		if validSearchMarker(searchMarker) {
 			return i + 4
 		}
 	}
 
 	return 0
+}
+
+func createMarker(index int, markerSize int, dataStream []string) []string{
+	// Creates a marker given the starting point and marker size
+	var searchMarker []string
+
+	for i := 0; i < markerSize; i++ {
+		searchMarker = append(searchMarker, dataStream[index + i])
+	}
+
+	return searchMarker
 }
 
 func validSearchMarker(searchMarker []string) bool {
