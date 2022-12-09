@@ -45,17 +45,13 @@ func part1(filePath string) {
 	fmt.Println(tailPositions)
 	fmt.Println(rope)
 
-	// For each line
-	moveRope(&rope, getMove(lines[0]), &tailPositions)
-	// check and update tail position
-	fmt.Println("Move 0 After")
+	for i, move := range lines {
+		fmt.Println("Move: ", i)
+		moveRope(&rope, getMove(move), &tailPositions)
+		fmt.Println(rope)
+	}
+
 	fmt.Println(tailPositions)
-	fmt.Println(rope)
-	moveRope(&rope, getMove(lines[1]), &tailPositions)
-	// check and update tail position
-	fmt.Println("Move 1 After")
-	fmt.Println(tailPositions)
-	fmt.Println(rope)
 }
 
 func stringifyTailPosition(r *Rope) string {
@@ -67,6 +63,28 @@ func moveRope(r *Rope, m Move, tp *TailPositions) {
 		moveRight(r, m.steps, tp)
 	} else if m.direction == "U" {
 		moveUp(r, m.steps, tp)
+	} else if m.direction == "L" {
+		moveLeft(r, m.steps, tp)
+	} else if m.direction == "D" {
+		moveDown(r, m.steps, tp)
+	}
+}
+
+func moveDown(r *Rope, steps int, tp *TailPositions) {
+	for i := 0; i < steps; i++ {
+		// Move Head
+		r.headPosition[1] = r.headPosition[1] - 1
+		moveTail(r)
+		updateTailPositions(r, tp)
+	}
+}
+
+func moveLeft(r *Rope, steps int, tp *TailPositions) {
+	for i := 0; i < steps; i++ {
+		// Move Head
+		r.headPosition[0] = r.headPosition[0] - 1
+		moveTail(r)
+		updateTailPositions(r, tp)
 	}
 }
 
@@ -97,6 +115,11 @@ func moveTail(r *Rope) {
   }
 
 	// Horizontal left
+	if r.headPosition[0] < r.tailPosition[0] && r.headPosition[1] == r.tailPosition[1] {
+		if r.headPosition[0] - r.tailPosition[0] < 1 {
+			r.tailPosition[0] = r.tailPosition[0] - 1
+		}
+  }
 
 	// Vertical up
 	if r.headPosition[0] == r.tailPosition[0] && r.headPosition[1] > r.tailPosition[1] {
@@ -106,6 +129,11 @@ func moveTail(r *Rope) {
   }
 
 	// Vertical left
+	if r.headPosition[0] == r.tailPosition[0] && r.headPosition[1] < r.tailPosition[1] {
+		if r.headPosition[1] - r.tailPosition[1] < 1 {
+			r.tailPosition[1] = r.tailPosition[1] - 1
+		}
+  }
 
 	// Diagonal
 	if r.headPosition[0] != r.tailPosition[0] && r.headPosition[1] != r.tailPosition[1] {
@@ -117,7 +145,12 @@ func moveTail(r *Rope) {
 		yMove := r.headPosition[1] - r.tailPosition[1]
 
 		if math.Abs(float64(xMove)) > 1 {
-			fmt.Println("move it")
+			r.tailPosition[1] = r.headPosition[1]
+			if xMove > 0 { // moving up
+				r.tailPosition[0] = r.headPosition[0] - 1
+			} else {
+				r.tailPosition[0] = r.headPosition[0] + 1
+			}
 		} else if math.Abs(float64(yMove)) > 1 {
 			r.tailPosition[0] = r.headPosition[0]
 			if yMove > 0 { // moving up
