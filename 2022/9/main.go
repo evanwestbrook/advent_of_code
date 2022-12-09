@@ -19,6 +19,11 @@ type Move struct {
 	steps int
 }
 
+type Rope struct {
+	headPosition []int
+	tailPosition []int
+}
+
 func part1(filePath string) {
 	fmt.Println("Part 1")
 	// Read file
@@ -27,7 +32,18 @@ func part1(filePath string) {
 		log.Fatalf("readLines: %s", err)
 	}
 
+	rope := Rope{headPosition: []int{0,0}, tailPosition: []int{0,0}}
+
 	fmt.Println(getMove(lines[0]))
+
+	moveRope(&rope)
+
+}
+
+func moveRope(r *Rope) {
+	fmt.Println(r)
+	r.headPosition[0] = 1
+	fmt.Println(r)
 }
 
 func getMove(line string) Move{
