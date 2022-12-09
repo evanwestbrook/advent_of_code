@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -40,14 +41,19 @@ func part1(filePath string) {
 	// Initialize storage of unique tail positions
 	tailPositions := TailPositions{stringifyTailPosition(&rope)}
 
-	fmt.Println("Before")
+	fmt.Println("Starting")
 	fmt.Println(tailPositions)
 	fmt.Println(rope)
 
 	// For each line
 	moveRope(&rope, getMove(lines[0]), &tailPositions)
 	// check and update tail position
-	fmt.Println("After")
+	fmt.Println("Move 0 After")
+	fmt.Println(tailPositions)
+	fmt.Println(rope)
+	moveRope(&rope, getMove(lines[1]), &tailPositions)
+	// check and update tail position
+	fmt.Println("Move 1 After")
 	fmt.Println(tailPositions)
 	fmt.Println(rope)
 }
@@ -59,8 +65,18 @@ func stringifyTailPosition(r *Rope) string {
 func moveRope(r *Rope, m Move, tp *TailPositions) {
 	if m.direction == "R" {
 		moveRight(r, m.steps, tp)
+	} else if m.direction == "U" {
+		moveUp(r, m.steps, tp)
 	}
+}
 
+func moveUp(r *Rope, steps int, tp *TailPositions) {
+	for i := 0; i < steps; i++ {
+		// Move Head
+		r.headPosition[1] = r.headPosition[1] + 1
+		moveTail(r)
+		updateTailPositions(r, tp)
+	}
 }
 
 func moveRight(r *Rope, steps int, tp *TailPositions) {
@@ -69,7 +85,47 @@ func moveRight(r *Rope, steps int, tp *TailPositions) {
 		r.headPosition[0] = r.headPosition[0] + 1
 		moveTail(r)
 		updateTailPositions(r, tp)
+	}
+}
 
+func moveTail(r *Rope) {
+	// Horizontal right
+	if r.headPosition[0] > r.tailPosition[0] && r.headPosition[1] == r.tailPosition[1] {
+		if r.headPosition[0] - r.tailPosition[0] > 1 {
+			r.tailPosition[0] = r.tailPosition[0] + 1
+		}
+  }
+
+	// Horizontal left
+
+	// Vertical up
+	if r.headPosition[0] == r.tailPosition[0] && r.headPosition[1] > r.tailPosition[1] {
+		if r.headPosition[1] - r.tailPosition[1] > 1 {
+			r.tailPosition[1] = r.tailPosition[1] + 1
+		}
+  }
+
+	// Vertical left
+
+	// Diagonal
+	if r.headPosition[0] != r.tailPosition[0] && r.headPosition[1] != r.tailPosition[1] {
+		// If the xMove or yMove diff is > 1, that's the direction the tail will be pulled
+		// Ex: if xMove == 1 and yMove > 1, the head was diagonally above the tail up and to the right
+		//     this would set tail y value to x y value
+		//     and tail x value to x value minus the difference
+		xMove := r.headPosition[0] - r.tailPosition[0]
+		yMove := r.headPosition[1] - r.tailPosition[1]
+
+		if math.Abs(float64(xMove)) > 1 {
+			fmt.Println("move it")
+		} else if math.Abs(float64(yMove)) > 1 {
+			r.tailPosition[0] = r.headPosition[0]
+			if yMove > 0 { // moving up
+				r.tailPosition[1] = r.headPosition[1] - 1
+			} else {
+				r.tailPosition[1] = r.headPosition[1] + 1
+			}
+		}
 	}
 }
 
@@ -78,12 +134,6 @@ func updateTailPositions(r *Rope, tp *TailPositions){
 
 	if !slice_contains(*tp, newTp) {
 		*tp = append(*tp, stringifyTailPosition(r))
-	}
-}
-
-func moveTail(r *Rope) {
-	if r.headPosition[0] - r.tailPosition[0] > 1 {
-		r.tailPosition[0] = r.tailPosition[0] + 1
 	}
 }
 
