@@ -10,9 +10,13 @@ import (
 	"strings"
 )
 
+// Had to timebox and used this solution https://www.reddit.com/r/adventofcode/comments/zgnice/comment/izj7n3i/?utm_source=share&utm_medium=web2x&context=3
+// Everything was working, but I ran into an issue where one head/tail on the 2nd to last move thought it overlapped
+// The main goal of learning more about structs and pointers worked, though!
+
 func main() {
 	fmt.Println("Day 9")
-	part1("./test.txt")
+	part1("./input.txt")
 }
 
 type Move struct {
@@ -40,18 +44,11 @@ func part1(filePath string) {
 
 	// Initialize storage of unique tail positions
 	tailPositions := TailPositions{stringifyTailPosition(&rope)}
-
-	fmt.Println("Starting")
-	fmt.Println(tailPositions)
-	fmt.Println(rope)
-
-	for i, move := range lines {
-		fmt.Println("Move: ", i)
+	for _, move := range lines {
 		moveRope(&rope, getMove(move), &tailPositions)
-		fmt.Println(rope)
 	}
 
-	fmt.Println(tailPositions)
+	fmt.Println(len(tailPositions))
 }
 
 func stringifyTailPosition(r *Rope) string {
@@ -79,19 +76,19 @@ func moveDown(r *Rope, steps int, tp *TailPositions) {
 	}
 }
 
-func moveLeft(r *Rope, steps int, tp *TailPositions) {
+func moveUp(r *Rope, steps int, tp *TailPositions) {
 	for i := 0; i < steps; i++ {
 		// Move Head
-		r.headPosition[0] = r.headPosition[0] - 1
+		r.headPosition[1] = r.headPosition[1] + 1
 		moveTail(r)
 		updateTailPositions(r, tp)
 	}
 }
 
-func moveUp(r *Rope, steps int, tp *TailPositions) {
+func moveLeft(r *Rope, steps int, tp *TailPositions) {
 	for i := 0; i < steps; i++ {
 		// Move Head
-		r.headPosition[1] = r.headPosition[1] + 1
+		r.headPosition[0] = r.headPosition[0] - 1
 		moveTail(r)
 		updateTailPositions(r, tp)
 	}
